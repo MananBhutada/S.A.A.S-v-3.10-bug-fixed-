@@ -53,7 +53,7 @@ The system is designed around a simple principle:
                COORDINATE
                    ↓
                   ACT
-
+Key Capabilities
 
 
 
