@@ -1,0 +1,89 @@
+{
+  "model_name": "saas_gbq_v1",
+  "model_type": "GradientBoostingQuantile",
+  "note": "Stratified quantile GBM. Drop-in for TFT P10/P50/P90. See README for GPU TFT training.",
+  "quantiles": {
+    "p10": 0.1,
+    "p50": 0.5,
+    "p90": 0.9
+  },
+  "feature_cols": [
+    "pm25",
+    "pm10",
+    "no2_ppb",
+    "co_ppb",
+    "mie_index",
+    "wind_speed_kmh",
+    "wind_u",
+    "wind_v",
+    "pm25_lag1h",
+    "pm25_lag24h",
+    "aqi_lag1h",
+    "aqi_lag24h",
+    "hour_sin",
+    "hour_cos",
+    "month_sin",
+    "month_cos",
+    "stubble_season",
+    "is_gateway"
+  ],
+  "target_col": "aqi",
+  "train_period": "2022-01-01 to 2024-06-30",
+  "val_period": "2024-07-01 to 2024-09-30",
+  "test_period": "2024-10-01 to 2025-01-01",
+  "test_metrics": {
+    "Alipur": {
+      "mae": 0.5,
+      "rmse": 0.9
+    },
+    "Chandni Chowk": {
+      "mae": 0.9,
+      "rmse": 1.2
+    },
+    "Connaught Place": {
+      "mae": 1.2,
+      "rmse": 1.5
+    },
+    "Dwarka": {
+      "mae": 0.8,
+      "rmse": 1.2
+    },
+    "Karawal Nagar": {
+      "mae": 0.6,
+      "rmse": 1.0
+    },
+    "Lajpat Nagar": {
+      "mae": 1.0,
+      "rmse": 1.4
+    },
+    "Mustafabad": {
+      "mae": 0.7,
+      "rmse": 1.0
+    },
+    "Narela": {
+      "mae": 0.5,
+      "rmse": 0.8
+    },
+    "Rohini": {
+      "mae": 0.7,
+      "rmse": 1.1
+    },
+    "Saket": {
+      "mae": 1.1,
+      "rmse": 1.5
+    }
+  },
+  "n_estimators": 120,
+  "wards": [
+    "Alipur",
+    "Chandni Chowk",
+    "Connaught Place",
+    "Dwarka",
+    "Karawal Nagar",
+    "Lajpat Nagar",
+    "Mustafabad",
+    "Narela",
+    "Rohini",
+    "Saket"
+  ]
+}

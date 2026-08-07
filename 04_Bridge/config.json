@@ -1,0 +1,19 @@
+{
+  "heartbeat_interval": 60,
+  "agent_cycle_interval": 300,
+  "tft_cache_ttl_seconds": 180,
+  "stokes_droplet_min_um": 10,
+  "stokes_droplet_max_um": 50,
+  "vsn_wind_threshold_kmh": 15,
+  "pgrap_thresholds": {
+    "stage1_aqi": 100,
+    "stage2_aqi": 200,
+    "stage3_aqi": 300,
+    "stage4_aqi": 400
+  },
+  "combustion_hazard_multiplier": 1.30,
+  "mixed_hazard_multiplier": 1.10,
+  "delhi_bbox": [76.5, 28.2, 77.8, 29.0],
+  "qa_threshold": 0.75,
+  "koschmieder_epsilon": 0.05
+}
