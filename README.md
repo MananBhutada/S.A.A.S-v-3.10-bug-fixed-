@@ -53,6 +53,9 @@ The system is designed around a simple principle:
                COORDINATE
                    ↓
                   ACT
+```text
+
+
 Key Capabilities
 
 
