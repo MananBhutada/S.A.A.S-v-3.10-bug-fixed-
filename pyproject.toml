@@ -1,0 +1,48 @@
+[build-system]
+requires      = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name        = "project-saas"
+version     = "1.0.0"
+description = "Smart Air Quality Agent System — Delhi Ward-Level AQI Monitoring"
+readme      = "README.md"
+requires-python = ">=3.10"
+authors = [{name = "S.A.A.S. Research Team"}]
+keywords = ["aqi", "air-quality", "multi-agent", "delhi", "p-grap", "llm"]
+
+dependencies = [
+    "scikit-learn>=1.3.0",
+    "joblib>=1.3.0",
+    "numpy>=1.24.0",
+    "pandas>=2.0.0",
+    "requests>=2.31.0",
+    "python-dotenv>=1.0.0",
+    "groq>=0.9.0",
+    "fastapi>=0.110.0",
+    "uvicorn[standard]>=0.29.0",
+    "sqlalchemy>=2.0.0",
+    "alembic>=1.13.0",
+    "pytest>=7.0.0",
+    "python-json-logger>=2.0.7",
+]
+
+[tool.setuptools.packages.find]
+where   = ["."]
+include = ["*"]
+exclude = ["tests*", "*.egg-info"]
+
+[tool.pytest.ini_options]
+testpaths    = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts      = "-v --tb=short"
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.mypy]
+python_version = "3.10"
+ignore_missing_imports = true

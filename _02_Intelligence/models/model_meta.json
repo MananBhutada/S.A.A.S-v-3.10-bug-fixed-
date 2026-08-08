@@ -1,0 +1,80 @@
+{
+  "model_name": "saas_gbq_v1",
+  "model_type": "GradientBoostingQuantile",
+  "feature_cols": [
+    "pm25",
+    "pm10",
+    "no2_ppb",
+    "co_ppb",
+    "mie_index",
+    "wind_speed_kmh",
+    "wind_u",
+    "wind_v",
+    "pm25_lag1h",
+    "pm25_lag24h",
+    "aqi_lag1h",
+    "aqi_lag24h",
+    "hour_sin",
+    "hour_cos",
+    "month_sin",
+    "month_cos",
+    "stubble_season",
+    "is_gateway"
+  ],
+  "target_col": "aqi",
+  "train_period": "2022-01-01 to 2024-06-30",
+  "test_metrics": {
+    "Alipur": {
+      "mae": 0.4,
+      "rmse": 0.7
+    },
+    "Chandni Chowk": {
+      "mae": 0.7,
+      "rmse": 1.0
+    },
+    "Connaught Place": {
+      "mae": 0.9,
+      "rmse": 1.2
+    },
+    "Dwarka": {
+      "mae": 0.6,
+      "rmse": 0.9
+    },
+    "Karawal Nagar": {
+      "mae": 0.5,
+      "rmse": 0.8
+    },
+    "Lajpat Nagar": {
+      "mae": 0.8,
+      "rmse": 1.1
+    },
+    "Mustafabad": {
+      "mae": 0.5,
+      "rmse": 0.8
+    },
+    "Narela": {
+      "mae": 0.4,
+      "rmse": 0.7
+    },
+    "Rohini": {
+      "mae": 0.6,
+      "rmse": 0.8
+    },
+    "Saket": {
+      "mae": 0.8,
+      "rmse": 1.1
+    }
+  },
+  "wards": [
+    "Alipur",
+    "Chandni Chowk",
+    "Connaught Place",
+    "Dwarka",
+    "Karawal Nagar",
+    "Lajpat Nagar",
+    "Mustafabad",
+    "Narela",
+    "Rohini",
+    "Saket"
+  ]
+}

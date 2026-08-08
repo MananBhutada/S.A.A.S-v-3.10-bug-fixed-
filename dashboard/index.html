@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>S.A.A.S. — Delhi AQI Monitor</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0c10;--s1:#111318;--s2:#181c24;--s3:#1e2330;
+  --b:rgba(255,255,255,0.07);--b2:rgba(255,255,255,0.13);
+  --t:#e8eaf0;--m:#6b7280;--m2:#4b5563;
+  --cyan:#00d4ff;--green:#22c55e;--lime:#84cc16;
+  --amber:#f59e0b;--orange:#f97316;--red:#ef4444;
+  --font:'Space Grotesk',sans-serif;--mono:'JetBrains Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--font);background:var(--bg);color:var(--t);min-height:100vh}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--s2)}
+::-webkit-scrollbar-thumb{background:var(--b2);border-radius:2px}
+header{display:flex;align-items:center;justify-content:space-between;padding:13px 24px;
+  border-bottom:1px solid var(--b);background:var(--s1);position:sticky;top:0;z-index:50}
+.logo{display:flex;align-items:center;gap:10px}
+.lmark{width:32px;height:32px;background:linear-gradient(135deg,var(--cyan),#0055ff);
+  border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#000}
+.lname{font-size:14px;font-weight:600}
+.lsub{font-size:10px;color:var(--m);font-family:var(--mono)}
+.hright{display:flex;align-items:center;gap:10px}
+.live{display:flex;align-items:center;gap:5px;background:rgba(34,197,94,.1);
+  border:1px solid rgba(34,197,94,.3);border-radius:20px;padding:3px 9px;
+  font-size:10px;font-weight:600;color:var(--green);font-family:var(--mono)}
+.dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:blink 1.5s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.hclock{font-size:11px;color:var(--m);font-family:var(--mono)}
+.rbtn{padding:5px 11px;font-size:11px;font-family:var(--mono);
+  background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.3);
+  border-radius:6px;color:var(--cyan);cursor:pointer}
+#age-banner{padding:7px 24px;font-size:11px;font-family:var(--mono);
+  display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--b)}
+#age-banner.fresh{background:rgba(34,197,94,.06);color:var(--green)}
+#age-banner.stale{background:rgba(245,158,11,.06);color:var(--amber)}
+#age-banner.err{background:rgba(239,68,68,.06);color:var(--red)}
+main{padding:18px 24px;max-width:1400px;margin:0 auto}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.kpi{background:var(--s1);border:1px solid var(--b);border-radius:10px;padding:13px 15px;position:relative;overflow:hidden}
+.kpi::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--kc,var(--cyan))}
+.klbl{font-size:10px;color:var(--m);font-family:var(--mono);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+.kval{font-size:24px;font-weight:700;letter-spacing:-1px;line-height:1}
+.ksub{font-size:10px;color:var(--m);margin-top:5px;font-family:var(--mono)}
+.row2{display:grid;grid-template-columns:1.2fr 1fr;gap:14px;margin-bottom:14px}
+.row2b{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.panel{background:var(--s1);border:1px solid var(--b);border-radius:10px;overflow:hidden}
+.ph{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;border-bottom:1px solid var(--b)}
+.ph-t{font-size:12px;font-weight:600}
+.ph-m{font-size:10px;color:var(--m);font-family:var(--mono)}
+.pb{padding:14px}
+.ward-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.wcard{background:var(--s2);border-radius:8px;padding:11px 12px;border:1px solid var(--b);cursor:pointer;transition:.2s}
+.wcard:hover{border-color:var(--b2)}
+.wcard.selected{border-color:var(--cyan)}
+.wcard-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px}
+.wname{font-size:12px;font-weight:600}
+.wloc{font-size:9px;color:var(--m);margin-top:1px;font-family:var(--mono)}
+.waqi{font-size:20px;font-weight:700;font-family:var(--mono);text-align:right}
+.wcat{font-size:9px;text-align:right;margin-top:1px;font-family:var(--mono)}
+.wbadge{font-size:9px;padding:1px 6px;border-radius:4px;font-family:var(--mono);font-weight:700;display:inline-block;margin-bottom:5px}
+.wpoll{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.wp{background:var(--s3);border-radius:4px;padding:4px 6px}
+.wp-lbl{font-size:8px;color:var(--m);font-family:var(--mono);text-transform:uppercase;letter-spacing:.3px}
+.wp-val{font-size:11px;font-weight:600;font-family:var(--mono);margin-top:1px}
+.wp-src{font-size:8px;font-family:var(--mono)}
+.src-r{color:var(--green)}.src-s{color:var(--amber)}.src-z{color:var(--red)}.src-c{color:var(--cyan)}.src-e{color:var(--m)}
+.scrub-bar{display:flex;align-items:center;gap:5px;margin-top:7px;padding:4px 7px;
+  background:rgba(0,212,255,.06);border-radius:4px;border:1px solid rgba(0,212,255,.15);font-size:10px;color:var(--cyan)}
+.sdot{width:4px;height:4px;border-radius:50%;background:var(--cyan);box-shadow:0 0 4px var(--cyan);animation:blink 2s infinite}
+.pre-alert-bar{display:flex;align-items:center;gap:5px;margin-top:5px;padding:4px 7px;
+  background:rgba(249,115,22,.07);border-radius:4px;border:1px solid rgba(249,115,22,.2);font-size:9px;color:var(--orange)}
+/* flow panel */
+.flow-body{padding:14px;min-height:320px}
+.flow-empty{color:var(--m);font-size:12px;text-align:center;padding:40px 0;font-family:var(--mono)}
+.flow-event{position:relative;padding-left:44px;margin-bottom:12px}
+.flow-event:not(:last-child)::before{content:'';position:absolute;left:15px;top:32px;width:1px;bottom:-12px;background:var(--b2)}
+.flow-icon{position:absolute;left:0;top:0;width:32px;height:32px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-size:13px;
+  border:1px solid var(--b2);background:var(--s2)}
+.flow-title{font-size:12px;font-weight:600;margin-bottom:2px;padding-top:5px}
+.flow-desc{font-size:10px;color:var(--m);line-height:1.5;font-family:var(--mono)}
+.flow-arr{font-size:9px;color:var(--m2);font-family:var(--mono);margin-top:3px}
+.flow-arr span{color:var(--cyan)}
+.step-detect .flow-icon{border-color:var(--red);background:rgba(239,68,68,.1);color:var(--red)}
+.step-classify .flow-icon{border-color:var(--amber);background:rgba(245,158,11,.1);color:var(--amber)}
+.step-pgrap .flow-icon{border-color:var(--orange);background:rgba(249,115,22,.1);color:var(--orange)}
+.step-spread .flow-icon{border-color:var(--cyan);background:rgba(0,212,255,.1);color:var(--cyan)}
+.step-bus .flow-icon{border-color:var(--lime);background:rgba(132,204,22,.1);color:var(--lime)}
+.step-receive .flow-icon{border-color:var(--green);background:rgba(34,197,94,.1);color:var(--green)}
+.step-done .flow-icon{border-color:var(--m);background:var(--s2);color:var(--m)}
+.ftag{display:inline-block;padding:1px 6px;border-radius:3px;font-size:9px;font-family:var(--mono);font-weight:600;margin-left:4px}
+.ftag-r{background:rgba(239,68,68,.15);color:var(--red)}
+.ftag-a{background:rgba(249,115,22,.15);color:var(--orange)}
+.ftag-c{background:rgba(0,212,255,.15);color:var(--cyan)}
+.ftag-g{background:rgba(34,197,94,.15);color:var(--green)}
+.ftag-m{background:rgba(107,114,128,.15);color:var(--m)}
+/* alerts */
+.alert-list{display:flex;flex-direction:column;gap:6px;max-height:280px;overflow-y:auto}
+.aitem{display:flex;gap:9px;align-items:flex-start;padding:8px 10px;background:var(--s2);border-radius:7px;border-left:3px solid var(--b)}
+.aitem.s4{border-left-color:var(--red)}.aitem.s3{border-left-color:var(--orange)}
+.aitem.s2{border-left-color:var(--amber)}.aitem.s1{border-left-color:var(--lime)}
+.aw{font-size:11px;font-weight:600;margin-bottom:2px}
+.am{font-size:10px;color:var(--m);line-height:1.5}
+.at{font-size:9px;color:var(--m2);font-family:var(--mono);flex-shrink:0;margin-top:2px}
+/* comms */
+.clog{font-family:var(--mono);font-size:10px;max-height:220px;overflow-y:auto}
+.cline{display:flex;gap:7px;padding:4px 0;border-bottom:1px solid var(--b);flex-wrap:wrap}
+.ct{color:var(--m2);flex-shrink:0}.cs{color:var(--cyan);flex-shrink:0}
+.ck{color:var(--amber);flex-shrink:0}.cm{color:var(--t);opacity:.55;word-break:break-word}
+.note{padding:7px 14px;background:rgba(0,212,255,.04);border-top:1px solid var(--b);font-size:10px;color:var(--m);font-family:var(--mono)}
+.legend{display:flex;gap:12px;flex-wrap:wrap;padding:7px 14px;border-top:1px solid var(--b);font-size:10px}
+.leg{display:flex;align-items:center;gap:4px}
+.ldot{width:6px;height:6px;border-radius:50%}
+@media(max-width:900px){.row2,.row2b{grid-template-columns:1fr}.ward-grid{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">
+    <div class="lmark">SA</div>
+    <div>
+      <div class="lname">S.A.A.S. — Delhi AQI Monitor</div>
+      <div class="lsub">10 Ward Multi-Agent · WAQI/CPCB Real Data + OWM Weather</div>
+    </div>
+  </div>
+  <div class="hright">
+    <div class="live"><div class="dot"></div>LIVE</div>
+    <div class="hclock" id="clk">--:--:--</div>
+    <button class="rbtn" onclick="load()">↻ Refresh</button>
+  </div>
+</header>
+
+<div id="age-banner" class="stale">⏳ Loading...</div>
+
+<main>
+  <div class="kpis">
+    <div class="kpi" style="--kc:var(--red)">
+      <div class="klbl">City Peak AQI</div>
+      <div class="kval" id="k-aqi">—</div>
+      <div class="ksub" id="k-aqi-s">—</div>
+    </div>
+    <div class="kpi" style="--kc:var(--orange)">
+      <div class="klbl">P-GRAP Triggered</div>
+      <div class="kval" id="k-pg">—</div>
+      <div class="ksub" id="k-pg-s">wards at stage ≥ 2</div>
+    </div>
+    <div class="kpi" style="--kc:var(--cyan)">
+      <div class="klbl">Scrubbers Active</div>
+      <div class="kval" id="k-sc">—</div>
+      <div class="ksub" id="k-sc-s">only when AQI &gt; 200</div>
+    </div>
+    <div class="kpi" style="--kc:var(--green)">
+      <div class="klbl">Data Age</div>
+      <div class="kval" id="k-age" style="font-size:15px;padding-top:4px">—</div>
+      <div class="ksub" id="k-age-s">last refresh</div>
+    </div>
+  </div>
+
+  <div class="row2">
+    <div class="panel">
+      <div class="ph">
+        <span class="ph-t">Ward Status — 10 Delhi Wards</span>
+        <span class="ph-m" id="ward-src">aura_master_state.json</span>
+      </div>
+      <div class="pb" style="padding:10px">
+        <div class="ward-grid" id="ward-grid">
+          <div style="color:var(--m);font-size:12px;padding:8px;grid-column:1/-1">Loading...</div>
+        </div>
+      </div>
+      <div class="legend">
+        <div class="leg"><div class="ldot" style="background:var(--green)"></div><span style="color:var(--m)">WAQI/CPCB real</span></div>
+        <div class="leg"><div class="ldot" style="background:var(--amber)"></div><span style="color:var(--m)">OWM estimate</span></div>
+        <div class="leg"><div class="ldot" style="background:var(--red)"></div><span style="color:var(--m)">Zero/unavailable</span></div>
+        <div class="leg"><div class="ldot" style="background:var(--cyan)"></div><span style="color:var(--m)">Calculated</span></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="ph">
+        <span class="ph-t">⚡ Agent Communication Flow</span>
+        <span class="ph-m" id="flow-meta">Click a ward card</span>
+      </div>
+      <div class="flow-body" id="flow-body">
+        <div class="flow-empty">👆 Click any ward card<br>to see its pollution spread<br>communication flow</div>
+      </div>
+      <div class="note" id="flow-note" style="display:none"></div>
+    </div>
+  </div>
+
+  <div class="row2b">
+    <div class="panel">
+      <div class="ph">
+        <span class="ph-t">P-GRAP Alert Log</span>
+        <span class="ph-m" id="audit-meta">pgrap_audit_trail.json</span>
+      </div>
+      <div class="pb" style="padding:10px">
+        <div class="alert-list" id="alert-list">
+          <div style="color:var(--m);font-size:12px;padding:8px">Loading...</div>
+        </div>
+      </div>
+      <div class="note">Source: pgrap_audit_trail.json · Real ward + AQI · LLM-generated text</div>
+    </div>
+
+    <div class="panel">
+      <div class="ph">
+        <span class="ph-t">Agent Message Bus</span>
+        <span class="ph-m" id="comms-meta">agent_comms_log.json</span>
+      </div>
+      <div class="pb" style="padding:10px">
+        <div class="clog" id="comms-log">
+          <div style="color:var(--m);font-size:12px;padding:8px">Loading...</div>
+        </div>
+      </div>
+      <div class="note">Source: agent_comms_log.json · Real message bus · 10 ward agents</div>
+    </div>
+  </div>
+</main>
+
+<script>
+const WARD_META = {
+  "Narela":          {name:"Narela",          zone:"North",     type:"Industrial",  gateway:true},
+  "Rohini":          {name:"Rohini",          zone:"NorthWest", type:"Residential", gateway:false},
+  "Dwarka":          {name:"Dwarka",          zone:"SouthWest", type:"Residential", gateway:false},
+  "Connaught Place": {name:"Connaught Place", zone:"Central",   type:"Commercial",  gateway:false},
+  "Chandni Chowk":   {name:"Chandni Chowk",   zone:"Central",   type:"Mixed",       gateway:false},
+  "Saket":           {name:"Saket",           zone:"South",     type:"Commercial",  gateway:false},
+  "Lajpat Nagar":    {name:"Lajpat Nagar",    zone:"South",     type:"Commercial",  gateway:false},
+  "Karawal Nagar":   {name:"Karawal Nagar",   zone:"NorthEast", type:"Industrial",  gateway:true},
+  "Mustafabad":      {name:"Mustafabad",      zone:"East",      type:"Industrial",  gateway:true},
+  "Wazirpur":        {name:"Wazirpur",        zone:"NorthWest", type:"Industrial",  gateway:false},
+};
+
+const SPREAD_MAP = {
+  "Narela":          {0:"Connaught Place",45:"Karawal Nagar",90:"Karawal Nagar",135:"Chandni Chowk",  180:"Connaught Place",225:"Rohini",         270:"Rohini",         315:"Rohini"},
+  "Rohini":          {0:"Connaught Place",45:"Narela",       90:"Narela",       135:"Connaught Place",180:"Dwarka",         225:"Dwarka",         270:"Dwarka",         315:"Narela"},
+  "Dwarka":          {0:"Rohini",         45:"Connaught Place",90:"Connaught Place",135:"Saket",       180:"Saket",          225:"Saket",          270:"Rohini",         315:"Rohini"},
+  "Connaught Place": {0:"Saket",          45:"Chandni Chowk",90:"Chandni Chowk",135:"Lajpat Nagar",  180:"Saket",          225:"Dwarka",         270:"Dwarka",         315:"Rohini"},
+  "Chandni Chowk":   {0:"Connaught Place",45:"Karawal Nagar",90:"Mustafabad",   135:"Lajpat Nagar",  180:"Lajpat Nagar",   225:"Connaught Place",270:"Connaught Place",315:"Karawal Nagar"},
+  "Saket":           {0:"Connaught Place",45:"Lajpat Nagar", 90:"Lajpat Nagar", 135:"Lajpat Nagar",  180:"Saket",          225:"Dwarka",         270:"Dwarka",         315:"Connaught Place"},
+  "Lajpat Nagar":    {0:"Chandni Chowk",  45:"Mustafabad",   90:"Mustafabad",   135:"Mustafabad",    180:"Saket",          225:"Saket",          270:"Saket",          315:"Chandni Chowk"},
+  "Karawal Nagar":   {0:"Narela",         45:"Narela",       90:"Mustafabad",   135:"Mustafabad",    180:"Chandni Chowk",  225:"Connaught Place",270:"Connaught Place",315:"Narela"},
+  "Mustafabad":      {0:"Karawal Nagar",  45:"Karawal Nagar",90:"Mustafabad",   135:"Lajpat Nagar",  180:"Lajpat Nagar",   225:"Chandni Chowk",  270:"Chandni Chowk",  315:"Karawal Nagar"},
+  "Wazirpur":        {0:"Narela",         45:"Narela",       90:"Connaught Place",135:"Connaught Place",180:"Connaught Place",225:"Rohini",        270:"Rohini",         315:"Narela"},
+};
+
+const F = {
+  state: '../04_Bridge/aura_master_state.json',
+  comms: '../04_Bridge/agent_comms_log.json',
+  audit: '../04_Bridge/pgrap_audit_trail.json',
+};
+let STATE=null, COMMS=[], AUDIT=[];
+
+async function load() {
+  const b = document.getElementById('age-banner');
+  b.className='stale'; b.textContent='⏳ Loading from bridge files...';
+  try { STATE = await fetch(F.state+'?t='+Date.now()).then(r=>r.json()); } catch { STATE=null; }
+  try { COMMS = await fetch(F.comms+'?t='+Date.now()).then(r=>r.json()); } catch { COMMS=[]; }
+  try { AUDIT = await fetch(F.audit+'?t='+Date.now()).then(r=>r.json()); } catch { AUDIT=[]; }
+  if (!STATE) {
+    b.className='err';
+    b.textContent='✗ Cannot load — run: python -m http.server 8080 from project root, then open http://localhost:8080/dashboard/';
+    return;
+  }
+  const age = dataAge(STATE?.city?.last_full_cycle_utc);
+  b.className = age.cls;
+  const wardCount = Object.keys(STATE.wards||{}).length;
+  b.textContent = `${age.cls==='fresh'?'✓ Fresh':'⚠ Stale'} — last run: ${new Date(STATE?.city?.last_full_cycle_utc||0).toLocaleString('en-IN')} (${age.label}) · ${wardCount} wards · ${COMMS.length} messages · ${AUDIT.length} alerts`;
+  renderAll();
+}
+
+function aqiColor(a){if(!a)return'#6b7280';if(a<=50)return'#22c55e';if(a<=100)return'#84cc16';if(a<=200)return'#f59e0b';if(a<=300)return'#f97316';if(a<=400)return'#ef4444';return'#dc2626'}
+function aqiCat(a){if(!a)return'—';if(a<=50)return'Good';if(a<=100)return'Satisfactory';if(a<=200)return'Moderate';if(a<=300)return'Poor';if(a<=400)return'Very Poor';return'Severe'}
+function stageColor(s){return['#22c55e','#84cc16','#f59e0b','#f97316','#ef4444'][s]||'#888'}
+function stageName(s){return['Normal','Advisory','Action','Emergency','Lockdown'][s]||'?'}
+function fmtTime(iso){if(!iso)return'—';return new Date(iso).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',second:'2-digit'})}
+function dataAge(iso){
+  if(!iso)return{label:'unknown',cls:'stale'};
+  const s=(Date.now()-new Date(iso).getTime())/1000;
+  if(s<120)return{label:Math.round(s)+'s ago',cls:'fresh'};
+  if(s<3600)return{label:Math.round(s/60)+'m ago',cls:'fresh'};
+  if(s<86400)return{label:Math.round(s/3600)+'h ago',cls:'stale'};
+  return{label:Math.round(s/86400)+'d ago',cls:'stale'};
+}
+function predictTarget(wardId, bearing) {
+  const map = SPREAD_MAP[wardId]; if(!map) return null;
+  const b = Math.round(bearing/45)*45%360;
+  const nearest = [0,45,90,135,180,225,270,315].reduce((a,x)=>Math.abs(x-b)<Math.abs(a-b)?x:a);
+  const t = map[nearest]; return t===wardId?null:t;
+}
+
+function renderKPIs() {
+  if(!STATE) return;
+  const ws = Object.values(STATE.wards||{});
+  const aqis = ws.map(w=>w.aqi_current||0).filter(Boolean);
+  const maxAqi = aqis.length?Math.max(...aqis):0;
+  const triggered = ws.filter(w=>(w.pgrap_stage||0)>=2).length;
+  const scrubs = ws.filter(w=>w.scrubber_active).length;
+  const age = dataAge(STATE?.city?.last_full_cycle_utc);
+  document.getElementById('k-aqi').innerHTML=`<span style="color:${aqiColor(maxAqi)}">${maxAqi||'—'}</span>`;
+  document.getElementById('k-aqi-s').textContent=aqiCat(maxAqi);
+  document.getElementById('k-pg').innerHTML=`<span style="color:#f97316">${triggered}</span>`;
+  document.getElementById('k-pg-s').textContent=`${triggered} ward${triggered!==1?'s':''} triggered`;
+  document.getElementById('k-sc').innerHTML=`<span style="color:#00d4ff">${scrubs}</span>`;
+  const maxDrop=scrubs?Math.max(...ws.filter(w=>w.scrubber_active).map(w=>w.droplet_um||0)):0;
+  document.getElementById('k-sc-s').textContent=maxDrop?`${maxDrop}μm droplet`:'none (AQI≤200)';
+  document.getElementById('k-age').textContent=age.label;
+  document.getElementById('k-age-s').textContent=STATE?.city?.last_full_cycle_utc?new Date(STATE.city.last_full_cycle_utc).toLocaleDateString('en-IN'):'—';
+}
+
+function renderWards() {
+  if(!STATE) return;
+  const wards = STATE.wards||{};
+  // Only show the 10 known real-named wards
+  const knownWards = Object.keys(WARD_META);
+  const age = dataAge(STATE?.city?.last_full_cycle_utc);
+  const isStale = age.cls==='stale';
+  document.getElementById('ward-src').textContent=`${Object.keys(wards).length} wards · aura_master_state.json`;
+
+  const sorted = knownWards
+    .filter(id => wards[id])
+    .sort((a,b)=>(wards[b].aqi_current||0)-(wards[a].aqi_current||0));
+
+  if(!sorted.length){
+    document.getElementById('ward-grid').innerHTML='<div style="color:var(--m);font-size:12px;padding:8px;grid-column:1/-1">No ward data — run: python refresh_data.py</div>';
+    return;
+  }
+
+  document.getElementById('ward-grid').innerHTML = sorted.map(id => {
+    const w    = wards[id];
+    const meta = WARD_META[id];
+    const aqi  = w.aqi_current||0;
+    const col  = aqiColor(aqi);
+    const stage= w.pgrap_stage||0;
+    const sCol = stageColor(stage);
+    const pm25 = w.pm25; const pm10=w.pm10; const no2=w.no2_ppb;
+    const wind = w.wind_speed_kmh||0;
+    const src  = w.source||'OWM';
+    const isWaqi = src.includes('WAQI')||src.includes('CPCB');
+    const srcCls = !aqi?'src-z':isStale?'src-s':isWaqi?'src-r':'src-e';
+    const srcTxt = !aqi?'unavailable':isStale?'stale':isWaqi?'WAQI/CPCB':'OWM-est';
+    const target = predictTarget(id, w.wind_bearing_deg||0);
+    const hasSpread = wind>=15 && aqi>200 && target;
+
+    return `<div class="wcard" id="wcard-${id.replace(/ /g,'_')}" onclick="showFlow('${id}')">
+      <div class="wcard-top">
+        <div>
+          <div class="wname">${meta.name}${meta.gateway?' <span style="font-size:8px;padding:1px 5px;border-radius:3px;background:rgba(249,115,22,.15);color:#f97316;font-family:var(--mono)">GATEWAY</span>':''}</div>
+          <div class="wloc">${meta.zone} · ${meta.type}</div>
+          ${w.station_name&&w.station_name!==id?`<div class="wloc" style="color:var(--m2)">📍 ${w.station_name}</div>`:''}
+        </div>
+        <div style="text-align:right">
+          <div class="waqi" style="color:${col}">${aqi||'—'}</div>
+          <div class="wcat" style="color:${col}">${aqiCat(aqi)}</div>
+          <span class="wbadge" style="background:${sCol}18;color:${sCol}">S${stage} ${stageName(stage)}</span>
+        </div>
+      </div>
+      <div class="wpoll">
+        <div class="wp">
+          <div class="wp-lbl">PM2.5</div>
+          <div class="wp-val" style="color:${pm25>60?'var(--red)':pm25>30?'var(--amber)':'var(--green)'}">${pm25!=null?pm25.toFixed(1):'—'} µg</div>
+          <div class="wp-src ${srcCls}">${srcTxt}</div>
+        </div>
+        <div class="wp">
+          <div class="wp-lbl">PM10</div>
+          <div class="wp-val" style="color:${pm10>100?'var(--red)':pm10>50?'var(--amber)':'var(--green)'}">${pm10!=null?pm10.toFixed(1):'—'} µg</div>
+          <div class="wp-src ${srcCls}">${srcTxt}</div>
+        </div>
+        <div class="wp">
+          <div class="wp-lbl">NO2</div>
+          <div class="wp-val" style="color:${no2>80?'var(--red)':no2>40?'var(--amber)':'var(--green)'}">${no2!=null?no2.toFixed(1):'—'}</div>
+          <div class="wp-src ${!no2&&no2!==0?'src-z':srcCls}">${!no2&&no2!==0?'unavail':srcTxt}</div>
+        </div>
+        <div class="wp">
+          <div class="wp-lbl">Wind</div>
+          <div class="wp-val" style="color:${wind>15?'var(--orange)':'var(--t)'}">${wind.toFixed(1)} km/h</div>
+          <div class="wp-src src-r">OWM real</div>
+        </div>
+      </div>
+      ${w.scrubber_active?`<div class="scrub-bar"><div class="sdot"></div>Scrubber ON · ${w.droplet_um||'?'}μm · ${w.wind_bearing_deg||0}° bearing</div>`:''}
+      ${w.pre_alert?`<div class="pre-alert-bar">⚠ Pre-alert — plume incoming from ${w.source_ward||'?'}</div>`:''}
+      ${hasSpread?`<div class="pre-alert-bar" style="color:var(--amber);border-color:rgba(245,158,11,.2)">💨 Spread predicted → ${target}</div>`:''}
+    </div>`;
+  }).join('');
+}
+
+function showFlow(wardId) {
+  document.querySelectorAll('.wcard').forEach(c=>c.classList.remove('selected'));
+  const safeId = wardId.replace(/ /g,'_');
+  const card = document.getElementById('wcard-'+safeId);
+  if(card) card.classList.add('selected');
+
+  const w    = STATE?.wards?.[wardId];
+  const meta = WARD_META[wardId]||{name:wardId,zone:'',type:''};
+  const aqi  = w?.aqi_current||0;
+  const wind = w?.wind_speed_kmh||0;
+  const bear = w?.wind_bearing_deg||0;
+  const stage= w?.pgrap_stage||0;
+  const target = predictTarget(wardId, bear);
+  const tMeta  = target?(WARD_META[target]||{name:target}):null;
+  const hasSpread = wind>=15 && aqi>200 && target;
+  const src  = w?.source||'OWM';
+  const isWaqi = src.includes('WAQI')||src.includes('CPCB');
+
+  document.getElementById('flow-meta').textContent=`${meta.name} · ${meta.zone} · ${meta.type}`;
+
+  const steps = [];
+  const sCol = stageColor(stage);
+  const now = new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+
+  steps.push({
+    type:'detect', icon:'🔍',
+    title:`${meta.name} detects AQI = ${aqi}`,
+    desc:`${isWaqi?'WAQI/CPCB (ground station)':'OWM estimate'} → PM2.5=${w?.pm25?.toFixed(1)||'?'}µg · PM10=${w?.pm10?.toFixed(1)||'?'}µg <span class="ftag ftag-r">${aqiCat(aqi)}</span>`,
+    arr:'read_sensors() → SensorReading'
+  });
+  steps.push({
+    type:'classify', icon:'🧪',
+    title:'Classify pollution intent',
+    desc:`PM10/PM2.5=${w?.pm10&&w?.pm25?(w.pm10/w.pm25).toFixed(2):'?'} → intent = <b>${w?.intent||'mixed'}</b> <span class="ftag ftag-a">${w?.intent||'mixed'}</span>`,
+    arr:'intent → P-GRAP evaluation'
+  });
+  steps.push({
+    type:'pgrap', icon:'⚖️',
+    title:`P-GRAP Stage ${stage} — ${stageName(stage)}`,
+    desc:`AQI=${aqi} credit=${w?.credit_score||0.85} → <span class="ftag" style="background:${sCol}20;color:${sCol}">Stage ${stage}</span>${stage>=2?' · Scrubber activated ✓':''}`,
+    arr:stage>=2?'scrubber_active=True → FieldAgent':'No action required'
+  });
+  if(wind>0){
+    steps.push({
+      type:'spread', icon:'💨',
+      title:`Predict pollution spread`,
+      desc:hasSpread
+        ?`Wind=${wind.toFixed(1)}km/h @${bear}° → plume → <b>${tMeta.name}</b> <span class="ftag ftag-a">SPREAD</span>`
+        :`Wind=${wind.toFixed(1)}km/h @${bear}° → ${wind<15?'below 15km/h threshold':'AQI≤200, no spread needed'} <span class="ftag ftag-m">NO SPREAD</span>`,
+      arr:hasSpread?'send_spread_alert() [30-min cooldown]':null
+    });
+  }
+  if(hasSpread && tMeta){
+    steps.push({
+      type:'bus', icon:'📡',
+      title:`Bus message → ${tMeta.name}`,
+      desc:`AgentMessage(POLLUTION_SPREAD · from=${wardId} · to=${target} · aqi=${aqi} · wind=${wind.toFixed(1)}km/h) <span class="ftag ftag-c">COOLDOWN 30m</span>`,
+      arr:`→ agent_comms_log.json`
+    });
+    steps.push({
+      type:'receive', icon:'📥',
+      title:`${tMeta.name} receives spread alert`,
+      desc:`WardAgent.receive_alert() → pre_alert=True · source_ward="${wardId}" <span class="ftag ftag-g">RECEIVED</span>`,
+      arr:'pre-mitigation activated'
+    });
+    steps.push({
+      type:'done', icon:'🛡️',
+      title:`${tMeta.name} pre-mitigation active`,
+      desc:`${tMeta.name} raises alert level · scrubbers pre-armed · bridge state updated <span class="ftag ftag-g">ACTIVE</span>`,
+      arr:null
+    });
+  } else {
+    steps.push({
+      type:'done', icon:'✅',
+      title:`${meta.name} cycle complete`,
+      desc:`No spread alert needed · ${meta.name} bridge state written · next cycle in 5min`,
+      arr:null
+    });
+  }
+
+  document.getElementById('flow-body').innerHTML = steps.map(s=>`
+    <div class="flow-event step-${s.type}">
+      <div class="flow-icon">${s.icon}</div>
+      <div class="flow-title">${s.title}</div>
+      <div class="flow-desc">${s.desc}</div>
+      ${s.arr?`<div class="flow-arr">↓ <span>${s.arr}</span></div>`:''}
+    </div>`).join('');
+
+  const noteEl = document.getElementById('flow-note');
+  noteEl.style.display='block';
+  noteEl.textContent = hasSpread
+    ?`🔴 Active spread: ${meta.name} → ${tMeta.name} · Wind ${wind.toFixed(1)}km/h @${bear}°`
+    :`✓ No spread from ${meta.name} · Wind ${wind.toFixed(1)}km/h (${wind<15?'below threshold':'AQI normal'})`;
+}
+
+function renderAlerts() {
+  const el = document.getElementById('alert-list');
+  if(!AUDIT.length){el.innerHTML='<div style="color:var(--m);font-size:11px;padding:8px">No alerts — run orchestrator first</div>';return}
+  document.getElementById('audit-meta').textContent=`${AUDIT.length} events · pgrap_audit_trail.json`;
+  el.innerHTML=[...AUDIT].reverse().map(ev=>{
+    const s=ev.stage||0; const col=stageColor(s);
+    const text=(ev.alert_text||'').replace(/^"|"$/g,'').replace(/\\"/g,'"');
+    return`<div class="aitem s${s}">
+      <div style="flex:1">
+        <div class="aw" style="color:${col}">${ev.ward||'?'} · Stage ${s} · AQI ${ev.aqi||'?'} · ${ev.intent||''}</div>
+        <div class="am">${text||'—'}</div>
+      </div>
+      <div class="at">${fmtTime(ev.timestamp)}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderComms() {
+  const el=document.getElementById('comms-log');
+  if(!COMMS.length){el.innerHTML='<div style="color:var(--m);font-size:11px;padding:8px">No messages</div>';return}
+  document.getElementById('comms-meta').textContent=`${COMMS.length} total · agent_comms_log.json`;
+  const cols={HEARTBEAT:'#22c55e',ALERT_TRIGGER:'#ef4444',TASK_RESULT:'#00d4ff',FIELD_COMMAND:'#f59e0b',POLICY_VETO:'#f97316',DATA_SHARE:'#84cc16'};
+  el.innerHTML=[...COMMS].reverse().slice(0,60).map(m=>{
+    const col=cols[m.message_type]||'#6b7280';
+    const p=m.payload||{};
+    const ps=p.task||p.type||(p.cycle?`#${p.cycle}`:'')||(p.reason||'').slice(0,50)||JSON.stringify(p).slice(0,50);
+    return`<div class="cline">
+      <span class="ct">${fmtTime(m.timestamp_utc)}</span>
+      <span class="cs">${m.sender||'?'}</span>
+      <span class="ck" style="color:${col}">${m.message_type||'?'}</span>
+      <span class="cm">${ps}</span>
+    </div>`;
+  }).join('');
+}
+
+setInterval(()=>document.getElementById('clk').textContent=new Date().toTimeString().slice(0,8),1000);
+document.getElementById('clk').textContent=new Date().toTimeString().slice(0,8);
+function renderAll(){renderKPIs();renderWards();renderAlerts();renderComms();}
+load();
+setInterval(load,60000);
+</script>
+</body>
+</html>
