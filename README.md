@@ -556,7 +556,7 @@ Single-pollutant assumptions	Multi-pollutant processing
 Raw PM2.5 incorrectly treated as AQI	Piecewise AQI conversion
 
 These fixes improve the robustness of the state-management, environmental-data, and agent communication layers.
-
+...
 🧠 Why S.A.A.S.?
 
 Traditional air-quality systems often follow:
