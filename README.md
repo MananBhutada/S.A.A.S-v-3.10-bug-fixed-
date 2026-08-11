@@ -740,3 +740,38 @@ Observation → Intelligence → Governance → Action
 Built as a modular research and engineering platform combining machine learning, multi-agent systems, environmental data, governance logic, and physical IoT intervention.
 
 
+---
+
+## 🖥️ Live System Demo
+
+The screenshots below show the multi-agent system running end-to-end in a live local environment.
+
+### 1. Agent System Startup
+
+![Agent Startup](assests/demo_agent_startup.png)
+
+All five agents — Commander, Intel, Governance, Alert, and Field — initialize successfully along with ten ward-level agents (Narela, Rohini, Dwarka, Connaught Place, Chandni Chowk, Saket, Lajpat Nagar, Karawal Nagar, Mustafabad, Wazirpur). Once online, the Commander begins the first monitoring cycle by checking city-wide AQI.
+
+### 2. Real-Time Ward Monitoring & Governance
+
+![Ward Monitoring](assests/demo_readme_terminal.png)
+
+For each ward, the system fetches live AQI/PM2.5/PM10/NO₂ data from WAQI, evaluates the corresponding P-GRAP stage, and dispatches Telegram alerts automatically when thresholds are crossed (e.g., Stage 2/3 advisories for Narela, Dwarka, and Wazirpur).
+
+### 3. TFT Forecasting Across Wards
+
+![Forecasting](assests/demo_wards_forecast.png)
+
+The TFT (Temporal Fusion Transformer) engine generates quantile-based forecasts (P10/P50/P90) for each ward, which feed directly into the governance layer for proactive P-GRAP staging.
+
+### 4. Graceful Shutdown
+
+![Shutdown](assests/demo_shutdown.png)
+
+All agents (Commander, Intel, Governance, Alert, Field) shut down cleanly when the system is stopped, confirming stable lifecycle management.
+
+### 5. Manual Data Refresh
+
+![Data Refresh](assests/demo_refresh_data.png)
+
+The `refresh_data.py` script can be run independently to pull fresh AQI data for all ten wards, useful for testing or manual updates outside the agent loop.
