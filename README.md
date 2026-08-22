@@ -254,24 +254,24 @@ Instead of forcing one monolithic model to perform every task, the platform sepa
 Current agent components include:
 
 AQI Agent
-Weather Agent
-AURA Agent
+Weather(intel) Agent
+Co Agent
 MQTT Client
 Multi-Agent System
 Telegram Dispatch
-
+(NAMES OF AGENTS MIGHT DIFFER IN THE README AS MULTIPLE VERSIONS HAVE DIRRERING NAME....REST ASSURE THE ACTUAL FILES ARE IMMACULATE WITH NAME)
 Conceptually:
 
-                       ┌──────────────┐
-                       │ Orchestrator │
-                       └───────┬──────┘
+                       ┌──────────────┐_________________
+                       │ Orchestrator(commander agent) │
+                       └───────┬──────┘_________________
                                │
           ┌────────────────────┼────────────────────┐
           │                    │                    │
           ▼                    ▼                    ▼
     ┌───────────┐        ┌───────────┐        ┌───────────┐
-    │ AQI Agent │        │Weather    │        │ AURA Agent│
-    │           │        │Agent      │        │           │
+    │ AQI Agent │        │Weather    │        │ Alert Agent│
+    │  Intel    │        │Agent      │        │           │
     └─────┬─────┘        └─────┬─────┘        └─────┬─────┘
           │                    │                    │
           └────────────────────┼────────────────────┘
@@ -744,7 +744,7 @@ Built as a modular research and engineering platform combining machine learning,
 
 ## 🖥️ Live System Demo
 
-The screenshots below show the multi-agent system running end-to-end in a live local environment.
+The screenshots below(or png images in the file structure)show the multi-agent system running end-to-end in a live local environment.(For reference)
 
 ### 1. Agent System Startup
 
