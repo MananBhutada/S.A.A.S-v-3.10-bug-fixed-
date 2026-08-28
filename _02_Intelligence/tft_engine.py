@@ -14,7 +14,7 @@ and require GPU to train fully (15-20 epochs on 8× A100 ~30 min).
 The GBQ models are a fully functional drop-in for CPU deployment.
 
 VSN re-weighting, quantile output, and the predict() interface are
-identical regardless of which backend is active.
+identical regardless of which backend is active....will have to revisit this for failproof systems...especially for models
 """
 
 from __future__ import annotations
