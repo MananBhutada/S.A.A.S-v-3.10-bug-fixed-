@@ -15,5 +15,5 @@ from _05_Agent.aura_agent import run_aura_agent  # noqa: F401
 
 
 def start_agent_daemon():
-    """Start the AURA AI Agent in daemon thread mode."""
+    """Start the AURA AI Agent in daemon thread mode...well this has to be reverted as the Aura agent is renamed"""
     return run_aura_agent(mode="daemon")
