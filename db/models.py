@@ -1,5 +1,5 @@
 """
-db/models.py — SQLAlchemy ORM Models for Project S.A.A.S.
+db/models.py — SQLAlchemy ORM Models for Project S.A.A.S
 """
 from __future__ import annotations
 from datetime import datetime, timezone
