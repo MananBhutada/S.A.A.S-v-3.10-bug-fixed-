@@ -270,7 +270,7 @@ Conceptually:
           │                    │                    │
           ▼                    ▼                    ▼
     ┌───────────┐        ┌───────────┐        ┌───────────┐
-    │ AQI Agent │        │Weather    │        │ Alert Agent│
+    │ AQI Agent │        │Governance │        │ Alert Agent│
     │  Intel    │        │Agent      │        │           │
     └─────┬─────┘        └─────┬─────┘        └─────┬─────┘
           │                    │                    │
