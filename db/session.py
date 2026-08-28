@@ -1,6 +1,6 @@
 """
 db/session.py — Database session management
-Supports PostgreSQL (production) and SQLite (development/testing)
+Supports PostgreSQL (production) and SQLite (development/testing)....i wanna try adding redis maybee...
 """
 from __future__ import annotations
 import os
