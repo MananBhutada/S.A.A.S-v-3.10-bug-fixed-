@@ -8,7 +8,7 @@
  *   - MQTT subscriber: receives commands from Python backend (FieldAgent)
  *   - Stokes Number optimization: adjusts pump pressure for 10–50 μm droplets
  *   - Yaw-pitch wind alignment: rotates nozzle into wind vector for max dwell time
- *   - GP2Y1010 dust sensor: local PM validation to cross-check bridge state
+ *   - GP2Y1010 dust sensor: local PM validation to cross-check bridge state...(for now)
  *   - OTA firmware updates via ArduinoOTA
  *   - Watchdog timer: auto-restart if MQTT heartbeat lost > 5 min
  *
