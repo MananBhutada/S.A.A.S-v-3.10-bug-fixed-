@@ -4,7 +4,7 @@ Project S.A.A.S. — Autonomous Orchestrator (Multi-Agent Integrated)
 =====================================================================
 Runs three parallel systems:
   1. Rule-based heartbeat loop (fast, deterministic, every 60s)
-  2. AURA single-agent (Claude tool-use, every 5 min, for complex reasoning)
+  2. AURA single-agent (Claude tool-use/qwen/ollma(groq), every 5 min, for complex reasoning)
   3. Multi-Agent System (Commander/Intel/Governance/Alert/Field, every 60s)
 
 The flow is unchanged:
