@@ -3,7 +3,7 @@
 Project S.A.A.S. — AURA AI Agent
 =====================================
 Autonomous reasoning layer that sits above the orchestrator.
-Uses Groq tool-use to plan, decide, and dispatch P-GRAP actions.
+Uses Groq tool-use to plan, decide, and dispatch P-GRAP actions...i will add other llm soon
 The agent reads from aura_master_state.json and can call any
 registered tool: scrubber dispatch, Telegram alert, ward inspection,
 plume classification, and TFT re-inference triggers.
