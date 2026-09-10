@@ -6,7 +6,7 @@ and updates aura_master_state.json.
 
 FIXES in this version:
   - Clears ALL old ward keys (Ward-1, Ward-2, Alipur etc.) before writing
-  - Correct P-GRAP thresholds (Stage 2 = AQI>200, not AQI>150)
+  - Correct P-GRAP thresholds (Stage 2 = AQI>200, not AQI>150){further would implemet a probablistic one}
   - Scrubber only activates at Stage 2+ (AQI>200), not Stage 0
 
 Usage:
