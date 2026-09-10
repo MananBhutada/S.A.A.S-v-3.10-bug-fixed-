@@ -57,3 +57,5 @@ except RuntimeError as e:
     print("correctly raised:", e)
 
 print("\nALL RATE-LIMIT TESTS PASSED")
+
+# tests for graceful rate limiting to ensure system from crashing and also for better software quality overall
