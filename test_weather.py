@@ -6,6 +6,7 @@ Run:  python test_weather.py
 
 Fix applied: sys.path setup added so 'services' is importable when run
 from the project root (or any directory).
+Sanity checks will be included
 """
 
 import sys
