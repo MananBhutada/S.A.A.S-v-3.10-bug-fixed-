@@ -1,6 +1,6 @@
 """
 04_Bridge/state_manager.py
-Project S.A.A.S. — Safe Bridge State Manager
+Project S.A.A.S. — Safe Bridge State Manager...
 =============================================
 BUG FIXES:
   - Atomic reads with try/except JSON decode — never crash on empty/corrupt file
