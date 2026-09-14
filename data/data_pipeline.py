@@ -3,7 +3,7 @@ data/data_pipeline.py
 Project S.A.A.S. — Data Pipeline
 ==================================
 Generates, cleans, and prepares the Delhi AQI training dataset.
-Also re-trains the quantile models when new data arrives.
+Also re-trains the quantile models when new data arrives...will work on tft as well
 
 Run:
     python data/data_pipeline.py --generate   # regenerate dataset
