@@ -6,7 +6,7 @@ Endpoints:
   GET  /health                  — System health check
   GET  /api/state               — Live bridge state (for dashboard)
   GET  /api/wards               — All wards with current readings
-  GET  /api/wards/{ward_id}     — Single ward detail
+  GET  /api/wards/{ward_id}     — Single ward detail...(for further processing)
   GET  /api/alerts              — Recent alerts (paginated)
   GET  /api/pgrap               — P-GRAP status all wards
   GET  /api/history/{ward_id}   — Historical readings from DB
