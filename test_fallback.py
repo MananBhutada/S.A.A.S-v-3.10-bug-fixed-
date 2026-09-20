@@ -11,7 +11,7 @@ ws.CACHE_FILE = __import__("pathlib").Path("/tmp/test_cache.json")
 if ws.CACHE_FILE.exists():
     ws.CACHE_FILE.unlink()
 
-# Pre-seed a fake station list so _get_delhi_stations doesn't hit network
+# Pre-seed a fake station list so _get_delhi_stations doesn't hit network...safety check basically
 ws._save_cache(ws._STATION_LIST_CACHE_KEY, [
     {"uid": 1, "name": "Rohini Station", "lat": 28.749, "lon": 77.063}
 ])
