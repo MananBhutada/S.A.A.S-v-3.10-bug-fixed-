@@ -224,6 +224,7 @@ The governance layer translates pollution conditions into policy-oriented action
 
 The current implementation uses AQI thresholds to determine the corresponding P-GRAP stage.
 
+
 Stage	AQI Range	Representative Action
 Normal	≤ 100	No major intervention
 Stage 1	101–200	Advisory measures
