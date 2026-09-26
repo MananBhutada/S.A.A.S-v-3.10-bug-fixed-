@@ -30,7 +30,7 @@ sys.path.insert(0, str(BASE_DIR / "04_Bridge"))
 
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse
 from state_manager import load_state
 from monitoring.logger import get_logger
 
@@ -86,6 +86,27 @@ def root():
     }
 
 # ── health ────────────────────────────────────────────────────────────────────
+@app.get("/dashboard", include_in_schema=False)
+@app.get("/dashboard/", include_in_schema=False)
+def dashboard():
+    """Serve the S.A.A.S. dashboard UI."""
+    return FileResponse(BASE_DIR / "dashboard" / "index.html", media_type="text/html")
+
+
+@app.get("/api/comms", include_in_schema=False)
+def get_comms():
+    """Agent message bus log for the dashboard."""
+    data = _load_json_safe(BASE_DIR / "04_Bridge" / "agent_comms_log.json")
+    return data if isinstance(data, list) else []
+
+
+@app.get("/api/audit", include_in_schema=False)
+def get_audit():
+    """P-GRAP audit trail for the dashboard."""
+    data = _load_json_safe(BASE_DIR / "04_Bridge" / "pgrap_audit_trail.json")
+    return data if isinstance(data, list) else []
+
+
 @app.get("/health")
 def health():
     state      = load_state()
