@@ -250,21 +250,21 @@ const SPREAD_MAP = {
 };
 
 const F = {
-  state: '../04_Bridge/aura_master_state.json',
-  comms: '../04_Bridge/agent_comms_log.json',
-  audit: '../04_Bridge/pgrap_audit_trail.json',
+  state: '/api/state',
+  comms: '/api/comms',
+  audit: '/api/audit',
 };
 let STATE=null, COMMS=[], AUDIT=[];
 
 async function load() {
   const b = document.getElementById('age-banner');
-  b.className='stale'; b.textContent='⏳ Loading from bridge files...';
+  b.className='stale'; b.textContent='⏳ Loading live data from S.A.A.S. API...';
   try { STATE = await fetch(F.state+'?t='+Date.now()).then(r=>r.json()); } catch { STATE=null; }
   try { COMMS = await fetch(F.comms+'?t='+Date.now()).then(r=>r.json()); } catch { COMMS=[]; }
   try { AUDIT = await fetch(F.audit+'?t='+Date.now()).then(r=>r.json()); } catch { AUDIT=[]; }
   if (!STATE) {
     b.className='err';
-    b.textContent='✗ Cannot load — run: python -m http.server 8080 from project root, then open http://localhost:8080/dashboard/';
+    b.textContent='✗ Could not load API data. Check the service and refresh.';
     return;
   }
   const age = dataAge(STATE?.city?.last_full_cycle_utc);
