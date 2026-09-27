@@ -2,7 +2,7 @@
 monitoring/logger.py — Structured JSON logging for S.A.A.S.
 ============================================================
 Replaces all print() / basicConfig() calls.
-Outputs structured JSON logs — searchable, filterable, alertable.
+Outputs structured JSON logs — searchable, filterable, alertable....
 
 Usage:
     from monitoring.logger import get_logger
