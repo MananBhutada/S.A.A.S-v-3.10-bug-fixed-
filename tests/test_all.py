@@ -1,5 +1,5 @@
 """
-tests/test_all.py — S.A.A.S. Test Suite (OWM-only version)
+tests/test_all.py — S.A.A.S. Test Suite (OWM-only version).........
 """
 import json, os, sys, pytest
 from pathlib import Path
