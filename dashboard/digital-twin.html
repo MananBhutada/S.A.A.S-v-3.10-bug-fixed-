@@ -23,11 +23,17 @@ main{max-width:1550px;margin:auto;padding:22px}.heading{display:flex;justify-con
 .wardlist{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:12px;max-height:300px;overflow:auto}.ward{background:#121c2b;border:1px solid #273448;border-radius:8px;padding:9px;text-align:left;color:var(--text);cursor:pointer;font:11px Manrope}.ward:hover{border-color:#4a647e}.ward.active{border-color:var(--cyan);background:#15303b}.ward b{display:block;margin-bottom:4px}.ward span{color:#8fa0b6;font:10px 'DM Mono'}
 .foot{color:var(--muted);font:10px 'DM Mono';padding:12px 16px;line-height:1.7}.warn{color:var(--amber)}.error{color:#ff8d8d}.good{color:var(--green)}.selected-readout{color:var(--cyan)}
 @media(max-width:1000px){main{padding:13px}.layout{grid-template-columns:1fr}.side{display:grid;grid-template-columns:1fr 1fr}#scene{min-height:430px;height:58vh}}@media(max-width:620px){.side{display:flex}.heading{align-items:start;flex-direction:column}header{padding:0 13px}.wardlist{max-height:250px}}
+.nav{display:flex;align-items:center;gap:6px;margin-left:24px}.nav a{color:var(--muted);text-decoration:none;font:11px DM Mono,monospace;padding:7px 10px;border:1px solid transparent;border-radius:6px}.nav a:hover,.nav a.active{color:var(--cyan);background:#102233;border-color:#29445c}
+@media(max-width:760px){.nav{margin-left:8px}.nav a{padding:6px 7px;font-size:9px}.sub{display:none}}
 </style>
 </head>
 <body>
 <header>
   <div class="brand"><div class="mark">SA</div><div><b>S.A.A.S. / DIGITAL TWIN</b><div class="sub">DELHI · WARD-SCALE ENVIRONMENTAL SIMULATION</div></div></div>
+  <nav class="nav" aria-label="S.A.A.S navigation">
+    <a href="/">HOME / DASHBOARD</a>
+    <a href="/digital-twin" class="active">3D DIGITAL TWIN</a>
+  </nav>
   <div class="status" id="connection">● CONNECTING API</div>
 </header>
 <main>
