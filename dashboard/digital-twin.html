@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>S.A.A.S. | Delhi Digital Twin</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{color-scheme:dark;--bg:#070b12;--panel:#0e1622ee;--panel2:#111c2a;--line:#253348;--muted:#7e8da3;--text:#eaf1fb;--cyan:#59d9ed;--green:#6ee7b7;--amber:#f5c56b;--red:#ff747e}
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -10%,#172943 0,#080c14 55%);color:var(--text);font:14px Manrope,sans-serif}
@@ -23,16 +23,50 @@ main{max-width:1550px;margin:auto;padding:22px}.heading{display:flex;justify-con
 .wardlist{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:12px;max-height:300px;overflow:auto}.ward{background:#121c2b;border:1px solid #273448;border-radius:8px;padding:9px;text-align:left;color:var(--text);cursor:pointer;font:11px Manrope}.ward:hover{border-color:#4a647e}.ward.active{border-color:var(--cyan);background:#15303b}.ward b{display:block;margin-bottom:4px}.ward span{color:#8fa0b6;font:10px 'DM Mono'}
 .foot{color:var(--muted);font:10px 'DM Mono';padding:12px 16px;line-height:1.7}.warn{color:var(--amber)}.error{color:#ff8d8d}.good{color:var(--green)}.selected-readout{color:var(--cyan)}
 @media(max-width:1000px){main{padding:13px}.layout{grid-template-columns:1fr}.side{display:grid;grid-template-columns:1fr 1fr}#scene{min-height:430px;height:58vh}}@media(max-width:620px){.side{display:flex}.heading{align-items:start;flex-direction:column}header{padding:0 13px}.wardlist{max-height:250px}}
+.nav{display:flex;align-items:center;gap:6px;margin-left:24px}.nav a{color:var(--muted);text-decoration:none;font:11px DM Mono,monospace;padding:7px 10px;border:1px solid transparent;border-radius:6px}.nav a:hover,.nav a.active{color:var(--cyan);background:#102233;border-color:#29445c}
+@media(max-width:760px){.nav{margin-left:8px}.nav a{padding:6px 7px;font-size:9px}.sub{display:none}}
+<style>
+/* S.A.A.S. UI direction: quiet environmental-instrument aesthetic. Avoids neon gradients, glassmorphism and oversized rounded cards. */
+:root{
+  color-scheme:dark;
+  --bg:#141512;--panel:#1b1d19f2;--panel2:#22251f;
+  --line:#373932;--muted:#99998d;--text:#ebe6da;
+  --cyan:#8eaea0;--green:#879b72;--amber:#c59b62;--red:#b9635c;
+}
+body{background:#141512;color:var(--text);font-family:'IBM Plex Sans',sans-serif}
+header{height:64px;background:#191b17;border-bottom:1px solid #30322c;backdrop-filter:none}
+.mark{background:#c3a56d;color:#171813;border-radius:5px}
+.sub,.mono{font-family:'IBM Plex Mono',monospace}
+.status{border-radius:4px;color:var(--green);border-color:#53634a;background:rgba(135,155,114,.06)}
+.eyebrow{color:#9eb7aa}
+.panel{background:#1b1d19;border:1px solid var(--line);border-radius:6px;box-shadow:none}
+.panelhead{padding:13px 16px}
+#scene{background:#121410}
+.scenehint{background:#191b17e8;border-color:#3a3c35;border-radius:4px;color:#b4b1a5}
+.tooltip{background:#1b1d19f5;border-color:#4a4b43;border-radius:4px;box-shadow:none}
+.pill{border-radius:4px;color:#b7b4a8}
+.telemetry-card{border-radius:4px;background:#20221d;border-color:#363831}
+.ward{background:#20221d;border-color:#393b34;border-radius:4px}
+.ward:hover{border-color:#686a60}
+.ward.active{border-color:#8eaea0;background:#28312b}
+.nav a{border-radius:4px}
+.nav a:hover,.nav a.active{color:#d4b878;background:rgba(195,165,109,.08);border-color:rgba(195,165,109,.22)}
+.controls input{accent-color:#8eaea0}
+</style>
 </style>
 </head>
 <body>
 <header>
   <div class="brand"><div class="mark">SA</div><div><b>S.A.A.S. / DIGITAL TWIN</b><div class="sub">DELHI · WARD-SCALE ENVIRONMENTAL SIMULATION</div></div></div>
+  <nav class="nav" aria-label="S.A.A.S navigation">
+    <a href="/">HOME / DASHBOARD</a>
+    <a href="/digital-twin" class="active">3D DIGITAL TWIN</a>
+  </nav>
   <div class="status" id="connection">● CONNECTING API</div>
 </header>
 <main>
   <div class="heading">
-    <div><div class="eyebrow">SPATIAL INTELLIGENCE / 01</div><h1>Delhi atmospheric twin</h1><p>Delhi ward boundaries · Yamuna corridor · parks + urban fabric · live bridge telemetry</p></div>
+    <div><div class="eyebrow">SPATIAL INTELLIGENCE / 01</div><h1>Delhi atmospheric twin</h1><p>Real ward geometry · live bridge state · forecast + P-GRAP decision telemetry</p></div>
     <span class="pill" id="updated">Awaiting data</span>
   </div>
   <div class="layout">
@@ -288,6 +322,7 @@ function onPointerMove(e){
   if(hit){const f=hit.userData.feature,p=hit.userData.liveIndex>=0?wards[hit.userData.liveIndex]:null;tooltip.style.display='block';tooltip.style.left=clamp(e.clientX-r.left+14,8,r.width-260)+'px';tooltip.style.top=clamp(e.clientY-r.top+14,8,r.height-85)+'px';tooltip.innerHTML='<b>'+escapeHtml(f.properties?.Ward_Name||f.properties?.Ward_No||'Ward')+'</b><span>'+(p?'LIVE AQI '+(p.aqi??'—')+' · '+(p.aqi_category||'Unknown'):'NO LIVE BACKEND READING')+'</span>'}else tooltip.style.display='none'
 }
 function onClick(e){const r=renderer.domElement.getBoundingClientRect();const mouse=new THREE.Vector2(((e.clientX-r.left)/r.width)*2-1,-((e.clientY-r.top)/r.height)*2+1);raycaster.setFromCamera(mouse,camera);const hit=raycaster.intersectObjects(wardMeshes,false)[0]?.object;if(hit){const li=hit.userData.liveIndex;if(li>=0){selectedBackend=li;renderList();renderAll();focusWard(hit)}}}
+renderer.domElement?.addEventListener?.('click',onClick);
 function focusWard(mesh){const box=new THREE.Box3().setFromObject(mesh),c=box.getCenter(new THREE.Vector3());const d=clamp(orbit.distance*.62,18,30);const angle=Math.atan2(c.x,c.z);orbit.azimuth=angle;orbit.distance=d;updateCamera()}
 function styleMesh(mesh,hover){if(!mesh)return;const li=mesh.userData.liveIndex,p=li>=0?wards[li]:null;const a=Number(p?.aqi);const selected=li===selectedBackend;
   const forecast=Number(p?.forecast_p50);const displayAqi=forecastHour>0&&Number.isFinite(forecast)?forecast:a;const h=selected?0.28:li>=0?.08+clamp(a/500,0,1)*.28:.035;mesh.geometry.computeBoundingBox();const depth=selected?.32:h;const current=mesh.userData.baseDepth||.055;const scaleY=depth/current;mesh.scale.y=scaleY;mesh.material.color.setHex(p?aqiColor(a):0x1c3042);
@@ -302,12 +337,12 @@ function renderDetails(){const w=wards[selectedBackend]||{};const a=Number(w.aqi
 function renderList(){const el=document.getElementById('wardlist');el.innerHTML='';wards.forEach((w,i)=>{const b=document.createElement('button');b.className='ward'+(i===selectedBackend?' active':'');const name=w.ward_id||'Ward '+(i+1);b.innerHTML='<b>'+escapeHtml(name)+'</b><span>AQI '+(w.aqi??'—')+' · P-GRAP '+(w.pgrap_stage??'—')+'</span>';b.onclick=()=>{selectedBackend=i;renderList();renderAll();const m=wardMeshes.find(x=>x.userData.liveIndex===i);if(m)focusWard(m)};el.appendChild(b)});document.getElementById('wardcount').textContent=wards.length+' wards'}
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 async function loadAPI(){const badge=document.getElementById('connection');try{const r=await fetch(API,{cache:'no-store'});if(!r.ok)throw Error('HTTP '+r.status);const d=await r.json();wards=Array.isArray(d.wards)?d.wards:[];if(!wards.length)throw Error('No ward records returned');if(selectedBackend>=wards.length)selectedBackend=0;badge.textContent='● API CONNECTED';badge.style.color='#72e5ae';document.getElementById('updated').textContent='API response · '+new Date().toLocaleTimeString();renderList();if(gisFeatures.length)bindGIS();rebuildAtmosphericLayers();renderAll()}catch(e){badge.textContent='● API UNAVAILABLE';badge.style.color='#ff8d8d';document.getElementById('updated').textContent='Could not refresh';console.error(e)}}
-async function loadGIS(){try{const r=await fetch(GIS_URL,{cache:'force-cache'});if(!r.ok)throw Error('GIS HTTP '+r.status);const d=await r.json();gisFeatures=Array.isArray(d.features)?d.features:[];if(!gisFeatures.length)throw Error('GIS layer empty');bindGIS();document.getElementById('updated').textContent='Delhi GIS loaded · '+gisFeatures.length+' ward boundaries';}catch(e){console.error(e);document.getElementById('updated').textContent='GIS layer unavailable · API only';}}
+async function loadGIS(){try{const r=await fetch(GIS_URL,{cache:'force-cache'});if(!r.ok)throw Error('GIS HTTP '+r.status);const d=await r.json();gisFeatures=Array.isArray(d.features)?d.features:[];if(!gisFeatures.length)throw Error('GIS layer empty');bindGIS();document.getElementById('updated').textContent='GIS loaded · '+gisFeatures.length+' wards';}catch(e){console.error(e);document.getElementById('updated').textContent='GIS layer unavailable · API only';}}
 function bindGIS(){wardMeshes.forEach(m=>{scene.remove(m);if(m.userData.edge)scene.remove(m.userData.edge)});wardMeshes=[];gisFeatures.forEach(f=>addPolygonFeature(f,liveForFeature(f)));renderAll()}
 function animate(){requestAnimationFrame(animate);frame++;updateCamera();updateAtmosphere();renderer.render(scene,camera)}
 document.getElementById('horizon').addEventListener('input',e=>{forecastHour=Number(e.target.value);document.getElementById('hourlabel').textContent=forecastHour?forecastHour+'h · P50 PROJECTION':'0h · OBSERVED';renderAll()});
 setup();
-if(renderer&&renderer.domElement) renderer.domElement.addEventListener('click',onClick);
+renderer.domElement.addEventListener('click',onClick);
 Promise.all([loadAPI(),loadGIS()]);
 setInterval(loadAPI,60000);
 </script>
