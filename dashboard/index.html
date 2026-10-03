@@ -118,6 +118,8 @@ main{padding:18px 24px;max-width:1400px;margin:0 auto}
 .leg{display:flex;align-items:center;gap:4px}
 .ldot{width:6px;height:6px;border-radius:50%}
 @media(max-width:900px){.row2,.row2b{grid-template-columns:1fr}.ward-grid{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,1fr)}}
+.nav{display:flex;align-items:center;gap:6px;margin-left:24px}.nav a{color:var(--m);text-decoration:none;font:10px var(--mono);padding:6px 9px;border:1px solid transparent;border-radius:6px}.nav a:hover,.nav a.active{color:var(--cyan);background:rgba(0,212,255,.07);border-color:rgba(0,212,255,.2)}
+@media(max-width:700px){.nav{margin-left:8px}.nav a{padding:5px 6px;font-size:9px}.lsub{display:none}}
 </style>
 </head>
 <body>
@@ -129,6 +131,10 @@ main{padding:18px 24px;max-width:1400px;margin:0 auto}
       <div class="lsub">10 Ward Multi-Agent · WAQI/CPCB Real Data + OWM Weather</div>
     </div>
   </div>
+  <nav class="nav" aria-label="S.A.A.S navigation">
+    <a href="/" class="active">HOME / DASHBOARD</a>
+    <a href="/digital-twin">3D DIGITAL TWIN</a>
+  </nav>
   <div class="hright">
     <div class="live"><div class="dot"></div>LIVE</div>
     <div class="hclock" id="clk">--:--:--</div>
