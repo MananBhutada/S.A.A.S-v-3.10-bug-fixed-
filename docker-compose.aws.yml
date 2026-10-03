@@ -1,0 +1,50 @@
+services:
+  saas-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: saas-app:aws
+    restart: unless-stopped
+    env_file:
+      - .env
+    command:
+      - uvicorn
+      - api.main:app
+      - --host
+      - 0.0.0.0
+      - --port
+      - "8000"
+      - --workers
+      - "2"
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./04_Bridge:/app/04_Bridge
+      - ./data:/app/data
+      - ./logs:/app/logs
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+  saas-worker:
+    image: saas-app:aws
+    restart: unless-stopped
+    env_file:
+      - .env
+    command:
+      - python
+      - runtime/cloud_worker.py
+    volumes:
+      - ./04_Bridge:/app/04_Bridge
+      - ./data:/app/data
+      - ./logs:/app/logs
+    depends_on:
+      saas-api:
+        condition: service_healthy
+
+networks:
+  default:
+    name: saas-network
