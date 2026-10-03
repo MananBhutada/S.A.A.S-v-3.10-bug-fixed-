@@ -9,6 +9,8 @@ services:
       - .env
     environment:
       SAAS_REQUIRE_FORECAST_MODEL: "true"
+    environment:
+      SAAS_REQUIRE_FORECAST_MODEL: "true"
     command:
       - uvicorn
       - api.main:app
