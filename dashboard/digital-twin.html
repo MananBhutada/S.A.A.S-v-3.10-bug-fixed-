@@ -300,14 +300,21 @@ async function loadOSMContext(){
 function setup(){
   scene=new THREE.Scene();scene.background=new THREE.Color(0x07101b);scene.fog=new THREE.Fog(0x07101b,34,70);
   camera=new THREE.PerspectiveCamera(42,1,.1,120);
-  renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.6));renderer.shadowMap.enabled=true;sceneEl.appendChild(renderer.domElement);
+  try{
+    renderer=new THREE.WebGLRenderer({antialias:true});
+  }catch(e){
+    console.error('Digital Twin WebGL initialization failed',e);
+    sceneEl.innerHTML='<div style="height:100%;display:grid;place-items:center;color:#9aa0a8;font:12px IBM Plex Mono,monospace;text-align:center;padding:24px">3D renderer unavailable in this browser.<br>Ward data and telemetry are still available on the main dashboard.</div>';
+    return false;
+  }
+  renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.6));renderer.shadowMap.enabled=true;sceneEl.appendChild(renderer.domElement);
   scene.add(new THREE.HemisphereLight(0xaed5ff,0x162131,1.9));
   const sun=new THREE.DirectionalLight(0xffffff,1.8);sun.position.set(-15,25,10);sun.castShadow=true;scene.add(sun);
   const ground=new THREE.Mesh(new THREE.PlaneGeometry(45,38),new THREE.MeshStandardMaterial({color:0x0d1925,roughness:1}));ground.rotation.x=-Math.PI/2;ground.position.y=-.09;ground.receiveShadow=true;scene.add(ground);
   const grid=new THREE.GridHelper(46,46,0x26394c,0x142536);grid.position.y=-.08;scene.add(grid);
   raycaster=new THREE.Raycaster();addContext();
   renderer.domElement.addEventListener('pointermove',onPointerMove);renderer.domElement.addEventListener('pointerdown',onDown);renderer.domElement.addEventListener('pointerup',onUp);renderer.domElement.addEventListener('wheel',onWheel,{passive:true});
-  resize();window.addEventListener('resize',resize);animate();
+  resize();window.addEventListener('resize',resize);animate();return true;
 }
 function resize(){if(!renderer)return;const w=sceneEl.clientWidth,h=sceneEl.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix()}
 function updateCamera(){const ce=Math.cos(orbit.elevation);camera.position.set(orbit.distance*Math.sin(orbit.azimuth)*ce,orbit.distance*Math.sin(orbit.elevation),orbit.distance*Math.cos(orbit.azimuth)*ce);camera.lookAt(0,0,0)}
@@ -322,11 +329,10 @@ function onPointerMove(e){
   if(hit){const f=hit.userData.feature,p=hit.userData.liveIndex>=0?wards[hit.userData.liveIndex]:null;tooltip.style.display='block';tooltip.style.left=clamp(e.clientX-r.left+14,8,r.width-260)+'px';tooltip.style.top=clamp(e.clientY-r.top+14,8,r.height-85)+'px';tooltip.innerHTML='<b>'+escapeHtml(f.properties?.Ward_Name||f.properties?.Ward_No||'Ward')+'</b><span>'+(p?'LIVE AQI '+(p.aqi??'—')+' · '+(p.aqi_category||'Unknown'):'NO LIVE BACKEND READING')+'</span>'}else tooltip.style.display='none'
 }
 function onClick(e){const r=renderer.domElement.getBoundingClientRect();const mouse=new THREE.Vector2(((e.clientX-r.left)/r.width)*2-1,-((e.clientY-r.top)/r.height)*2+1);raycaster.setFromCamera(mouse,camera);const hit=raycaster.intersectObjects(wardMeshes,false)[0]?.object;if(hit){const li=hit.userData.liveIndex;if(li>=0){selectedBackend=li;renderList();renderAll();focusWard(hit)}}}
-renderer.domElement?.addEventListener?.('click',onClick);
 function focusWard(mesh){const box=new THREE.Box3().setFromObject(mesh),c=box.getCenter(new THREE.Vector3());const d=clamp(orbit.distance*.62,18,30);const angle=Math.atan2(c.x,c.z);orbit.azimuth=angle;orbit.distance=d;updateCamera()}
 function styleMesh(mesh,hover){if(!mesh)return;const li=mesh.userData.liveIndex,p=li>=0?wards[li]:null;const a=Number(p?.aqi);const selected=li===selectedBackend;
-  const forecast=Number(p?.forecast_p50);const displayAqi=forecastHour>0&&Number.isFinite(forecast)?forecast:a;const h=selected?0.28:li>=0?.08+clamp(a/500,0,1)*.28:.035;mesh.geometry.computeBoundingBox();const depth=selected?.32:h;const current=mesh.userData.baseDepth||.055;const scaleY=depth/current;mesh.scale.y=scaleY;mesh.material.color.setHex(p?aqiColor(a):0x1c3042);
-  if(p&&forecastHour>0&&Number.isFinite(forecast)) mesh.material.opacity=.56;mesh.material.opacity=hover||selected?.94:p?.76??.58;mesh.material.emissive.setHex(selected?0x164557:hover?0x0d2530:0x000000);mesh.material.emissiveIntensity=selected?.8:hover?.35:.05;if(mesh.userData.edge){mesh.userData.edge.material.color.setHex(selected?0x67e8f9:hover?0xa9c6dc:0x35506a);mesh.userData.edge.material.opacity=selected?1:hover?.8:.35}}
+  const forecast=Number(p?.forecast_p50);const h=selected?0.28:(li>=0?.08+clamp(a/500,0,1)*.28:.035);mesh.geometry.computeBoundingBox();const depth=selected?.32:h;const current=mesh.userData.baseDepth||.055;const scaleY=depth/current;mesh.scale.y=scaleY;mesh.material.color.setHex(p?aqiColor(a):0x1c3042);
+  mesh.material.opacity=(hover||selected)?.94:(p?.76??.58);mesh.material.emissive.setHex(selected?0x164557:hover?0x0d2530:0x000000);mesh.material.emissiveIntensity=selected?.8:hover?.35:.05;if(mesh.userData.edge){mesh.userData.edge.material.color.setHex(selected?0x67e8f9:hover?0xa9c6dc:0x35506a);mesh.userData.edge.material.opacity=selected?1:hover?.8:.35}}
 function renderAll(){
   wardMeshes.forEach(m=>styleMesh(m,false));
   renderDetails();
@@ -341,9 +347,15 @@ async function loadGIS(){try{const r=await fetch(GIS_URL,{cache:'force-cache'});
 function bindGIS(){wardMeshes.forEach(m=>{scene.remove(m);if(m.userData.edge)scene.remove(m.userData.edge)});wardMeshes=[];gisFeatures.forEach(f=>addPolygonFeature(f,liveForFeature(f)));renderAll()}
 function animate(){requestAnimationFrame(animate);frame++;updateCamera();updateAtmosphere();renderer.render(scene,camera)}
 document.getElementById('horizon').addEventListener('input',e=>{forecastHour=Number(e.target.value);document.getElementById('hourlabel').textContent=forecastHour?forecastHour+'h · P50 PROJECTION':'0h · OBSERVED';renderAll()});
-setup();
-renderer.domElement.addEventListener('click',onClick);
-Promise.all([loadAPI(),loadGIS()]);
+const rendererReady=setup();
+if(rendererReady){
+  renderer.domElement.addEventListener('click',onClick);
+  Promise.all([loadAPI(),loadGIS()]);
+}else{
+  document.getElementById('connection').textContent='● 3D RENDERER UNAVAILABLE';
+  document.getElementById('connection').style.color='#ffb36b';
+  Promise.all([loadAPI(),loadGIS()]);
+}
 setInterval(loadAPI,60000);
 </script>
 </body>
