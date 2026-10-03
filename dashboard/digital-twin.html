@@ -1,60 +1,191 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>S.A.A.S. | Delhi Digital Twin</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root{color-scheme:dark;--bg:#080c14;--panel:#101725;--line:#243044;--muted:#8290a5;--text:#eaf1fb;--cyan:#59d9ed}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% 0%,#15243a 0,#080c14 58%);color:var(--text);font:14px Manrope, sans-serif}
-header{height:68px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 24px;background:#0a101bd9;position:sticky;top:0;z-index:4;backdrop-filter:blur(12px)}
-.brand{display:flex;align-items:center;gap:12px}.mark{background:linear-gradient(140deg,#62e6f4,#2866e8);color:#06111d;border-radius:10px;padding:9px;font-weight:900}.sub{color:var(--muted);font:10px 'DM Mono';letter-spacing:.1em;margin-top:3px}.status{color:#72e5ae;font:11px 'DM Mono';border:1px solid #24694b;padding:7px 10px;border-radius:20px}
-main{max-width:1500px;margin:auto;padding:22px}.heading{display:flex;justify-content:space-between;align-items:end;margin-bottom:18px;gap:12px}.eyebrow{color:var(--cyan);font:10px 'DM Mono';letter-spacing:.18em}h1{font-size:25px;margin:6px 0 4px}p{color:var(--muted);margin:0;font-size:12px}
-.layout{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:14px}.panel{background:linear-gradient(145deg,#111a29ed,#0d1420ed);border:1px solid var(--line);border-radius:15px;overflow:hidden;box-shadow:0 18px 60px #0003}.panelhead{padding:14px 17px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}.panelhead strong{font-size:12px}.mono{font:10px 'DM Mono';color:var(--muted)}#scene{height:min(66vh,680px);min-height:430px;position:relative}canvas{display:block;width:100%;height:100%}.scenehint{position:absolute;bottom:12px;left:14px;background:#080e19cc;border:1px solid #2a394d;border-radius:8px;padding:8px 10px;color:#aebbd0;font:10px 'DM Mono';pointer-events:none}
+:root{color-scheme:dark;--bg:#070b12;--panel:#0e1622ee;--panel2:#111c2a;--line:#253348;--muted:#7e8da3;--text:#eaf1fb;--cyan:#59d9ed;--green:#6ee7b7;--amber:#f5c56b;--red:#ff747e}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -10%,#172943 0,#080c14 55%);color:var(--text);font:14px Manrope,sans-serif}
+header{height:68px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 24px;background:#09101bdc;position:sticky;top:0;z-index:10;backdrop-filter:blur(14px)}
+.brand{display:flex;align-items:center;gap:12px}.mark{background:linear-gradient(140deg,#62e6f4,#2866e8);color:#06111d;border-radius:10px;padding:9px;font-weight:900}.sub{color:var(--muted);font:10px 'DM Mono';letter-spacing:.1em;margin-top:3px}.status{color:var(--green);font:11px 'DM Mono';border:1px solid #24694b;padding:7px 10px;border-radius:20px}
+main{max-width:1550px;margin:auto;padding:22px}.heading{display:flex;justify-content:space-between;align-items:end;margin-bottom:18px;gap:12px}.eyebrow{color:var(--cyan);font:10px 'DM Mono';letter-spacing:.18em}h1{font-size:25px;margin:6px 0 4px}p{color:var(--muted);margin:0;font-size:12px}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:14px}.panel{background:linear-gradient(145deg,#111a29ee,#0b131eee);border:1px solid var(--line);border-radius:15px;overflow:hidden;box-shadow:0 18px 60px #0004}.panelhead{padding:14px 17px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:12px}.panelhead strong{font-size:12px}.mono{font:10px 'DM Mono';color:var(--muted)}
+#scene{height:min(70vh,760px);min-height:500px;position:relative;background:#07101b}.scenehint{position:absolute;bottom:12px;left:14px;right:14px;background:#080e19d9;border:1px solid #2a394d;border-radius:8px;padding:8px 10px;color:#aebbd0;font:10px 'DM Mono';pointer-events:none}
+.tooltip{position:absolute;display:none;z-index:5;min-width:170px;max-width:250px;padding:10px 12px;background:#07101deF;border:1px solid #3a4d65;border-radius:9px;box-shadow:0 14px 35px #0008;pointer-events:none}.tooltip b{display:block;font-size:12px;margin-bottom:4px}.tooltip span{font:10px 'DM Mono';color:#aebbd0}
 .side{display:flex;flex-direction:column;gap:14px}.metric{padding:16px}.metric .value{font-size:30px;font-weight:800;letter-spacing:-1px;margin:8px 0}.metric small{color:var(--muted)}.pill{display:inline-block;border:1px solid var(--line);border-radius:20px;padding:5px 8px;font:10px 'DM Mono';color:#a9b8ca}
-.details{padding:15px}.details h2{font-size:17px;margin:5px 0}.kv{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #202b3b;font-size:11px}.kv span:first-child{color:var(--muted)}.controls{padding:15px}.controls label{display:flex;justify-content:space-between;font-size:11px;margin-bottom:10px}.controls input{width:100%;accent-color:var(--cyan)}.legend{display:flex;gap:10px;flex-wrap:wrap;padding:12px 15px;border-top:1px solid var(--line);font:10px 'DM Mono';color:var(--muted)}.dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:5px}.wardlist{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:12px}.ward{background:#121c2b;border:1px solid #273448;border-radius:8px;padding:9px;text-align:left;color:var(--text);cursor:pointer;font:11px Manrope}.ward.active{border-color:var(--cyan);background:#15303b}.ward b{display:block;margin-bottom:4px}.foot{color:var(--muted);font:10px 'DM Mono';padding:12px 16px;line-height:1.7}.warn{color:#f6c66a}.error{color:#ff8d8d}
-@media(max-width:900px){main{padding:13px}.layout{grid-template-columns:1fr}.side{display:grid;grid-template-columns:1fr 1fr}#scene{min-height:380px;height:55vh}}@media(max-width:540px){.side{display:flex}.heading{align-items:start;flex-direction:column}header{padding:0 13px}}
+.details{padding:15px}.details h2{font-size:17px;margin:5px 0 10px}.kv{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid #202b3b;font-size:11px}.kv span:first-child{color:var(--muted)}.kv b{text-align:right}
+.controls{padding:15px}.controls label{display:flex;justify-content:space-between;font-size:11px;margin-bottom:10px}.controls input{width:100%;accent-color:var(--cyan)}
+.telemetry{padding:15px}.telemetry-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}.telemetry-card{padding:9px;border:1px solid #202d40;border-radius:9px;background:#0a121e}.telemetry-card span{display:block;color:var(--muted);font:9px 'DM Mono';margin-bottom:5px}.telemetry-card b{font-size:11px}
+.legend{display:flex;gap:10px;flex-wrap:wrap;padding:12px 15px;border-top:1px solid var(--line);font:10px 'DM Mono';color:var(--muted)}.dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:5px}
+.wardlist{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:12px;max-height:300px;overflow:auto}.ward{background:#121c2b;border:1px solid #273448;border-radius:8px;padding:9px;text-align:left;color:var(--text);cursor:pointer;font:11px Manrope}.ward:hover{border-color:#4a647e}.ward.active{border-color:var(--cyan);background:#15303b}.ward b{display:block;margin-bottom:4px}.ward span{color:#8fa0b6;font:10px 'DM Mono'}
+.foot{color:var(--muted);font:10px 'DM Mono';padding:12px 16px;line-height:1.7}.warn{color:var(--amber)}.error{color:#ff8d8d}.good{color:var(--green)}.selected-readout{color:var(--cyan)}
+@media(max-width:1000px){main{padding:13px}.layout{grid-template-columns:1fr}.side{display:grid;grid-template-columns:1fr 1fr}#scene{min-height:430px;height:58vh}}@media(max-width:620px){.side{display:flex}.heading{align-items:start;flex-direction:column}header{padding:0 13px}.wardlist{max-height:250px}}
 </style>
 </head>
 <body>
-<header><div class="brand"><div class="mark">SA</div><div><b>S.A.A.S. / DIGITAL TWIN</b><div class="sub">DELHI · WARD-SCALE ENVIRONMENTAL SIMULATION</div></div></div><div class="status" id="connection">● CONNECTING API</div></header>
-<main><div class="heading"><div><div class="eyebrow">SPATIAL INTELLIGENCE / 01</div><h1>Delhi atmospheric twin</h1><p>Interactive ward map · live API readings · illustrative spatial layout, not GIS boundaries</p></div><span class="pill" id="updated">Awaiting data</span></div>
-<div class="layout"><section class="panel"><div class="panelhead"><strong>3D CITY MODEL <span class="mono"> / AQI HEAT LAYER</span></strong><span class="mono">DRAG TO ORBIT · SCROLL TO ZOOM</span></div><div id="scene"><div class="scenehint">Select a ward · Wind particles show the selected ward's reported bearing when available</div></div><div class="legend"><span><i class="dot" style="background:#38c878"></i>Good / lower</span><span><i class="dot" style="background:#e8c34d"></i>Elevated</span><span><i class="dot" style="background:#f28a42"></i>High</span><span><i class="dot" style="background:#ed4c59"></i>Very high</span><span>▰ Height = illustrative building massing</span></div></section>
-<aside class="side"><section class="panel metric"><span class="mono">SELECTED WARD / CURRENT</span><div class="value" id="aqi">—</div><small id="category">Waiting for readings</small><div style="margin-top:12px"><span class="pill" id="source">SOURCE —</span></div></section>
-<section class="panel details"><div class="mono">WARD INSPECTOR</div><h2 id="wardname">Select a ward</h2><div class="kv"><span>PM2.5</span><b id="pm25">—</b></div><div class="kv"><span>PM10</span><b id="pm10">—</b></div><div class="kv"><span>Wind speed</span><b id="wind">—</b></div><div class="kv"><span>Wind bearing</span><b id="bearing">—</b></div><div class="kv"><span>P-GRAP stage</span><b id="stage">—</b></div><div class="kv"><span>Forecast P50</span><b id="forecast">—</b></div></section>
-<section class="panel controls"><label><span>Forecast horizon projection</span><b id="hourlabel">0h · observed</b></label><input id="horizon" type="range" min="0" max="6" step="1" value="0"><div class="foot" style="padding:10px 0 0">At 1–6h, marker colors interpolate toward available P50 forecast. This is a visual projection, not historical replay.</div></section>
-<section class="panel"><div class="panelhead"><strong>WARD SELECTOR</strong><span class="mono" id="wardcount">0 wards</span></div><div class="wardlist" id="wardlist"><span class="mono">Loading wards…</span></div></section></aside></div>
-<div class="foot"><span class="warn">DATA HONESTY:</span> API readings are displayed as returned. Ward footprints, building placement, green areas, industrial blocks and particle paths are stylized schematic visuals, not surveyed Delhi GIS or a validated dispersion model. Missing values remain unavailable.</div></main>
+<header>
+  <div class="brand"><div class="mark">SA</div><div><b>S.A.A.S. / DIGITAL TWIN</b><div class="sub">DELHI · WARD-SCALE ENVIRONMENTAL SIMULATION</div></div></div>
+  <div class="status" id="connection">● CONNECTING API</div>
+</header>
+<main>
+  <div class="heading">
+    <div><div class="eyebrow">SPATIAL INTELLIGENCE / 01</div><h1>Delhi atmospheric twin</h1><p>Real ward geometry · live bridge state · forecast + P-GRAP decision telemetry</p></div>
+    <span class="pill" id="updated">Awaiting data</span>
+  </div>
+  <div class="layout">
+    <section class="panel">
+      <div class="panelhead"><strong>3D CITY MODEL <span class="mono">/ GIS WARD SURFACES</span></strong><span class="mono">DRAG ORBIT · SCROLL ZOOM · CLICK WARD · HOVER INSPECT</span></div>
+      <div id="scene"><div id="tooltip" class="tooltip"></div><div class="scenehint">Ward geometry is sourced from the Delhi ward GIS layer. Live AQI is applied only to backend records; unmatched GIS wards remain contextual.</div></div>
+      <div class="legend">
+        <span><i class="dot" style="background:#38c878"></i>Good</span><span><i class="dot" style="background:#b6cf4a"></i>Satisfactory</span><span><i class="dot" style="background:#e8c34d"></i>Moderate</span><span><i class="dot" style="background:#f28a42"></i>Poor</span><span><i class="dot" style="background:#ed4c59"></i>Very poor / severe</span><span>▰ extrusion = spatial context / selected state</span>
+      </div>
+    </section>
+    <aside class="side">
+      <section class="panel metric"><span class="mono">SELECTED WARD / OBSERVED AQI</span><div class="value" id="aqi">—</div><small id="category">Waiting for readings</small><div style="margin-top:12px"><span class="pill" id="source">SOURCE —</span></div></section>
+      <section class="panel details"><div class="mono">WARD INSPECTOR</div><h2 id="wardname">Select a ward</h2>
+        <div class="kv"><span>PM2.5</span><b id="pm25">—</b></div><div class="kv"><span>PM10</span><b id="pm10">—</b></div>
+        <div class="kv"><span>Wind speed</span><b id="wind">—</b></div><div class="kv"><span>Wind bearing</span><b id="bearing">—</b></div>
+        <div class="kv"><span>Effective AQI</span><b id="effective">—</b></div><div class="kv"><span>Last evaluated</span><b id="evaluated">—</b></div>
+      </section>
+      <section class="panel telemetry"><div class="mono" style="margin-bottom:10px">DECISION TELEMETRY / LIVE BRIDGE</div>
+        <div class="telemetry-grid">
+          <div class="telemetry-card"><span>P-GRAP</span><b id="stage">—</b></div><div class="telemetry-card"><span>SCRUBBER</span><b id="scrubber">—</b></div>
+          <div class="telemetry-card"><span>INTENT</span><b id="intent">—</b></div><div class="telemetry-card"><span>VSN MODE</span><b id="vsn">—</b></div>
+          <div class="telemetry-card"><span>FORECAST P10</span><b id="p10">—</b></div><div class="telemetry-card"><span>FORECAST P50</span><b id="p50">—</b></div>
+          <div class="telemetry-card"><span>FORECAST P90</span><b id="p90">—</b></div><div class="telemetry-card"><span>PRE-ALERT</span><b id="prealert">—</b></div>
+        </div>
+      </section>
+      <section class="panel controls"><label><span>Forecast horizon</span><b id="hourlabel">0h · OBSERVED</b></label><input id="horizon" type="range" min="0" max="6" step="1" value="0"><div class="foot" style="padding:10px 0 0">At 1–6h the surface uses the returned P50 only as a visual projection. No forecast values are rewritten or retrained here.</div></section>
+      <section class="panel"><div class="panelhead"><strong>LIVE BACKEND WARDS</strong><span class="mono" id="wardcount">0 wards</span></div><div class="wardlist" id="wardlist"><span class="mono">Loading wards…</span></div></section>
+    </aside>
+  </div>
+  <div class="foot"><span class="warn">DATA INTEGRITY:</span> AQI, pollutants, wind, forecast P10/P50/P90, P-GRAP stage, intent, VSN mode and scrubber state are rendered from <code>/api/wards</code> without modification. GIS context uses the DataMeet Delhi ward boundary layer. Road/river/land-use context in later passes will remain explicitly labeled as contextual visualization rather than training or forecast output.</div>
+</main>
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 <script>
-const API='/api/wards';let wards=[],selected=0,forecastHour=0,renderer,scene,camera,controlsLike,wardMeshes=[],particles,particlePositions=[],frame=0;
-const names=['Narela','Rohini','Dwarka','Connaught Place','Chandni Chowk','Saket','Lajpat Nagar','Karawal Nagar','Mustafabad','Wazirpur'];
-const coords=[[-4,3],[-2,3],[3,2],[0,0],[-1,1],[2,-2],[1,-1],[-3,0],[-2,-1],[-1,3]];
-function colorAQI(v){if(v==null)return 0x566274;if(v<=50)return 0x38c878;if(v<=100)return 0xb6cf4a;if(v<=200)return 0xe8c34d;if(v<=300)return 0xf28a42;return 0xed4c59}
-function init(){if(!window.THREE){document.getElementById('scene').innerHTML='<div class="foot error">3D library could not load. Check network access and reload.</div>';return}
-scene=new THREE.Scene();scene.background=new THREE.Color(0x0a1220);scene.fog=new THREE.Fog(0x0a1220,22,48);
-camera=new THREE.PerspectiveCamera(42,1,.1,100);camera.position.set(10,13,17);
-renderer=new THREE.WebGLRenderer({antialias:true,alpha:false});renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.7));renderer.shadowMap.enabled=true;document.getElementById('scene').appendChild(renderer.domElement);
-scene.add(new THREE.HemisphereLight(0xb9d9ff,0x263142,2));const sun=new THREE.DirectionalLight(0xffffff,2.1);sun.position.set(-7,15,8);sun.castShadow=true;scene.add(sun);
-const ground=new THREE.Mesh(new THREE.PlaneGeometry(18,13),new THREE.MeshStandardMaterial({color:0x111e2a,roughness:.95}));ground.rotation.x=-Math.PI/2;ground.position.y=-.08;ground.receiveShadow=true;scene.add(ground);
-const grid=new THREE.GridHelper(18,36,0x304356,0x1d2b3b);grid.position.y=-.06;scene.add(grid);
-const roadmat=new THREE.MeshStandardMaterial({color:0x344354,roughness:1});for(let x=-7;x<=7;x+=2.5){let r=new THREE.Mesh(new THREE.BoxGeometry(.12,.025,12),roadmat);r.position.set(x,.01,0);scene.add(r)}for(let z=-5;z<=5;z+=2){let r=new THREE.Mesh(new THREE.BoxGeometry(17,.025,.12),roadmat);r.position.set(0,.012,z);scene.add(r)}
-// Green corridors and industrial pads are visual context, not mapped land-use data.
-for(const [x,z,w,d] of [[-5,-2,1.4,2],[4,3,2,1.1],[2,0,1,.8]]){const m=new THREE.Mesh(new THREE.BoxGeometry(w,.06,d),new THREE.MeshStandardMaterial({color:0x23523f}));m.position.set(x,.03,z);scene.add(m)}
-for(let i=0;i<coords.length;i++){const [x,z]=coords[i];const group=new THREE.Group();group.position.set(x,0,z);scene.add(group);
-const pad=new THREE.Mesh(new THREE.BoxGeometry(1.85,.13,1.45),new THREE.MeshStandardMaterial({color:0x263a4b,emissive:0x0b1c28,roughness:.8}));pad.position.y=.08;pad.userData.index=i;group.add(pad);
-const edge=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(1.85,.14,1.45)),new THREE.LineBasicMaterial({color:0x6c849a,transparent:true,opacity:.65}));edge.position.y=.08;group.add(edge);
-const buildings=new THREE.Group();group.add(buildings);for(let j=0;j<12;j++){const bw=.12+(j%3)*.08,bh=.18+((i*17+j*13)%9)*.11,bd=.12+(j%2)*.08;const b=new THREE.Mesh(new THREE.BoxGeometry(bw,bh,bd),new THREE.MeshStandardMaterial({color:0x52677a,metalness:.15,roughness:.7}));b.position.set(((j%4)-1.5)*.35,.15+bh/2,(Math.floor(j/4)-1)*.34);b.castShadow=true;b.receiveShadow=true;buildings.add(b)}
-group.userData={index:i,pad,buildings};wardMeshes.push(group)}
-const pgeo=new THREE.BufferGeometry();const count=260;const arr=new Float32Array(count*3);for(let i=0;i<count;i++){arr[i*3]=(Math.random()-.5)*15;arr[i*3+1]=.18+Math.random()*2.5;arr[i*3+2]=(Math.random()-.5)*11}pgeo.setAttribute('position',new THREE.BufferAttribute(arr,3));particles=new THREE.Points(pgeo,new THREE.PointsMaterial({color:0x69cde8,size:.055,transparent:true,opacity:.65}));scene.add(particles);
-let dragging=false,prev={x:0,y:0},rot=0,tilt=0;renderer.domElement.addEventListener('pointerdown',e=>{dragging=true;prev={x:e.clientX,y:e.clientY};renderer.domElement.setPointerCapture(e.pointerId)});renderer.domElement.addEventListener('pointerup',()=>dragging=false);renderer.domElement.addEventListener('pointermove',e=>{if(!dragging)return;rot+=(e.clientX-prev.x)*.008;tilt=Math.max(-.35,Math.min(.5,tilt+(e.clientY-prev.y)*.005));prev={x:e.clientX,y:e.clientY};camera.position.set(17*Math.sin(rot)*Math.cos(tilt),13+17*Math.sin(tilt),17*Math.cos(rot)*Math.cos(tilt));camera.lookAt(0,0,0)});renderer.domElement.addEventListener('wheel',e=>{camera.position.multiplyScalar(e.deltaY>0?1.06:.94);camera.position.clampLength(9,36);camera.lookAt(0,0,0)},{passive:true});
-resize();window.addEventListener('resize',resize);animate()}
-function resize(){if(!renderer)return;const el=document.getElementById('scene');renderer.setSize(el.clientWidth,el.clientHeight,false);camera.aspect=el.clientWidth/el.clientHeight;camera.updateProjectionMatrix()}
-function animate(){requestAnimationFrame(animate);frame++;if(particles){const a=particles.geometry.attributes.position.array;const w=wards[selected]||{};const deg=Number(w.wind_bearing_deg)||225;const rad=deg*Math.PI/180;const dx=Math.sin(rad)*.012,dz=-Math.cos(rad)*.012;for(let i=0;i<a.length;i+=3){a[i]+=dx;a[i+2]+=dz;if(Math.abs(a[i])>8)a[i]=-Math.sign(dx||1)*7.8;if(Math.abs(a[i+2])>5.5)a[i+2]=-Math.sign(dz||1)*5.3}particles.geometry.attributes.position.needsUpdate=true}renderer.render(scene,camera)}
-function render(){wardMeshes.forEach((g,i)=>{const w=wards[i]||{},base=Number(w.aqi),p=Number(w.forecast_p50);const val=forecastHour&&Number.isFinite(p)&&p>0&&Number.isFinite(base)?base+(p-base)*forecastHour/6:base;const c=colorAQI(Number.isFinite(val)?val:null);g.userData.pad.material.color.setHex(c);g.userData.pad.material.emissive.setHex(i===selected?0x17384a:0x000000);g.userData.pad.material.emissiveIntensity=i===selected?.7:.1;g.scale.setScalar(i===selected?1.08:1);g.userData.buildings.children.forEach((b,j)=>{const h=.18+((i*17+j*13)%9)*.11;b.material.color.setHex(i===selected?0x8ab9c9:0x52677a);b.scale.y=1+(i===selected?.15:0)})});renderDetails()}
-function renderDetails(){const w=wards[selected]||{};const a=Number(w.aqi),p=Number(w.forecast_p50);document.getElementById('aqi').textContent=Number.isFinite(a)?Math.round(a):'—';document.getElementById('category').textContent=w.aqi_category||'AQI unavailable';document.getElementById('source').textContent=w.data_complete?'SOURCE · API':'SOURCE · CHECK DATA';document.getElementById('wardname').textContent=w.ward_id||names[selected]||'Ward';document.getElementById('pm25').textContent=w.pm25??'—';document.getElementById('pm10').textContent=w.pm10??'—';document.getElementById('wind').textContent=w.wind_speed_kmh==null?'—':w.wind_speed_kmh+' km/h';document.getElementById('bearing').textContent=w.wind_bearing_deg==null?'—':w.wind_bearing_deg+'°';document.getElementById('stage').textContent=w.pgrap_stage??'—';document.getElementById('forecast').textContent=Number.isFinite(p)?Math.round(p):'—';}
-function renderList(){const el=document.getElementById('wardlist');el.innerHTML='';wards.forEach((w,i)=>{const b=document.createElement('button');b.className='ward'+(i===selected?' active':'');b.innerHTML='<b></b><span></span>';b.children[0].textContent=w.ward_id||names[i]||'Ward '+(i+1);b.children[1].textContent='AQI '+(w.aqi??'—');b.onclick=()=>{selected=i;renderList();render()};el.appendChild(b)});document.getElementById('wardcount').textContent=wards.length+' wards'}
-async function load(){const badge=document.getElementById('connection');try{const r=await fetch(API,{cache:'no-store'});if(!r.ok)throw Error('HTTP '+r.status);const d=await r.json();wards=Array.isArray(d.wards)?d.wards:[];if(!wards.length)throw Error('No ward records returned');wards=wards.slice(0,10);if(selected>=wards.length)selected=0;badge.textContent='● API CONNECTED';badge.style.color='#72e5ae';document.getElementById('updated').textContent='API response · '+new Date().toLocaleTimeString();renderList();render()}catch(e){badge.textContent='● API UNAVAILABLE';badge.style.color='#ff8d8d';document.getElementById('updated').textContent='Could not refresh';console.error(e)}}
-document.getElementById('horizon').addEventListener('input',e=>{forecastHour=Number(e.target.value);document.getElementById('hourlabel').textContent=forecastHour?forecastHour+'h · P50 projection':'0h · observed';render()});
-init();load();setInterval(load,60000);
-</script></body></html>
+const API='/api/wards';
+const GIS_URL='https://raw.githubusercontent.com/datameet/Municipal_Spatial_Data/master/Delhi/Delhi_Wards.geojson';
+let wards=[],gisFeatures=[],selectedBackend=0,selectedMesh=null,forecastHour=0;
+let renderer,scene,camera,raycaster,wardMeshes=[],hoveredMesh=null,frame=0;
+let orbit={azimuth:.55,elevation:.52,distance:31,drag:false,lastX:0,lastY:0};
+
+const sceneEl=document.getElementById('scene'),tooltip=document.getElementById('tooltip');
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+function norm(s){return String(s||'').toLowerCase().replace(/[^a-z0-9]+/g,'').trim()}
+function aqiColor(v){if(v==null||!Number.isFinite(v))return 0x26384a;if(v<=50)return 0x38c878;if(v<=100)return 0xb6cf4a;if(v<=200)return 0xe8c34d;if(v<=300)return 0xf28a42;return 0xed4c59}
+function project(lon,lat){return {x:(lon-77.18)*105,z:-(lat-28.64)*105}}
+function centroid(feature){
+  const c=feature.geometry.coordinates;
+  let pts=[];
+  function collect(g){if(!Array.isArray(g))return;if(typeof g[0]==='number')pts.push(g);else g.forEach(collect)}
+  collect(c);
+  const n=pts.length||1;return [pts.reduce((s,p)=>s+p[0],0)/n,pts.reduce((s,p)=>s+p[1],0)/n]
+}
+function liveForFeature(feature){
+  const name=norm(feature.properties?.Ward_Name),no=norm(feature.properties?.Ward_No);
+  let best=-1,score=Infinity;
+  wards.forEach((w,i)=>{
+    const wn=norm(w.ward_id);
+    if(name===wn||no===wn||name.includes(wn)||wn.includes(name)){best=i;score=0}
+  });
+  if(score===0)return best;
+  const cc=centroid(feature);
+  wards.forEach((w,i)=>{if(!Number.isFinite(Number(w.lat))||!Number.isFinite(Number(w.lon)))return;const d=(w.lat-cc[1])**2+(w.lon-cc[0])**2;if(d<score){score=d;best=i}});
+  return score<0.012?best:-1;
+}
+function shapeFromRing(ring){
+  const s=new THREE.Shape();
+  ring.forEach((p,i)=>{const q=project(p[0],p[1]);if(i===0)s.moveTo(q.x,-q.z);else s.lineTo(q.x,-q.z)});
+  return s;
+}
+function addPolygonFeature(feature,liveIndex){
+  const geom=feature.geometry;if(!geom)return;
+  const polys=geom.type==='Polygon'?[geom.coordinates]:geom.type==='MultiPolygon'?geom.coordinates:[];
+  polys.forEach((poly,polyIndex)=>{
+    if(!poly?.[0]?.length)return;
+    const shape=shapeFromRing(poly[0]);
+    for(let h=1;h<poly.length;h++){const hole=new THREE.Path();poly[h].forEach((p,i)=>{const q=project(p[0],p[1]);if(i===0)hole.moveTo(q.x,-q.z);else hole.lineTo(q.x,-q.z)});shape.holes.push(hole)}
+    const geom3=new THREE.ExtrudeGeometry(shape,{depth:.055,bevelEnabled:false,curveSegments:1,steps:1});
+    geom3.rotateX(-Math.PI/2);
+    const mesh=new THREE.Mesh(geom3,new THREE.MeshStandardMaterial({color:0x1c3042,roughness:.9,metalness:.05,transparent:true,opacity:.72}));
+    mesh.userData={feature,liveIndex,baseDepth:.055};
+    scene.add(mesh);wardMeshes.push(mesh);
+    const edge=new THREE.LineSegments(new THREE.EdgesGeometry(geom3),new THREE.LineBasicMaterial({color:0x35506a,transparent:true,opacity:.35}));
+    edge.userData={outlineFor:mesh};scene.add(edge);mesh.userData.edge=edge;
+  });
+}
+function addContext(){
+  const roadMat=new THREE.LineBasicMaterial({color:0x66788b,transparent:true,opacity:.52});
+  const majorMat=new THREE.LineBasicMaterial({color:0xa7bacd,transparent:true,opacity:.7});
+  function line(coords,mat,y=.065){const g=new THREE.BufferGeometry().setFromPoints(coords.map(p=>{const q=project(p[0],p[1]);return new THREE.Vector3(q.x,y,-q.z)}));const l=new THREE.Line(g,mat);scene.add(l)}
+  // Contextual arterial skeleton: geographic reference paths, not used by the model.
+  line([[77.04,28.70],[77.10,28.69],[77.16,28.68],[77.22,28.67],[77.29,28.66],[77.34,28.64]],majorMat);
+  line([[77.02,28.64],[77.08,28.63],[77.15,28.62],[77.21,28.60],[77.28,28.58],[77.33,28.55]],majorMat);
+  line([[77.04,28.78],[77.11,28.75],[77.18,28.72],[77.24,28.69],[77.31,28.67]],roadMat);
+  line([[77.06,28.56],[77.12,28.57],[77.18,28.58],[77.24,28.57],[77.30,28.54]],roadMat);
+  line([[77.18,28.88],[77.18,28.80],[77.19,28.72],[77.20,28.64],[77.22,28.57],[77.24,28.50]],majorMat);
+  // Yamuna: contextual river/floodplain corridor.
+  const river=[[77.10,28.86],[77.12,28.80],[77.15,28.75],[77.17,28.70],[77.18,28.65],[77.20,28.60],[77.22,28.55],[77.25,28.49]];
+  line(river,new THREE.LineBasicMaterial({color:0x2d8cae,transparent:true,opacity:.8}),.075);
+  line(river.map(p=>[p[0]+.010,p[1]]),new THREE.LineBasicMaterial({color:0x1d566d,transparent:true,opacity:.42}),.073);
+  // Green buffers near river and southern/western corridors.
+  const greenMat=new THREE.LineBasicMaterial({color:0x3f8769,transparent:true,opacity:.5});
+  line([[77.09,28.84],[77.12,28.78],[77.15,28.72],[77.17,28.66],[77.20,28.60]],greenMat,.07);
+}
+function addCityMassing(){
+  // Non-GIS skyline context. Density is deliberately deterministic and separate from AQI/training data.
+  const group=new THREE.Group();const mat=new THREE.MeshStandardMaterial({color:0x30475b,roughness:.82,transparent:true,opacity:.62});
+  for(let x=-15;x<=15;x+=1.15)for(let z=-12;z<=12;z+=1.15){
+    const central=Math.exp(-((x*x)/(110)+(z*z)/(85)));const h=.08+central*(.35+((Math.abs(x*17+z*31)%7)/10));
+    if((Math.abs(x*13+z*7)%5)>2)continue;
+    const b=new THREE.Mesh(new THREE.BoxGeometry(.45,.05+h,.45),mat);b.position.set(x,.03+h/2,z);group.add(b);
+  }
+  scene.add(group);
+}
+function setup(){
+  scene=new THREE.Scene();scene.background=new THREE.Color(0x07101b);scene.fog=new THREE.Fog(0x07101b,34,70);
+  camera=new THREE.PerspectiveCamera(42,1,.1,120);
+  renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.6));renderer.shadowMap.enabled=true;sceneEl.appendChild(renderer.domElement);
+  scene.add(new THREE.HemisphereLight(0xaed5ff,0x162131,1.9));
+  const sun=new THREE.DirectionalLight(0xffffff,1.8);sun.position.set(-15,25,10);sun.castShadow=true;scene.add(sun);
+  const ground=new THREE.Mesh(new THREE.PlaneGeometry(45,38),new THREE.MeshStandardMaterial({color:0x0d1925,roughness:1}));ground.rotation.x=-Math.PI/2;ground.position.y=-.09;ground.receiveShadow=true;scene.add(ground);
+  const grid=new THREE.GridHelper(46,46,0x26394c,0x142536);grid.position.y=-.08;scene.add(grid);
+  raycaster=new THREE.Raycaster();addContext();addCityMassing();
+  renderer.domElement.addEventListener('pointermove',onPointerMove);renderer.domElement.addEventListener('pointerdown',onDown);renderer.domElement.addEventListener('pointerup',onUp);renderer.domElement.addEventListener('wheel',onWheel,{passive:true});
+  resize();window.addEventListener('resize',resize);animate();
+}
+function resize(){if(!renderer)return;const w=sceneEl.clientWidth,h=sceneEl.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix()}
+function updateCamera(){const ce=Math.cos(orbit.elevation);camera.position.set(orbit.distance*Math.sin(orbit.azimuth)*ce,orbit.distance*Math.sin(orbit.elevation),orbit.distance*Math.cos(orbit.azimuth)*ce);camera.lookAt(0,0,0)}
+function onDown(e){orbit.drag=true;orbit.lastX=e.clientX;orbit.lastY=e.clientY;renderer.domElement.setPointerCapture(e.pointerId)}
+function onUp(){orbit.drag=false}
+function onWheel(e){orbit.distance=clamp(orbit.distance*(e.deltaY>0?1.06:.94),17,62);updateCamera()}
+function onPointerMove(e){
+  if(orbit.drag){orbit.azimuth+=(e.clientX-orbit.lastX)*.006;orbit.elevation=clamp(orbit.elevation+(e.clientY-orbit.lastY)*.004,.18,1.05);orbit.lastX=e.clientX;orbit.lastY=e.clientY;updateCamera();return}
+  const r=renderer.domElement.getBoundingClientRect();const mouse=new THREE.Vector2(((e.clientX-r.left)/r.width)*2-1,-((e.clientY-r.top)/r.height)*2+1);raycaster.setFromCamera(mouse,camera);
+  const hits=raycaster.intersectObjects(wardMeshes,false);const hit=hits[0]?.object;
+  if(hit!==hoveredMesh){if(hoveredMesh)styleMesh(hoveredMesh,false);hoveredMesh=hit||null;if(hoveredMesh)styleMesh(hoveredMesh,true)}
+  if(hit){const f=hit.userData.feature,p=hit.userData.liveIndex>=0?wards[hit.userData.liveIndex]:null;tooltip.style.display='block';tooltip.style.left=clamp(e.clientX-r.left+14,8,r.width-260)+'px';tooltip.style.top=clamp(e.clientY-r.top+14,8,r.height-85)+'px';tooltip.innerHTML='<b>'+escapeHtml(f.properties?.Ward_Name||f.properties?.Ward_No||'Ward')+'</b><span>'+(p?'LIVE AQI '+(p.aqi??'—')+' · '+(p.aqi_category||'Unknown'):'NO LIVE BACKEND READING')+'</span>'}else tooltip.style.display='none'
+}
+function onClick(e){const r=renderer.domElement.getBoundingClientRect();const mouse=new THREE.Vector2(((e.clientX-r.left)/r.width)*2-1,-((e.clientY-r.top)/r.height)*2+1);raycaster.setFromCamera(mouse,camera);const hit=raycaster.intersectObjects(wardMeshes,false)[0]?.object;if(hit){const li=hit.userData.liveIndex;if(li>=0){selectedBackend=li;renderList();renderAll();focusWard(hit)}}}
+renderer.domElement?.addEventListener?.('click',onClick);
+function focusWard(mesh){const box=new THREE.Box3().setFromObject(mesh),c=box.getCenter(new THREE.Vector3());const d=clamp(orbit.distance*.62,18,30);const angle=Math.atan2(c.x,c.z);orbit.azimuth=angle;orbit.distance=d;updateCamera()}
+function styleMesh(mesh,hover){if(!mesh)return;const li=mesh.userData.liveIndex,p=li>=0?wards[li]:null;const a=Number(p?.aqi);const selected=li===selectedBackend;const h=selected?0.28:li>=0?.08+clamp(a/500,0,1)*.28:.035;mesh.geometry.computeBoundingBox();const depth=selected?.32:h;const current=mesh.userData.baseDepth||.055;const scaleY=depth/current;mesh.scale.y=scaleY;mesh.material.color.setHex(p?aqiColor(a):0x1c3042);mesh.material.opacity=hover||selected?.94:p?.76??.58;mesh.material.emissive.setHex(selected?0x164557:hover?0x0d2530:0x000000);mesh.material.emissiveIntensity=selected?.8:hover?.35:.05;if(mesh.userData.edge){mesh.userData.edge.material.color.setHex(selected?0x67e8f9:hover?0xa9c6dc:0x35506a);mesh.userData.edge.material.opacity=selected?1:hover?.8:.35}}
+function renderAll(){wardMeshes.forEach(m=>styleMesh(m,false));renderDetails()}
+function renderDetails(){const w=wards[selectedBackend]||{};const a=Number(w.aqi),p=Number(w.forecast_p50);document.getElementById('aqi').textContent=Number.isFinite(a)?Math.round(a):'—';document.getElementById('category').textContent=w.aqi_category||'AQI unavailable';document.getElementById('source').textContent=w.data_complete?'SOURCE · API':'SOURCE · BRIDGE CHECK';document.getElementById('wardname').textContent=w.ward_id||'Ward';document.getElementById('pm25').textContent=w.pm25??'—';document.getElementById('pm10').textContent=w.pm10??'—';document.getElementById('wind').textContent=w.wind_speed_kmh==null?'—':w.wind_speed_kmh+' km/h';document.getElementById('bearing').textContent=w.wind_bearing_deg==null?'—':w.wind_bearing_deg+'°';document.getElementById('effective').textContent=w.effective_aqi??'—';document.getElementById('evaluated').textContent=w.last_evaluated?new Date(w.last_evaluated).toLocaleTimeString():'—';document.getElementById('stage').textContent=(w.pgrap_stage??'—')+(w.stage_name?' · '+w.stage_name:'');document.getElementById('scrubber').textContent=w.scrubber_active?'ACTIVE':'INACTIVE';document.getElementById('intent').textContent=w.intent??'—';document.getElementById('vsn').textContent=w.vsn_mode??'—';document.getElementById('p10').textContent=Number.isFinite(Number(w.forecast_p10))?Math.round(w.forecast_p10):'—';document.getElementById('p50').textContent=Number.isFinite(p)?Math.round(p):'—';document.getElementById('p90').textContent=Number.isFinite(Number(w.forecast_p90))?Math.round(w.forecast_p90):'—';document.getElementById('prealert').textContent=w.pre_alert?'YES':'NO';}
+function renderList(){const el=document.getElementById('wardlist');el.innerHTML='';wards.forEach((w,i)=>{const b=document.createElement('button');b.className='ward'+(i===selectedBackend?' active':'');const name=w.ward_id||'Ward '+(i+1);b.innerHTML='<b>'+escapeHtml(name)+'</b><span>AQI '+(w.aqi??'—')+' · P-GRAP '+(w.pgrap_stage??'—')+'</span>';b.onclick=()=>{selectedBackend=i;renderList();renderAll();const m=wardMeshes.find(x=>x.userData.liveIndex===i);if(m)focusWard(m)};el.appendChild(b)});document.getElementById('wardcount').textContent=wards.length+' wards'}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+async function loadAPI(){const badge=document.getElementById('connection');try{const r=await fetch(API,{cache:'no-store'});if(!r.ok)throw Error('HTTP '+r.status);const d=await r.json();wards=Array.isArray(d.wards)?d.wards:[];if(!wards.length)throw Error('No ward records returned');if(selectedBackend>=wards.length)selectedBackend=0;badge.textContent='● API CONNECTED';badge.style.color='#72e5ae';document.getElementById('updated').textContent='API response · '+new Date().toLocaleTimeString();renderList();if(gisFeatures.length)bindGIS();renderAll()}catch(e){badge.textContent='● API UNAVAILABLE';badge.style.color='#ff8d8d';document.getElementById('updated').textContent='Could not refresh';console.error(e)}}
+async function loadGIS(){try{const r=await fetch(GIS_URL,{cache:'force-cache'});if(!r.ok)throw Error('GIS HTTP '+r.status);const d=await r.json();gisFeatures=Array.isArray(d.features)?d.features:[];if(!gisFeatures.length)throw Error('GIS layer empty');bindGIS();document.getElementById('updated').textContent='GIS loaded · '+gisFeatures.length+' wards';}catch(e){console.error(e);document.getElementById('updated').textContent='GIS layer unavailable · API only';}}
+function bindGIS(){wardMeshes.forEach(m=>{scene.remove(m);if(m.userData.edge)scene.remove(m.userData.edge)});wardMeshes=[];gisFeatures.forEach(f=>addPolygonFeature(f,liveForFeature(f)));renderAll()}
+function animate(){requestAnimationFrame(animate);frame++;updateCamera();renderer.render(scene,camera)}
+document.getElementById('horizon').addEventListener('input',e=>{forecastHour=Number(e.target.value);document.getElementById('hourlabel').textContent=forecastHour?forecastHour+'h · P50 PROJECTION':'0h · OBSERVED';renderAll()});
+setup();
+renderer.domElement.addEventListener('click',onClick);
+Promise.all([loadAPI(),loadGIS()]);
+setInterval(loadAPI,60000);
+</script>
+</body>
+</html>
