@@ -17,5 +17,5 @@ COPY . .
 # Create log + data directories
 RUN mkdir -p logs data
 
-# Run FastAPI + orchestrator
+# Run the stateless FastAPI service; the autonomous cloud worker is started separately by the AWS compose/runtime.
 CMD ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "2"]
