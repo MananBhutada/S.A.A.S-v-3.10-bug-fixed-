@@ -121,31 +121,50 @@ main{padding:18px 24px;max-width:1400px;margin:0 auto}
 .nav{display:flex;align-items:center;gap:6px;margin-left:24px}.nav a{color:var(--m);text-decoration:none;font:10px var(--mono);padding:6px 9px;border:1px solid transparent;border-radius:6px}.nav a:hover,.nav a.active{color:var(--cyan);background:rgba(0,212,255,.07);border-color:rgba(0,212,255,.2)}
 @media(max-width:700px){.nav{margin-left:8px}.nav a{padding:5px 6px;font-size:9px}.lsub{display:none}}
 <style>
-/* S.A.A.S. UI direction: restrained field-console / editorial, not neon sci-fi. */
+/* Clean product UI: neutral surfaces, semantic data colour, minimal decoration. */
 :root{
-  --bg:#141512;--s1:#1b1d19;--s2:#22251f;--s3:#2a2d26;
-  --b:rgba(232,226,213,.11);--b2:rgba(232,226,213,.20);
-  --t:#ebe6da;--m:#9b9a8d;--m2:#6f7067;
-  --cyan:#8eaea0;--green:#879b72;--lime:#a2a86a;
-  --amber:#c59b62;--orange:#b97852;--red:#b9635c;
+  --bg:#101214;--s1:#17191c;--s2:#1d2024;--s3:#24282d;
+  --b:rgba(255,255,255,.09);--b2:rgba(255,255,255,.16);
+  --t:#e7e9ec;--m:#9aa0a8;--m2:#69717c;
+  --cyan:#79b7c8;--green:#78b58a;--lime:#a1b86a;
+  --amber:#d1a35f;--orange:#c98258;--red:#c86b68;
   --font:'IBM Plex Sans',sans-serif;--mono:'IBM Plex Mono',monospace;
 }
 body{letter-spacing:0}
-header{background:#191b17;box-shadow:none}
-.lmark{background:#c3a56d;color:#171813;border-radius:5px}
-.live{background:rgba(135,155,114,.09);border-color:rgba(135,155,114,.30);color:var(--green)}
-.rbtn{background:rgba(142,174,160,.08);border-color:rgba(142,174,160,.28);color:var(--cyan)}
+header{background:#15171a;box-shadow:none}
+.lmark{background:#d0b06b;color:#151515;border-radius:4px}
+.live{background:rgba(120,181,138,.08);border-color:rgba(120,181,138,.28);color:var(--green);border-radius:4px}
+.rbtn{background:var(--s2);border-color:var(--b2);color:var(--t);border-radius:4px}
 .kpi,.panel{border-radius:6px}
 .kpi::after{height:1px}
 .wcard{border-radius:5px}
-.wcard:hover{border-color:var(--b2)}
-.wcard.selected{border-color:var(--cyan)}
 .wp{border-radius:3px}
-.scrub-bar{background:rgba(142,174,160,.06);border-color:rgba(142,174,160,.16)}
-.note{background:rgba(142,174,160,.035)}
+.scrub-bar{background:rgba(121,183,200,.06);border-color:rgba(121,183,200,.15)}
+.note{background:rgba(255,255,255,.025)}
 .nav a{border-radius:4px}
-.nav a:hover,.nav a.active{color:#d4b878;background:rgba(195,165,109,.08);border-color:rgba(195,165,109,.22)}
-</style>
+.nav a:hover,.nav a.active{color:var(--t);background:var(--s2);border-color:var(--b2)}
+/* Prediction + governance */
+.pred-governance{display:grid;grid-template-columns:1.15fr .85fr;gap:14px;margin-bottom:14px}
+.pred-panel,.gov-panel{min-height:250px}
+.pred-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.pred-ward{font-size:11px;color:var(--m);font-family:var(--mono)}
+.pred-values{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:12px}
+.pred-value{background:var(--s2);border:1px solid var(--b);padding:9px 10px;border-radius:4px}
+.pred-value span{display:block;font:9px var(--mono);color:var(--m);margin-bottom:4px}
+.pred-value strong{font:600 19px var(--mono)}
+.pred-track{height:7px;background:var(--s3);border-radius:3px;position:relative;overflow:hidden;margin:9px 0 6px}
+.pred-band{position:absolute;top:0;height:100%;background:rgba(121,183,200,.24)}
+.pred-marker{position:absolute;top:-3px;width:2px;height:13px;background:#e7e9ec}
+.pred-caption{display:flex;justify-content:space-between;font:9px var(--mono);color:var(--m2)}
+.gov-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.gov-item{padding:9px 10px;background:var(--s2);border:1px solid var(--b);border-radius:4px}
+.gov-item label{display:block;font:9px var(--mono);color:var(--m);text-transform:uppercase;margin-bottom:4px}
+.gov-item strong{font-size:12px;font-weight:600}
+.gov-wide{grid-column:1/-1}
+.gov-status{display:flex;align-items:center;gap:7px;font:11px var(--mono)}
+.gov-dot{width:7px;height:7px;border-radius:50%;background:var(--m)}
+.gov-dot.active{background:var(--green)}
+@media(max-width:900px){.pred-governance{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -194,6 +213,47 @@ header{background:#191b17;box-shadow:none}
     </div>
   </div>
 
+  <div class="pred-governance">
+    <div class="panel pred-panel">
+      <div class="ph">
+        <span class="ph-t">Prediction</span>
+        <span class="ph-m" id="pred-meta">P10 / P50 / P90</span>
+      </div>
+      <div class="pb">
+        <div class="pred-head">
+          <span class="pred-ward" id="pred-ward">Waiting for live forecast data</span>
+          <span class="ph-m" id="pred-time">—</span>
+        </div>
+        <div class="pred-values">
+          <div class="pred-value"><span>P10</span><strong id="pred-p10">—</strong></div>
+          <div class="pred-value"><span>P50</span><strong id="pred-p50">—</strong></div>
+          <div class="pred-value"><span>P90</span><strong id="pred-p90">—</strong></div>
+        </div>
+        <div class="pred-track"><div class="pred-band" id="pred-band"></div><div class="pred-marker" id="pred-marker"></div></div>
+        <div class="pred-caption"><span>Observed</span><span id="pred-observed">AQI —</span><span>Higher risk →</span></div>
+      </div>
+    </div>
+
+    <div class="panel gov-panel">
+      <div class="ph">
+        <span class="ph-t">Predictive Governance</span>
+        <span class="ph-m" id="gov-meta">Policy state</span>
+      </div>
+      <div class="pb">
+        <div class="gov-grid">
+          <div class="gov-item"><label>Highest stage</label><strong id="gov-stage">—</strong></div>
+          <div class="gov-item"><label>Wards under action</label><strong id="gov-wards">—</strong></div>
+          <div class="gov-item"><label>Mitigation</label><strong id="gov-action">—</strong></div>
+          <div class="gov-item"><label>Pre-alerts</label><strong id="gov-alerts">—</strong></div>
+          <div class="gov-item gov-wide">
+            <label>Current decision state</label>
+            <div class="gov-status"><span class="gov-dot" id="gov-dot"></span><strong id="gov-status">Waiting for policy data</strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="row2">
     <div class="panel">
       <div class="ph">
@@ -215,11 +275,11 @@ header{background:#191b17;box-shadow:none}
 
     <div class="panel">
       <div class="ph">
-        <span class="ph-t">⚡ Agent Communication Flow</span>
+        <span class="ph-t">Agent Communication Flow</span>
         <span class="ph-m" id="flow-meta">Click a ward card</span>
       </div>
       <div class="flow-body" id="flow-body">
-        <div class="flow-empty">👆 Click any ward card<br>to see its pollution spread<br>communication flow</div>
+        <div class="flow-empty">Select a ward to inspect its prediction and agent flow</div>
       </div>
       <div class="note" id="flow-note" style="display:none"></div>
     </div>
@@ -236,7 +296,7 @@ header{background:#191b17;box-shadow:none}
           <div style="color:var(--m);font-size:12px;padding:8px">Loading...</div>
         </div>
       </div>
-      <div class="note">Source: pgrap_audit_trail.json · Real ward + AQI · LLM-generated text</div>
+      <div class="note">Source: pgrap_audit_trail.json · Real governance events</div>
     </div>
 
     <div class="panel">
@@ -249,7 +309,7 @@ header{background:#191b17;box-shadow:none}
           <div style="color:var(--m);font-size:12px;padding:8px">Loading...</div>
         </div>
       </div>
-      <div class="note">Source: agent_comms_log.json · Real message bus · 10 ward agents</div>
+      <div class="note">Source: agent_comms_log.json · Agent message bus</div>
     </div>
   </div>
 </main>
@@ -326,6 +386,38 @@ function predictTarget(wardId, bearing) {
   const t = map[nearest]; return t===wardId?null:t;
 }
 
+function renderPredictionGovernance() {
+  if(!STATE) return;
+  const ws=Object.values(STATE.wards||{});
+  const candidates=ws.filter(w=>Number.isFinite(Number(w.forecast_p50)) || Number.isFinite(Number(w.forecast_p90)));
+  const target=candidates.sort((a,b)=>(Number(b.forecast_p90)||0)-(Number(a.forecast_p90)||0))[0] || ws.sort((a,b)=>(Number(b.aqi_current)||0)-(Number(a.aqi_current)||0))[0];
+  if(target){
+    const p10=Number(target.forecast_p10),p50=Number(target.forecast_p50),p90=Number(target.forecast_p90),obs=Number(target.aqi_current);
+    document.getElementById('pred-ward').textContent=(target.ward_id||'Selected ward')+' · highest available forecast risk';
+    document.getElementById('pred-time').textContent=target.last_evaluated?fmtTime(target.last_evaluated):'—';
+    document.getElementById('pred-p10').textContent=Number.isFinite(p10)?Math.round(p10):'—';
+    document.getElementById('pred-p50').textContent=Number.isFinite(p50)?Math.round(p50):'—';
+    document.getElementById('pred-p90').textContent=Number.isFinite(p90)?Math.round(p90):'—';
+    document.getElementById('pred-observed').textContent='AQI '+(Number.isFinite(obs)?Math.round(obs):'—');
+    const max=Math.max(p90,obs,1),band=document.getElementById('pred-band'),marker=document.getElementById('pred-marker');
+    band.style.left=(Number.isFinite(p10)?(p10/max*100):0)+'%';
+    band.style.width=(Number.isFinite(p10)&&Number.isFinite(p90)?Math.max(0,(p90-p10)/max*100):0)+'%';
+    marker.style.left=(Number.isFinite(obs)?Math.min(100,obs/max*100):0)+'%';
+  } else {
+    document.getElementById('pred-ward').textContent='Forecast values unavailable';
+  }
+  const maxStage=ws.reduce((m,w)=>Math.max(m,Number(w.pgrap_stage)||0),0);
+  const action=ws.filter(w=>(Number(w.pgrap_stage)||0)>=2).length;
+  const pre=ws.filter(w=>w.pre_alert).length;
+  const active=ws.filter(w=>w.scrubber_active).length;
+  document.getElementById('gov-stage').textContent='S'+maxStage+' · '+stageName(maxStage);
+  document.getElementById('gov-wards').textContent=action;
+  document.getElementById('gov-action').textContent=active+' scrubber'+(active===1?'':'s')+' active';
+  document.getElementById('gov-alerts').textContent=pre;
+  const dot=document.getElementById('gov-dot');
+  dot.className='gov-dot'+(action||pre||active?' active':'');
+  document.getElementById('gov-status').textContent=action||pre||active?'Mitigation / policy activity present':'Monitoring — no active mitigation';
+}
 function renderKPIs() {
   if(!STATE) return;
   const ws = Object.values(STATE.wards||{});
@@ -553,7 +645,7 @@ function renderComms() {
 
 setInterval(()=>document.getElementById('clk').textContent=new Date().toTimeString().slice(0,8),1000);
 document.getElementById('clk').textContent=new Date().toTimeString().slice(0,8);
-function renderAll(){renderKPIs();renderWards();renderAlerts();renderComms();}
+function renderAll(){renderKPIs();renderPredictionGovernance();renderWards();renderAlerts();renderComms();}
 load();
 setInterval(load,60000);
 </script>
