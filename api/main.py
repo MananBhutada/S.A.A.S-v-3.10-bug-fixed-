@@ -139,9 +139,8 @@ def health():
         "audit_events":        len(_load_json_safe(audit_path)),
         "database":            db_health,
         "api_keys": {
-            "owm":  bool(os.getenv("OPENWEATHER_API_KEY")),
-            "owm":   bool(os.getenv("OWM_API_KEY")),
-            "groq":  bool(os.getenv("GROQ_API_KEY")),
+            "openweather": bool(os.getenv("OPENWEATHER_API_KEY") or os.getenv("OWM_API_KEY")),
+            "groq":        bool(os.getenv("GROQ_API_KEY")),
         },
     }
 
@@ -169,6 +168,8 @@ def get_wards(triggered_only: bool = Query(False)):
             continue
         result.append({
             "ward_id":           name,
+            "lat":               w.get("lat"),
+            "lon":               w.get("lon"),
             "aqi":               aqi,
             "aqi_category":      _aqi_category(aqi),
             "effective_aqi":     w.get("effective_aqi"),
@@ -177,6 +178,7 @@ def get_wards(triggered_only: bool = Query(False)):
             "no2":               w.get("no2_ppb"),
             "co":                w.get("co_ppb"),
             "wind_speed_kmh":    w.get("wind_speed_kmh"),
+            "wind_speed_ms":     w.get("wind_speed_ms"),
             "wind_bearing_deg":  w.get("wind_bearing_deg"),
             "pgrap_stage":       stage,
             "stage_name":        _stage_name(stage),
@@ -194,7 +196,7 @@ def get_wards(triggered_only: bool = Query(False)):
             "last_evaluated":    w.get("last_evaluated"),
         })
     result.sort(key=lambda x: (x.get("aqi") or 0), reverse=True)
-    return {"count": len(result), "wards": result}
+    return {"count": len(result), "wards": result, "state_last_cycle_utc": state.get("city", {}).get("last_full_cycle_utc")}
 
 @app.get("/api/wards/{ward_id}")
 def get_ward(ward_id: str):
