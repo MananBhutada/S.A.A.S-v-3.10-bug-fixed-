@@ -38,9 +38,9 @@ main{max-width:1550px;margin:auto;padding:22px}.heading{display:flex;justify-con
   <div class="layout">
     <section class="panel">
       <div class="panelhead"><strong>3D CITY MODEL <span class="mono">/ GIS WARD SURFACES</span></strong><span class="mono">DRAG ORBIT · SCROLL ZOOM · CLICK WARD · HOVER INSPECT</span></div>
-      <div id="scene"><div id="tooltip" class="tooltip"></div><div class="scenehint"><b id="flowmode">OBSERVED FLOW</b> · Arrows use backend wind direction/speed. Particles originate near live ward centroids; emission intensity scales with observed AQI. Forecast mode is shown as a separate translucent projection.</div></div>
+      <div id="scene"><div id="tooltip" class="tooltip"></div><div class="scenehint"><b id="flowmode">OBSERVED FLOW</b> · Ward surfaces + telemetry are S.A.A.S. backend data. Roads, water, parks, industrial land and buildings are geographic OSM context only. Particles originate near live ward centroids; emission intensity scales with observed AQI.</div></div>
       <div class="legend">
-        <span><i class="dot" style="background:#38c878"></i>Good</span><span><i class="dot" style="background:#b6cf4a"></i>Satisfactory</span><span><i class="dot" style="background:#e8c34d"></i>Moderate</span><span><i class="dot" style="background:#f28a42"></i>Poor</span><span><i class="dot" style="background:#ed4c59"></i>Very poor / severe</span><span>▰ ward = observed AQI</span><span>→ wind vector</span><span>• particle = atmospheric flow</span><span>◇ forecast = P50 projection</span>
+        <span><i class="dot" style="background:#38c878"></i>Good</span><span><i class="dot" style="background:#b6cf4a"></i>Satisfactory</span><span><i class="dot" style="background:#e8c34d"></i>Moderate</span><span><i class="dot" style="background:#f28a42"></i>Poor</span><span><i class="dot" style="background:#ed4c59"></i>Very poor / severe</span><span>▰ ward = observed AQI</span><span>→ wind vector</span><span>• particle = atmospheric flow</span><span>◇ forecast = P50 projection</span><span>⌁ geographic context = OSM</span>
       </div>
     </section>
     <aside class="side">
@@ -62,12 +62,14 @@ main{max-width:1550px;margin:auto;padding:22px}.heading{display:flex;justify-con
       <section class="panel"><div class="panelhead"><strong>LIVE BACKEND WARDS</strong><span class="mono" id="wardcount">0 wards</span></div><div class="wardlist" id="wardlist"><span class="mono">Loading wards…</span></div></section>
     </aside>
   </div>
-  <div class="foot"><span class="warn">DATA INTEGRITY:</span> AQI, pollutants, wind, forecast P10/P50/P90, P-GRAP stage, intent, VSN mode and scrubber state are rendered from <code>/api/wards</code> without modification. GIS context uses the DataMeet Delhi ward boundary layer. Road/river/land-use context in later passes will remain explicitly labeled as contextual visualization rather than training or forecast output.</div>
+  <div class="foot"><span class="warn">DATA INTEGRITY:</span> AQI, pollutants, wind, forecast P10/P50/P90, P-GRAP stage, intent, VSN mode and scrubber state are rendered from <code>/api/wards</code> without modification. GIS context uses the DataMeet Delhi ward boundary layer. Road/river/land-use/building context is sourced from OpenStreetMap and remains explicitly contextual visualization, never model/forecast/P-GRAP output.</div>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 <script>
 const API='/api/wards';
 const GIS_URL='https://raw.githubusercontent.com/datameet/Municipal_Spatial_Data/master/Delhi/Delhi_Wards.geojson';
+const OSM_URL='https://overpass-api.de/api/interpreter';
+const OSM_BBOX='28.45,76.95,28.90,77.35';
 let wards=[],gisFeatures=[],selectedBackend=0,selectedMesh=null,forecastHour=0;
 let renderer,scene,camera,raycaster,wardMeshes=[],hoveredMesh=null,frame=0;
 let windVectors=[],flowParticles=[],forecastPlumes=[],flowGroup=null,forecastGroup=null;
@@ -212,32 +214,54 @@ function updateForecastAtmosphere(){
   });
 }
 function addContext(){
-  const roadMat=new THREE.LineBasicMaterial({color:0x66788b,transparent:true,opacity:.52});
-  const majorMat=new THREE.LineBasicMaterial({color:0xa7bacd,transparent:true,opacity:.7});
-  function line(coords,mat,y=.065){const g=new THREE.BufferGeometry().setFromPoints(coords.map(p=>{const q=project(p[0],p[1]);return new THREE.Vector3(q.x,y,-q.z)}));const l=new THREE.Line(g,mat);scene.add(l)}
-  // Contextual arterial skeleton: geographic reference paths, not used by the model.
-  line([[77.04,28.70],[77.10,28.69],[77.16,28.68],[77.22,28.67],[77.29,28.66],[77.34,28.64]],majorMat);
-  line([[77.02,28.64],[77.08,28.63],[77.15,28.62],[77.21,28.60],[77.28,28.58],[77.33,28.55]],majorMat);
-  line([[77.04,28.78],[77.11,28.75],[77.18,28.72],[77.24,28.69],[77.31,28.67]],roadMat);
-  line([[77.06,28.56],[77.12,28.57],[77.18,28.58],[77.24,28.57],[77.30,28.54]],roadMat);
-  line([[77.18,28.88],[77.18,28.80],[77.19,28.72],[77.20,28.64],[77.22,28.57],[77.24,28.50]],majorMat);
-  // Yamuna: contextual river/floodplain corridor.
-  const river=[[77.10,28.86],[77.12,28.80],[77.15,28.75],[77.17,28.70],[77.18,28.65],[77.20,28.60],[77.22,28.55],[77.25,28.49]];
-  line(river,new THREE.LineBasicMaterial({color:0x2d8cae,transparent:true,opacity:.8}),.075);
-  line(river.map(p=>[p[0]+.010,p[1]]),new THREE.LineBasicMaterial({color:0x1d566d,transparent:true,opacity:.42}),.073);
-  // Green buffers near river and southern/western corridors.
-  const greenMat=new THREE.LineBasicMaterial({color:0x3f8769,transparent:true,opacity:.5});
-  line([[77.09,28.84],[77.12,28.78],[77.15,28.72],[77.17,28.66],[77.20,28.60]],greenMat,.07);
+  // Geographic context is sourced from OpenStreetMap at runtime. It never feeds AQI, forecasting, agent, governance, or P-GRAP state.
+  loadOSMContext();
 }
-function addCityMassing(){
-  // Non-GIS skyline context. Density is deliberately deterministic and separate from AQI/training data.
-  const group=new THREE.Group();const mat=new THREE.MeshStandardMaterial({color:0x30475b,roughness:.82,transparent:true,opacity:.62});
-  for(let x=-15;x<=15;x+=1.15)for(let z=-12;z<=12;z+=1.15){
-    const central=Math.exp(-((x*x)/(110)+(z*z)/(85)));const h=.08+central*(.35+((Math.abs(x*17+z*31)%7)/10));
-    if((Math.abs(x*13+z*7)%5)>2)continue;
-    const b=new THREE.Mesh(new THREE.BoxGeometry(.45,.05+h,.45),mat);b.position.set(x,.03+h/2,z);group.add(b);
-  }
-  scene.add(group);
+function osmProjectPoint(p){return project(Number(p.lon),Number(p.lat))}
+function addOSMLine(points,material,y=.055){
+  if(!points||points.length<2)return;
+  const pts=points.map(osmProjectPoint).map(q=>new THREE.Vector3(q.x,y,-q.z));
+  const g=new THREE.BufferGeometry().setFromPoints(pts);
+  const line=new THREE.Line(g,material);line.userData.contextual=true;scene.add(line);
+}
+function addOSMPolygon(points,material,y=.045,depth=.025){
+  if(!points||points.length<3)return;
+  const shape=new THREE.Shape();
+  points.forEach((p,i)=>{const q=osmProjectPoint(p);if(i===0)shape.moveTo(q.x,-q.z);else shape.lineTo(q.x,-q.z)});
+  const g=new THREE.ExtrudeGeometry(shape,{depth,bevelEnabled:false,curveSegments:1,steps:1});g.rotateX(-Math.PI/2);
+  const mesh=new THREE.Mesh(g,material);mesh.position.y=y;mesh.userData.contextual=true;scene.add(mesh);
+}
+function addOSMBuilding(points,levels){
+  if(!points||points.length<3)return;
+  const shape=new THREE.Shape();
+  points.forEach((p,i)=>{const q=osmProjectPoint(p);if(i===0)shape.moveTo(q.x,-q.z);else shape.lineTo(q.x,-q.z)});
+  const h=.08+clamp((Number(levels)||1),1,18)*.055;
+  const g=new THREE.ExtrudeGeometry(shape,{depth:h,bevelEnabled:false,curveSegments:1,steps:1});g.rotateX(-Math.PI/2);
+  const m=new THREE.Mesh(g,new THREE.MeshStandardMaterial({color:0x33495d,roughness:.92,metalness:.02,transparent:true,opacity:.58}));
+  m.position.y=.045;m.userData.contextual=true;scene.add(m);
+}
+async function loadOSMContext(){
+  const query='[out:json][timeout:25];\n(\n  way["highway"~"^(motorway|trunk|primary|secondary|tertiary)$"]('+OSM_BBOX+');\n  way["waterway"~"^(river|stream|canal)$"]('+OSM_BBOX+');\n  way["leisure"="park"]('+OSM_BBOX+');\n  way["landuse"="industrial"]('+OSM_BBOX+');\n  way["building"]["building:levels"]('+OSM_BBOX+');\n);\nout tags geom;';
+  try{
+    const r=await fetch(OSM_URL+'?data='+encodeURIComponent(query),{cache:'force-cache'});
+    if(!r.ok)throw Error('OSM HTTP '+r.status);
+    const d=await r.json();
+    const road=new THREE.LineBasicMaterial({color:0x667b8f,transparent:true,opacity:.48});
+    const major=new THREE.LineBasicMaterial({color:0xb7c9d8,transparent:true,opacity:.76});
+    const water=new THREE.LineBasicMaterial({color:0x2f9ab8,transparent:true,opacity:.86});
+    const park=new THREE.MeshStandardMaterial({color:0x245b48,roughness:1,transparent:true,opacity:.36});
+    const industry=new THREE.MeshStandardMaterial({color:0x76543f,roughness:1,transparent:true,opacity:.30});
+    let buildingCount=0;
+    (d.elements||[]).forEach(el=>{
+      const tags=el.tags||{},g=el.geometry||[];if(!g.length)return;
+      if(tags.highway)addOSMLine(g,(tags.highway==='motorway'||tags.highway==='trunk'||tags.highway==='primary')?major:road,.065);
+      else if(tags.waterway)addOSMLine(g,water,.075);
+      else if(tags.leisure==='park')addOSMPolygon(g,park,.035,.018);
+      else if(tags.landuse==='industrial')addOSMPolygon(g,industry,.035,.022);
+      else if(tags.building&&buildingCount<1800){addOSMBuilding(g,tags['building:levels']);buildingCount++;}
+    });
+    document.getElementById('updated').textContent='GIS + OSM context loaded · '+(d.elements||[]).length+' features';
+  }catch(e){console.warn('OSM contextual layer unavailable',e);document.getElementById('updated').textContent='GIS loaded · contextual OSM unavailable';}
 }
 function setup(){
   scene=new THREE.Scene();scene.background=new THREE.Color(0x07101b);scene.fog=new THREE.Fog(0x07101b,34,70);
@@ -247,7 +271,7 @@ function setup(){
   const sun=new THREE.DirectionalLight(0xffffff,1.8);sun.position.set(-15,25,10);sun.castShadow=true;scene.add(sun);
   const ground=new THREE.Mesh(new THREE.PlaneGeometry(45,38),new THREE.MeshStandardMaterial({color:0x0d1925,roughness:1}));ground.rotation.x=-Math.PI/2;ground.position.y=-.09;ground.receiveShadow=true;scene.add(ground);
   const grid=new THREE.GridHelper(46,46,0x26394c,0x142536);grid.position.y=-.08;scene.add(grid);
-  raycaster=new THREE.Raycaster();addContext();addCityMassing();
+  raycaster=new THREE.Raycaster();addContext();
   renderer.domElement.addEventListener('pointermove',onPointerMove);renderer.domElement.addEventListener('pointerdown',onDown);renderer.domElement.addEventListener('pointerup',onUp);renderer.domElement.addEventListener('wheel',onWheel,{passive:true});
   resize();window.addEventListener('resize',resize);animate();
 }
