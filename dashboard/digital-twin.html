@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>S.A.A.S. | Delhi Digital Twin</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{color-scheme:dark;--bg:#070b12;--panel:#0e1622ee;--panel2:#111c2a;--line:#253348;--muted:#7e8da3;--text:#eaf1fb;--cyan:#59d9ed;--green:#6ee7b7;--amber:#f5c56b;--red:#ff747e}
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -10%,#172943 0,#080c14 55%);color:var(--text);font:14px Manrope,sans-serif}
@@ -25,6 +25,34 @@ main{max-width:1550px;margin:auto;padding:22px}.heading{display:flex;justify-con
 @media(max-width:1000px){main{padding:13px}.layout{grid-template-columns:1fr}.side{display:grid;grid-template-columns:1fr 1fr}#scene{min-height:430px;height:58vh}}@media(max-width:620px){.side{display:flex}.heading{align-items:start;flex-direction:column}header{padding:0 13px}.wardlist{max-height:250px}}
 .nav{display:flex;align-items:center;gap:6px;margin-left:24px}.nav a{color:var(--muted);text-decoration:none;font:11px DM Mono,monospace;padding:7px 10px;border:1px solid transparent;border-radius:6px}.nav a:hover,.nav a.active{color:var(--cyan);background:#102233;border-color:#29445c}
 @media(max-width:760px){.nav{margin-left:8px}.nav a{padding:6px 7px;font-size:9px}.sub{display:none}}
+<style>
+/* S.A.A.S. UI direction: quiet environmental-instrument aesthetic. Avoids neon gradients, glassmorphism and oversized rounded cards. */
+:root{
+  color-scheme:dark;
+  --bg:#141512;--panel:#1b1d19f2;--panel2:#22251f;
+  --line:#373932;--muted:#99998d;--text:#ebe6da;
+  --cyan:#8eaea0;--green:#879b72;--amber:#c59b62;--red:#b9635c;
+}
+body{background:#141512;color:var(--text);font-family:'IBM Plex Sans',sans-serif}
+header{height:64px;background:#191b17;border-bottom:1px solid #30322c;backdrop-filter:none}
+.mark{background:#c3a56d;color:#171813;border-radius:5px}
+.sub,.mono{font-family:'IBM Plex Mono',monospace}
+.status{border-radius:4px;color:var(--green);border-color:#53634a;background:rgba(135,155,114,.06)}
+.eyebrow{color:#9eb7aa}
+.panel{background:#1b1d19;border:1px solid var(--line);border-radius:6px;box-shadow:none}
+.panelhead{padding:13px 16px}
+#scene{background:#121410}
+.scenehint{background:#191b17e8;border-color:#3a3c35;border-radius:4px;color:#b4b1a5}
+.tooltip{background:#1b1d19f5;border-color:#4a4b43;border-radius:4px;box-shadow:none}
+.pill{border-radius:4px;color:#b7b4a8}
+.telemetry-card{border-radius:4px;background:#20221d;border-color:#363831}
+.ward{background:#20221d;border-color:#393b34;border-radius:4px}
+.ward:hover{border-color:#686a60}
+.ward.active{border-color:#8eaea0;background:#28312b}
+.nav a{border-radius:4px}
+.nav a:hover,.nav a.active{color:#d4b878;background:rgba(195,165,109,.08);border-color:rgba(195,165,109,.22)}
+.controls input{accent-color:#8eaea0}
+</style>
 </style>
 </head>
 <body>

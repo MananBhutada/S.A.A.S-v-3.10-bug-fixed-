@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>S.A.A.S. — Delhi AQI Monitor</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#0a0c10;--s1:#111318;--s2:#181c24;--s3:#1e2330;
@@ -120,6 +120,32 @@ main{padding:18px 24px;max-width:1400px;margin:0 auto}
 @media(max-width:900px){.row2,.row2b{grid-template-columns:1fr}.ward-grid{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,1fr)}}
 .nav{display:flex;align-items:center;gap:6px;margin-left:24px}.nav a{color:var(--m);text-decoration:none;font:10px var(--mono);padding:6px 9px;border:1px solid transparent;border-radius:6px}.nav a:hover,.nav a.active{color:var(--cyan);background:rgba(0,212,255,.07);border-color:rgba(0,212,255,.2)}
 @media(max-width:700px){.nav{margin-left:8px}.nav a{padding:5px 6px;font-size:9px}.lsub{display:none}}
+<style>
+/* S.A.A.S. UI direction: restrained field-console / editorial, not neon sci-fi. */
+:root{
+  --bg:#141512;--s1:#1b1d19;--s2:#22251f;--s3:#2a2d26;
+  --b:rgba(232,226,213,.11);--b2:rgba(232,226,213,.20);
+  --t:#ebe6da;--m:#9b9a8d;--m2:#6f7067;
+  --cyan:#8eaea0;--green:#879b72;--lime:#a2a86a;
+  --amber:#c59b62;--orange:#b97852;--red:#b9635c;
+  --font:'IBM Plex Sans',sans-serif;--mono:'IBM Plex Mono',monospace;
+}
+body{letter-spacing:0}
+header{background:#191b17;box-shadow:none}
+.lmark{background:#c3a56d;color:#171813;border-radius:5px}
+.live{background:rgba(135,155,114,.09);border-color:rgba(135,155,114,.30);color:var(--green)}
+.rbtn{background:rgba(142,174,160,.08);border-color:rgba(142,174,160,.28);color:var(--cyan)}
+.kpi,.panel{border-radius:6px}
+.kpi::after{height:1px}
+.wcard{border-radius:5px}
+.wcard:hover{border-color:var(--b2)}
+.wcard.selected{border-color:var(--cyan)}
+.wp{border-radius:3px}
+.scrub-bar{background:rgba(142,174,160,.06);border-color:rgba(142,174,160,.16)}
+.note{background:rgba(142,174,160,.035)}
+.nav a{border-radius:4px}
+.nav a:hover,.nav a.active{color:#d4b878;background:rgba(195,165,109,.08);border-color:rgba(195,165,109,.22)}
+</style>
 </style>
 </head>
 <body>
