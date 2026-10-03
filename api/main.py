@@ -153,6 +153,11 @@ def health():
     }
 
 # ── live state ────────────────────────────────────────────────────────────────
+@app.get("/digital-twin", include_in_schema=False)
+def digital_twin():
+    """Serve the interactive 3D city twin."""
+    return FileResponse(BASE_DIR / "dashboard" / "digital-twin.html")
+
 @app.get("/api/state")
 def get_state():
     """Full bridge state — used by dashboard fetch()."""
