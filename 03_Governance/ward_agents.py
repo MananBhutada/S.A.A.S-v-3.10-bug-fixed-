@@ -29,6 +29,7 @@ from __future__ import annotations
 
 import json
 import logging
+import os
 import sys
 import time
 from dataclasses import dataclass, field
@@ -199,7 +200,10 @@ class WardAgent:
             return TFTForecast(p10=result["p10"], p50=result["p50"], p90=result["p90"],
                                horizon_hours=horizon_hours)
         except Exception as exc:
-            log.warning("TFT unavailable (%s) — using fallback forecast", exc)
+            if os.getenv("SAAS_REQUIRE_FORECAST_MODEL", "false").lower() in {"1", "true", "yes"}:
+                log.error("TFT unavailable and production model is required: %s", exc)
+                raise
+            log.warning("TFT unavailable (%s) — using development fallback forecast", exc)
             base = self._last_reading.aqi if self._last_reading else 180
             return TFTForecast(p10=round(base * 0.72), p50=round(base),
                                p90=round(base * 1.2))
