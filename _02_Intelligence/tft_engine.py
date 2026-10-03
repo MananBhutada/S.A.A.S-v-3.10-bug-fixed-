@@ -21,6 +21,7 @@ from __future__ import annotations
 
 import json
 import logging
+import os
 import time
 from pathlib import Path
 from typing import Optional
@@ -40,6 +41,7 @@ META_PATH   = MODEL_DIR / "model_meta.json"
 
 VSN_WIND_THRESHOLD = 15.0   # km/h — above this, trans-boundary flux dominates
 CACHE_TTL          = 180    # seconds — re-use inference result within 3 min
+REQUIRE_MODEL      = os.getenv("SAAS_REQUIRE_FORECAST_MODEL", "false").lower() in {"1", "true", "yes"}
 
 _models      = None          # loaded once
 _feat_cols   = None
@@ -56,7 +58,10 @@ def _load_models():
     fc_path  = MODEL_DIR / "feature_cols.pkl"
 
     if not pkl_path.exists():
-        log.warning("quantile_models.pkl not found — statistical fallback active")
+        message = "quantile_models.pkl not found"
+        if REQUIRE_MODEL:
+            raise RuntimeError(message)
+        log.warning("%s — statistical fallback active", message)
         return False
 
     try:
@@ -70,6 +75,8 @@ def _load_models():
         return True
     except Exception as exc:
         log.error("Model load failed: %s", exc)
+        if REQUIRE_MODEL:
+            raise RuntimeError("Forecast model could not be loaded") from exc
         return False
 
 
