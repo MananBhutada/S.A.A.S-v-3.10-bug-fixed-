@@ -73,17 +73,10 @@ def _stage_name(s: int) -> str:
     return ["Normal","Advisory","Action","Emergency","Lockdown"][s] if 0<=s<=4 else "?"
 
 # ── root ──────────────────────────────────────────────────────────────────────
-@app.get("/")
+@app.get("/", include_in_schema=False)
 def root():
-    return {
-        "project": "S.A.A.S. — Smart Air Quality Agent System",
-        "version": "1.0.0",
-        "city":    "NCT of Delhi",
-        "docs":    "/docs",
-        "health":  "/health",
-        "endpoints": ["/api/state", "/api/wards", "/api/alerts", "/api/pgrap",
-                      "/api/analytics/summary"],
-    }
+    """Serve the unified S.A.A.S. home/dashboard UI."""
+    return FileResponse(BASE_DIR / "dashboard" / "index.html", media_type="text/html")
 
 # ── health ────────────────────────────────────────────────────────────────────
 @app.get("/dashboard", include_in_schema=False)
