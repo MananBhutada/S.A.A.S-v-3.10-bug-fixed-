@@ -128,11 +128,12 @@ def fetch_all_wards():
                 "scrubber_active":  scrubber,
                 "droplet_um":       drop,
                 "credit_score":     credit,
-                # ── Forecast (fallback formula — P90 = AQI × 1.2) ──────────
-                # NOTE: This is a formula estimate, NOT a real TFT forecast
-                "forecast_p10":     round(aqi * 0.72),
-                "forecast_p50":     round(aqi * 1.0),
-                "forecast_p90":     round(aqi * 1.20),
+                # ── Forecast ─────────────────────────────────────────────
+                # Forecasts are owned by the forecasting/agent pipeline.
+                # Do not write formula-derived values into production state.
+                "forecast_p10":     None,
+                "forecast_p50":     None,
+                "forecast_p90":     None,
                 # ── Metadata ────────────────────────────────────────────────
                 "source":           "OWM",
                 "lat":              env.get("lat"),

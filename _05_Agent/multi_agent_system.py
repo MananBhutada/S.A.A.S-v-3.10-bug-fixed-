@@ -646,67 +646,76 @@ Rules:
             self._handle_data_request(msg)
 
     def _run_forecast(self, msg: AgentMessage):
-        wards      = msg.payload.get("wards", [])
-        horizon_h  = msg.payload.get("horizon_h", 6)
-        cycle      = msg.payload.get("cycle")
-        state      = self._load_state()
-        forecasts  = {}
+        wards     = msg.payload.get("wards", [])
+        horizon_h = msg.payload.get("horizon_h", 6)
+        cycle     = msg.payload.get("cycle")
+        state     = self._load_state()
+        forecasts = {}
+
+        # Production path: use the configured forecasting engine instead of
+        # generating random values. The engine can enforce model availability
+        # through SAAS_REQUIRE_FORECAST_MODEL=true.
+        from _02_Intelligence.tft_engine import predict
 
         for ward_name in wards:
-            w    = state.get("wards", {}).get(ward_name, {})
-            aqi  = w.get("aqi_current", 180)
-            wind = w.get("wind_speed_kmh", 5.0)
-            mie  = w.get("mie_index", 0.5)
-            no2  = w.get("no2_ppb", 30)
-            co   = w.get("co_ppb", 500)
+            w = state.get("wards", {}).get(ward_name, {})
+            if not w:
+                continue
 
-            # VSN re-weighting
-            vsn_mode = "trans_boundary" if wind > 15 else "local"
+            result = predict(ward_name, horizon_h)
+            p10, p50, p90 = result.get("p10"), result.get("p50"), result.get("p90")
+            if p10 is None or p50 is None or p90 is None:
+                raise RuntimeError(f"Forecast unavailable for {ward_name}")
 
-            # Intent classification
-            combustion_score = (co / 500) + (no2 / 60)
-            dust_score       = mie + (w.get("pm10", 100) / 300)
-            if dust_score > 1.1 and combustion_score < 0.8:
-                intent = "dust"
-            elif combustion_score > 1.2:
-                intent = "combustion"
-            else:
-                intent = "mixed"
-
-            # Hazard multiplier
-            mult = {"combustion": 1.30, "mixed": 1.10, "dust": 1.0}.get(intent, 1.0)
-            base_trend = aqi * (1 + horizon_h * 0.02) * mult
-
-            import random
-            p50 = round(base_trend + random.gauss(0, aqi * 0.15))
+            intent = w.get("intent", "mixed")
+            wind = w.get("wind_speed_kmh", 0.0) or 0.0
             forecasts[ward_name] = {
-                "p10":    round(p50 * 0.70),
-                "p50":    p50,
-                "p90":    round(p50 * 1.22),
+                "p10": int(p10),
+                "p50": int(p50),
+                "p90": int(p90),
                 "intent": intent,
-                "vsn_mode": vsn_mode,
+                "vsn_mode": "trans_boundary" if wind > 15 else "local",
                 "wind_kmh": wind,
+                "method": result.get("method", "forecast-engine"),
             }
-            log.info("[INTEL] %s: P90=%d intent=%s vsn=%s", ward_name, forecasts[ward_name]["p90"], intent, vsn_mode)
+            log.info(
+                "[INTEL] %s: P10=%d P50=%d P90=%d method=%s",
+                ward_name, int(p10), int(p50), int(p90),
+                result.get("method", "forecast-engine"),
+            )
 
-        # Policy check if any P90 >= 400
+        if not forecasts:
+            log.warning("[INTEL] No forecastable wards in cycle %s", cycle)
+            return
+
+        # Policy check if any P90 >= 400.
         high_risk = {k: v for k, v in forecasts.items() if v["p90"] >= 400}
         if high_risk:
-            cid = self.send(
+            self.send(
                 recipient="GOVERNANCE",
                 msg_type=MessageType.POLICY_CHECK,
                 payload={
-                    "check_type":    "extreme_forecast",
+                    "check_type": "extreme_forecast",
                     "forecast_data": high_risk,
-                    "wards":         wards,
-                    "cycle":         cycle,
+                    "wards": list(forecasts.keys()),
+                    "cycle": cycle,
                 },
                 priority=Priority.CRITICAL,
                 correlation_id=msg.correlation_id,
             )
-            log.warning("[INTEL] Sent extreme forecast policy check for: %s", list(high_risk.keys()))
+            # Publish the non-extreme forecasts immediately. Governance will
+            # approve/veto the extreme subset separately.
+            normal = {k: v for k, v in forecasts.items() if k not in high_risk}
+            if normal:
+                self._publish_forecast(
+                    {"forecasts": normal, "wards": list(normal.keys()), "cycle": cycle},
+                    msg.correlation_id,
+                )
         else:
-            self._publish_forecast({"forecasts": forecasts, "wards": wards, "cycle": cycle}, msg.correlation_id)
+            self._publish_forecast(
+                {"forecasts": forecasts, "wards": list(forecasts.keys()), "cycle": cycle},
+                msg.correlation_id,
+            )
 
     def _publish_forecast(self, payload: dict, correlation_id: Optional[str]):
         forecasts = payload.get("forecasts", payload)
