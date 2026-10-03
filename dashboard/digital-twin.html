@@ -26,33 +26,23 @@ main{max-width:1550px;margin:auto;padding:22px}.heading{display:flex;justify-con
 .nav{display:flex;align-items:center;gap:6px;margin-left:24px}.nav a{color:var(--muted);text-decoration:none;font:11px DM Mono,monospace;padding:7px 10px;border:1px solid transparent;border-radius:6px}.nav a:hover,.nav a.active{color:var(--cyan);background:#102233;border-color:#29445c}
 @media(max-width:760px){.nav{margin-left:8px}.nav a{padding:6px 7px;font-size:9px}.sub{display:none}}
 <style>
-/* S.A.A.S. UI direction: quiet environmental-instrument aesthetic. Avoids neon gradients, glassmorphism and oversized rounded cards. */
-:root{
-  color-scheme:dark;
-  --bg:#141512;--panel:#1b1d19f2;--panel2:#22251f;
-  --line:#373932;--muted:#99998d;--text:#ebe6da;
-  --cyan:#8eaea0;--green:#879b72;--amber:#c59b62;--red:#b9635c;
-}
-body{background:#141512;color:var(--text);font-family:'IBM Plex Sans',sans-serif}
-header{height:64px;background:#191b17;border-bottom:1px solid #30322c;backdrop-filter:none}
-.mark{background:#c3a56d;color:#171813;border-radius:5px}
-.sub,.mono{font-family:'IBM Plex Mono',monospace}
-.status{border-radius:4px;color:var(--green);border-color:#53634a;background:rgba(135,155,114,.06)}
-.eyebrow{color:#9eb7aa}
-.panel{background:#1b1d19;border:1px solid var(--line);border-radius:6px;box-shadow:none}
-.panelhead{padding:13px 16px}
-#scene{background:#121410}
-.scenehint{background:#191b17e8;border-color:#3a3c35;border-radius:4px;color:#b4b1a5}
-.tooltip{background:#1b1d19f5;border-color:#4a4b43;border-radius:4px;box-shadow:none}
-.pill{border-radius:4px;color:#b7b4a8}
-.telemetry-card{border-radius:4px;background:#20221d;border-color:#363831}
-.ward{background:#20221d;border-color:#393b34;border-radius:4px}
-.ward:hover{border-color:#686a60}
-.ward.active{border-color:#8eaea0;background:#28312b}
-.nav a{border-radius:4px}
-.nav a:hover,.nav a.active{color:#d4b878;background:rgba(195,165,109,.08);border-color:rgba(195,165,109,.22)}
-.controls input{accent-color:#8eaea0}
-</style>
+:root{color-scheme:dark;--bg:#11130f;--panel:#1a1c18;--panel2:#20231d;--line:#34372f;--muted:#96978c;--text:#e9e5db;--cyan:#8fb8aa;--green:#879f78;--amber:#c5a067;--red:#b86660}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:13px 'IBM Plex Sans',sans-serif}
+header{height:60px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 22px;background:#171915;position:sticky;top:0;z-index:10}
+.brand{display:flex;align-items:center;gap:10px}.mark{background:#c3a56d;color:#171813;border-radius:4px;padding:8px;font-weight:800}.sub{color:var(--muted);font:9px 'IBM Plex Mono';letter-spacing:.1em;margin-top:2px}.status{color:var(--green);font:10px 'IBM Plex Mono';border:1px solid #4c5d45;padding:6px 9px;border-radius:4px}
+main{max-width:1500px;margin:auto;padding:18px}.heading{display:flex;justify-content:space-between;align-items:end;margin-bottom:14px;gap:12px}.eyebrow{color:#9eb7aa;font:9px 'IBM Plex Mono';letter-spacing:.16em}h1{font-size:23px;margin:5px 0 3px}p{color:var(--muted);margin:0;font-size:11px}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 315px;gap:12px}.panel{background:var(--panel);border:1px solid var(--line);border-radius:5px;overflow:hidden}.panelhead{padding:11px 14px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px}.panelhead strong{font-size:11px}.mono{font:9px 'IBM Plex Mono';color:var(--muted)}
+#scene{height:min(69vh,720px);min-height:470px;position:relative;background:#10120f}.scenehint{position:absolute;bottom:10px;left:12px;right:12px;background:#171915e8;border:1px solid #373a32;border-radius:4px;padding:7px 9px;color:#b2b0a6;font:9px 'IBM Plex Mono';pointer-events:none}
+.tooltip{position:absolute;display:none;z-index:5;min-width:165px;max-width:230px;padding:8px 10px;background:#181a16f5;border:1px solid #4a4d44;border-radius:4px;pointer-events:none}.tooltip b{display:block;font-size:11px;margin-bottom:3px}.tooltip span{font:9px 'IBM Plex Mono';color:#aeb0a5}
+.side{display:flex;flex-direction:column;gap:10px}.metric{padding:13px}.metric .value{font-size:28px;font-weight:700;letter-spacing:-1px;margin:7px 0}.metric small{color:var(--muted)}.pill{display:inline-block;border:1px solid var(--line);border-radius:4px;padding:4px 7px;font:9px 'IBM Plex Mono';color:#b3b1a7}
+.details{padding:13px}.details h2{font-size:16px;margin:5px 0 8px}.kv{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px solid #292c25;font-size:10px}.kv span:first-child{color:var(--muted)}.kv b{text-align:right}
+.controls{padding:13px}.controls label{display:flex;justify-content:space-between;font-size:10px;margin-bottom:8px}.controls input{width:100%;accent-color:var(--cyan)}
+.telemetry{padding:13px}.telemetry-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}.telemetry-card{padding:8px;border:1px solid #2d3029;border-radius:4px;background:#1f211c}.telemetry-card span{display:block;color:var(--muted);font:8px 'IBM Plex Mono';margin-bottom:4px}.telemetry-card b{font-size:10px}
+.legend{display:flex;gap:9px;flex-wrap:wrap;padding:10px 13px;border-top:1px solid var(--line);font:9px 'IBM Plex Mono';color:var(--muted)}.dot{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:4px}
+.wardlist{display:grid;grid-template-columns:1fr 1fr;gap:5px;padding:10px;max-height:260px;overflow:auto}.ward{background:#1f211c;border:1px solid #34372f;border-radius:4px;padding:8px;text-align:left;color:var(--text);cursor:pointer;font:10px 'IBM Plex Sans'}.ward:hover{border-color:#676a60}.ward.active{border-color:var(--cyan);background:#27302a}.ward b{display:block;margin-bottom:3px}.ward span{color:#96998e;font:9px 'IBM Plex Mono'}
+.foot{color:var(--muted);font:9px 'IBM Plex Mono';padding:10px 13px;line-height:1.6}.warn{color:var(--amber)}.error{color:#ff8d8d}.good{color:var(--green)}.selected-readout{color:var(--cyan)}
+.nav{display:flex;align-items:center;gap:4px;margin-left:20px}.nav a{color:var(--muted);text-decoration:none;font:9px 'IBM Plex Mono';padding:6px 8px;border:1px solid transparent;border-radius:4px}.nav a:hover,.nav a.active{color:#d4b878;background:rgba(195,165,109,.07);border-color:rgba(195,165,109,.2)}
+@media(max-width:1000px){main{padding:12px}.layout{grid-template-columns:1fr}.side{display:grid;grid-template-columns:1fr 1fr}#scene{min-height:420px;height:57vh}}@media(max-width:620px){.side{display:flex}.heading{align-items:start;flex-direction:column}header{padding:0 12px}.wardlist{max-height:230px}.nav{margin-left:6px}.nav a{padding:5px 6px;font-size:8px}.sub{display:none}}
 </style>
 </head>
 <body>
@@ -103,7 +93,7 @@ header{height:64px;background:#191b17;border-bottom:1px solid #30322c;backdrop-f
 const API='/api/wards';
 const GIS_URL='https://raw.githubusercontent.com/datameet/Municipal_Spatial_Data/master/Delhi/Delhi_Wards.geojson';
 const OSM_URL='https://overpass-api.de/api/interpreter';
-const OSM_BBOX='28.45,76.95,28.90,77.35';
+const OSM_BBOX='28.48,76.98,28.86,77.32';
 let wards=[],gisFeatures=[],selectedBackend=0,selectedMesh=null,forecastHour=0;
 let renderer,scene,camera,raycaster,wardMeshes=[],hoveredMesh=null,frame=0;
 let windVectors=[],flowParticles=[],forecastPlumes=[],flowGroup=null,forecastGroup=null;
@@ -156,70 +146,62 @@ function addPolygonFeature(feature,liveIndex){
 }
 function addAtmosphericLayers(){
   flowGroup=new THREE.Group();forecastGroup=new THREE.Group();scene.add(flowGroup);scene.add(forecastGroup);
-
-  const arrowMat=new THREE.LineBasicMaterial({color:0x63dff0,transparent:true,opacity:.72});
-  const particleGeo=new THREE.SphereGeometry(.045,5,5);
-  const forecastGeo=new THREE.SphereGeometry(.065,5,5);
-
+  const arrowMat=new THREE.LineBasicMaterial({color:0x8fb8aa,transparent:true,opacity:.72});
+  const positions=[],colors=[],meta=[];
   wards.forEach((w,index)=>{
-    if(!Number.isFinite(Number(w.lat))||!Number.isFinite(Number(w.lon))) return;
+    if(!Number.isFinite(Number(w.lat))||!Number.isFinite(Number(w.lon)))return;
     const q=project(Number(w.lon),Number(w.lat));
     const speed=Number(w.wind_speed_ms)||Number(w.wind_speed_kmh)/3.6||0;
     const bearing=(Number(w.wind_bearing_deg)||0)*Math.PI/180;
-    // Meteorological bearing: direction wind comes FROM. Flow travels in the opposite direction.
-    const fx=Math.sin(bearing), fz=Math.cos(bearing);
-    const flowX=-fx, flowZ=fz;
+    const fx=Math.sin(bearing),fz=Math.cos(bearing),flowX=-fx,flowZ=fz;
     const len=1.0+clamp(speed/8,0,1)*1.8;
-    const start=new THREE.Vector3(q.x,.28,-q.z);
-    const end=new THREE.Vector3(q.x+flowX*len,.28,-q.z+flowZ*len);
-    const lineGeo=new THREE.BufferGeometry().setFromPoints([start,end]);
-    const line=new THREE.Line(lineGeo,arrowMat);
-    line.userData={wardIndex:index,baseStart:start.clone(),baseEnd:end.clone()};
-    flowGroup.add(line);windVectors.push(line);
-
-    const head=new THREE.ConeGeometry(.11,.28,5);
-    const headMesh=new THREE.Mesh(head,new THREE.MeshBasicMaterial({color:0x63dff0,transparent:true,opacity:.8}));
-    headMesh.position.copy(end);
-    headMesh.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),new THREE.Vector3(flowX,0,flowZ).normalize());
-    flowGroup.add(headMesh);
-
-    const aqi=Number(w.aqi)||0;
-    const count=Math.round(4+clamp(aqi/200,0,1)*12);
+    const start=new THREE.Vector3(q.x,.28,-q.z),end=new THREE.Vector3(q.x+flowX*len,.28,-q.z+flowZ*len);
+    const line=new THREE.Line(new THREE.BufferGeometry().setFromPoints([start,end]),arrowMat);
+    line.userData={wardIndex:index};flowGroup.add(line);windVectors.push(line);
+    const head=new THREE.Mesh(new THREE.ConeGeometry(.1,.24,4),new THREE.MeshBasicMaterial({color:0x8fb8aa,transparent:true,opacity:.8}));
+    head.position.copy(end);head.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),new THREE.Vector3(flowX,0,flowZ).normalize());flowGroup.add(head);
+    const aqi=Number(w.aqi)||0,count=Math.round(3+clamp(aqi/220,0,1)*10);
     for(let p=0;p<count;p++){
-      const m=new THREE.Mesh(particleGeo,new THREE.MeshBasicMaterial({color:aqiColor(aqi),transparent:true,opacity:.75}));
-      m.userData={wardIndex:index,phase:Math.random(),speed:.006+Math.min(speed,.0+8)*.0015,flowX,flowZ,aqi,seed:Math.random()};
-      m.position.set(q.x+(Math.random()-.5)*.5,.18+Math.random()*.55,-q.z+(Math.random()-.5)*.5);
-      flowGroup.add(m);flowParticles.push(m);
+      positions.push(q.x,.2,-q.z);
+      const c=new THREE.Color(aqiColor(aqi));colors.push(c.r,c.g,c.b);
+      meta.push({wardIndex:index,phase:Math.random(),seed:Math.random(),flowX,flowZ});
     }
   });
+  const pg=new THREE.BufferGeometry();
+  pg.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));
+  pg.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));
+  const points=new THREE.Points(pg,new THREE.PointsMaterial({size:.12,sizeAttenuation:true,vertexColors:true,transparent:true,opacity:.72,depthWrite:false}));
+  points.userData.particleMeta=meta;flowGroup.add(points);flowParticles=[points];
 }
 function clearAtmosphericLayers(){
   windVectors=[];flowParticles=[];forecastPlumes=[];
-  if(flowGroup){scene.remove(flowGroup);flowGroup.traverse(o=>{if(o.geometry)o.geometry.dispose();if(o.material)o.material.dispose()});}
-  if(forecastGroup){scene.remove(forecastGroup);forecastGroup.traverse(o=>{if(o.geometry)o.geometry.dispose();if(o.material)o.material.dispose()});}
-  flowGroup=new THREE.Group();forecastGroup=new THREE.Group();scene.add(flowGroup);scene.add(forecastGroup);
+  [flowGroup,forecastGroup].forEach(group=>{
+    if(!group)return;scene.remove(group);
+    group.traverse(o=>{if(o.geometry)o.geometry.dispose();if(o.material){if(Array.isArray(o.material))o.material.forEach(m=>m.dispose());else o.material.dispose()}});
+  });
+  flowGroup=null;forecastGroup=null;
 }
 function rebuildAtmosphericLayers(){
   clearAtmosphericLayers();
   if(wards.length)addAtmosphericLayers();
 }
 function updateAtmosphere(){
-  if(!flowGroup)return;
-  const t=frame*.012;
-  flowParticles.forEach((p)=>{
-    const w=wards[p.userData.wardIndex];if(!w)return;
+  if(!flowGroup||!flowParticles.length)return;
+  const points=flowParticles[0],pos=points.geometry.attributes.position.array,meta=points.userData.particleMeta;
+  const t=frame*.008;
+  for(let i=0;i<meta.length;i++){
+    const m=meta[i],w=wards[m.wardIndex];if(!w)continue;
     const q=project(Number(w.lon),Number(w.lat));
-    const drift=(t*0.55+p.userData.phase)%1;
-    const spread=(drift*2.5);
-    p.position.x=q.x+p.userData.flowX*spread+Math.sin(t*1.7+p.userData.seed*9)*.11;
-    p.position.z=-q.z+p.userData.flowZ*spread+Math.cos(t*1.3+p.userData.seed*7)*.11;
-    p.position.y=.22+(.45*Math.sin((t+p.userData.phase)*4))+p.userData.seed*.35;
-    p.material.opacity=.28+.52*(1-drift);
-  });
-  windVectors.forEach((line,i)=>{
+    const drift=(t*.55+m.phase)%1,spread=drift*4.2,width=.16+drift*.8;
+    pos[i*3]=q.x+m.flowX*spread+Math.sin(t*1.6+m.seed*13)*width;
+    pos[i*3+1]=.18+.55*Math.sin((t+m.phase)*3.2)+m.seed*.3;
+    pos[i*3+2]=-q.z+m.flowZ*spread+Math.cos(t*1.2+m.seed*11)*width;
+  }
+  points.geometry.attributes.position.needsUpdate=true;
+  windVectors.forEach(line=>{
     const w=wards[line.userData.wardIndex];if(!w)return;
     const speed=Number(w.wind_speed_ms)||Number(w.wind_speed_kmh)/3.6||0;
-    line.material.opacity=.42+clamp(speed/8,0,1)*.45;
+    line.material.opacity=.38+clamp(speed/8,0,1)*.45;
   });
   updateForecastAtmosphere();
 }
@@ -292,7 +274,7 @@ async function loadOSMContext(){
       else if(tags.waterway)addOSMLine(g,water,.075);
       else if(tags.leisure==='park')addOSMPolygon(g,park,.035,.018);
       else if(tags.landuse==='industrial')addOSMPolygon(g,industry,.035,.022);
-      else if(tags.building&&buildingCount<1800){addOSMBuilding(g,tags['building:levels']);buildingCount++;}
+      else if(tags.building&&buildingCount<650){addOSMBuilding(g,tags['building:levels']);buildingCount++;}
     });
     document.getElementById('updated').textContent='GIS + OSM context loaded · '+(d.elements||[]).length+' features';
   }catch(e){console.warn('OSM contextual layer unavailable',e);document.getElementById('updated').textContent='GIS loaded · contextual OSM unavailable';}
@@ -300,14 +282,21 @@ async function loadOSMContext(){
 function setup(){
   scene=new THREE.Scene();scene.background=new THREE.Color(0x07101b);scene.fog=new THREE.Fog(0x07101b,34,70);
   camera=new THREE.PerspectiveCamera(42,1,.1,120);
-  renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.6));renderer.shadowMap.enabled=true;sceneEl.appendChild(renderer.domElement);
+  try{
+    renderer=new THREE.WebGLRenderer({antialias:false,powerPreference:'high-performance',alpha:false});
+  }catch(e){
+    console.error('Digital Twin WebGL initialization failed',e);
+    sceneEl.innerHTML='<div style="height:100%;display:grid;place-items:center;color:#9aa0a8;font:12px IBM Plex Mono,monospace;text-align:center;padding:24px">3D renderer unavailable in this browser.<br>Ward data and telemetry are still available on the main dashboard.</div>';
+    return false;
+  }
+  renderer.setPixelRatio(1);renderer.shadowMap.enabled=false;sceneEl.appendChild(renderer.domElement);
   scene.add(new THREE.HemisphereLight(0xaed5ff,0x162131,1.9));
-  const sun=new THREE.DirectionalLight(0xffffff,1.8);sun.position.set(-15,25,10);sun.castShadow=true;scene.add(sun);
-  const ground=new THREE.Mesh(new THREE.PlaneGeometry(45,38),new THREE.MeshStandardMaterial({color:0x0d1925,roughness:1}));ground.rotation.x=-Math.PI/2;ground.position.y=-.09;ground.receiveShadow=true;scene.add(ground);
+  const sun=new THREE.DirectionalLight(0xffffff,1.8);sun.position.set(-15,25,10);scene.add(sun);
+  const ground=new THREE.Mesh(new THREE.PlaneGeometry(45,38),new THREE.MeshStandardMaterial({color:0x0d1925,roughness:1}));ground.rotation.x=-Math.PI/2;ground.position.y=-.09;scene.add(ground);
   const grid=new THREE.GridHelper(46,46,0x26394c,0x142536);grid.position.y=-.08;scene.add(grid);
   raycaster=new THREE.Raycaster();addContext();
   renderer.domElement.addEventListener('pointermove',onPointerMove);renderer.domElement.addEventListener('pointerdown',onDown);renderer.domElement.addEventListener('pointerup',onUp);renderer.domElement.addEventListener('wheel',onWheel,{passive:true});
-  resize();window.addEventListener('resize',resize);animate();
+  resize();window.addEventListener('resize',resize);animate();return true;
 }
 function resize(){if(!renderer)return;const w=sceneEl.clientWidth,h=sceneEl.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix()}
 function updateCamera(){const ce=Math.cos(orbit.elevation);camera.position.set(orbit.distance*Math.sin(orbit.azimuth)*ce,orbit.distance*Math.sin(orbit.elevation),orbit.distance*Math.cos(orbit.azimuth)*ce);camera.lookAt(0,0,0)}
@@ -322,11 +311,10 @@ function onPointerMove(e){
   if(hit){const f=hit.userData.feature,p=hit.userData.liveIndex>=0?wards[hit.userData.liveIndex]:null;tooltip.style.display='block';tooltip.style.left=clamp(e.clientX-r.left+14,8,r.width-260)+'px';tooltip.style.top=clamp(e.clientY-r.top+14,8,r.height-85)+'px';tooltip.innerHTML='<b>'+escapeHtml(f.properties?.Ward_Name||f.properties?.Ward_No||'Ward')+'</b><span>'+(p?'LIVE AQI '+(p.aqi??'—')+' · '+(p.aqi_category||'Unknown'):'NO LIVE BACKEND READING')+'</span>'}else tooltip.style.display='none'
 }
 function onClick(e){const r=renderer.domElement.getBoundingClientRect();const mouse=new THREE.Vector2(((e.clientX-r.left)/r.width)*2-1,-((e.clientY-r.top)/r.height)*2+1);raycaster.setFromCamera(mouse,camera);const hit=raycaster.intersectObjects(wardMeshes,false)[0]?.object;if(hit){const li=hit.userData.liveIndex;if(li>=0){selectedBackend=li;renderList();renderAll();focusWard(hit)}}}
-renderer.domElement?.addEventListener?.('click',onClick);
 function focusWard(mesh){const box=new THREE.Box3().setFromObject(mesh),c=box.getCenter(new THREE.Vector3());const d=clamp(orbit.distance*.62,18,30);const angle=Math.atan2(c.x,c.z);orbit.azimuth=angle;orbit.distance=d;updateCamera()}
 function styleMesh(mesh,hover){if(!mesh)return;const li=mesh.userData.liveIndex,p=li>=0?wards[li]:null;const a=Number(p?.aqi);const selected=li===selectedBackend;
-  const forecast=Number(p?.forecast_p50);const displayAqi=forecastHour>0&&Number.isFinite(forecast)?forecast:a;const h=selected?0.28:li>=0?.08+clamp(a/500,0,1)*.28:.035;mesh.geometry.computeBoundingBox();const depth=selected?.32:h;const current=mesh.userData.baseDepth||.055;const scaleY=depth/current;mesh.scale.y=scaleY;mesh.material.color.setHex(p?aqiColor(a):0x1c3042);
-  if(p&&forecastHour>0&&Number.isFinite(forecast)) mesh.material.opacity=.56;mesh.material.opacity=hover||selected?.94:p?.76??.58;mesh.material.emissive.setHex(selected?0x164557:hover?0x0d2530:0x000000);mesh.material.emissiveIntensity=selected?.8:hover?.35:.05;if(mesh.userData.edge){mesh.userData.edge.material.color.setHex(selected?0x67e8f9:hover?0xa9c6dc:0x35506a);mesh.userData.edge.material.opacity=selected?1:hover?.8:.35}}
+  const forecast=Number(p?.forecast_p50);const h=selected?0.28:(li>=0?0.08+clamp(a/500,0,1)*0.28:0.035);mesh.geometry.computeBoundingBox();const depth=selected?0.32:h;const current=mesh.userData.baseDepth||.055;const scaleY=depth/current;mesh.scale.y=scaleY;mesh.material.color.setHex(p?aqiColor(a):0x1c3042);
+  mesh.material.opacity=(hover||selected)?0.94:(p?0.76:0.58);mesh.material.emissive.setHex(selected?0x164557:hover?0x0d2530:0x000000);mesh.material.emissiveIntensity=selected?0.8:(hover?0.35:0.05);if(mesh.userData.edge){mesh.userData.edge.material.color.setHex(selected?0x67e8f9:hover?0xa9c6dc:0x35506a);mesh.userData.edge.material.opacity=selected?1:(hover?0.8:0.35)}}
 function renderAll(){
   wardMeshes.forEach(m=>styleMesh(m,false));
   renderDetails();
@@ -339,11 +327,17 @@ function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':
 async function loadAPI(){const badge=document.getElementById('connection');try{const r=await fetch(API,{cache:'no-store'});if(!r.ok)throw Error('HTTP '+r.status);const d=await r.json();wards=Array.isArray(d.wards)?d.wards:[];if(!wards.length)throw Error('No ward records returned');if(selectedBackend>=wards.length)selectedBackend=0;badge.textContent='● API CONNECTED';badge.style.color='#72e5ae';document.getElementById('updated').textContent='API response · '+new Date().toLocaleTimeString();renderList();if(gisFeatures.length)bindGIS();rebuildAtmosphericLayers();renderAll()}catch(e){badge.textContent='● API UNAVAILABLE';badge.style.color='#ff8d8d';document.getElementById('updated').textContent='Could not refresh';console.error(e)}}
 async function loadGIS(){try{const r=await fetch(GIS_URL,{cache:'force-cache'});if(!r.ok)throw Error('GIS HTTP '+r.status);const d=await r.json();gisFeatures=Array.isArray(d.features)?d.features:[];if(!gisFeatures.length)throw Error('GIS layer empty');bindGIS();document.getElementById('updated').textContent='GIS loaded · '+gisFeatures.length+' wards';}catch(e){console.error(e);document.getElementById('updated').textContent='GIS layer unavailable · API only';}}
 function bindGIS(){wardMeshes.forEach(m=>{scene.remove(m);if(m.userData.edge)scene.remove(m.userData.edge)});wardMeshes=[];gisFeatures.forEach(f=>addPolygonFeature(f,liveForFeature(f)));renderAll()}
-function animate(){requestAnimationFrame(animate);frame++;updateCamera();updateAtmosphere();renderer.render(scene,camera)}
+function animate(){requestAnimationFrame(animate);frame++;updateAtmosphere();renderer.render(scene,camera)}
 document.getElementById('horizon').addEventListener('input',e=>{forecastHour=Number(e.target.value);document.getElementById('hourlabel').textContent=forecastHour?forecastHour+'h · P50 PROJECTION':'0h · OBSERVED';renderAll()});
-setup();
-renderer.domElement.addEventListener('click',onClick);
-Promise.all([loadAPI(),loadGIS()]);
+const rendererReady=setup();
+if(rendererReady){
+  renderer.domElement.addEventListener('click',onClick);
+  Promise.all([loadAPI(),loadGIS()]);
+}else{
+  document.getElementById('connection').textContent='● 3D RENDERER UNAVAILABLE';
+  document.getElementById('connection').style.color='#ffb36b';
+  Promise.all([loadAPI(),loadGIS()]);
+}
 setInterval(loadAPI,60000);
 </script>
 </body>
