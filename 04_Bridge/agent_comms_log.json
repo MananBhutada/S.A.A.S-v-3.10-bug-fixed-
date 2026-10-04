@@ -1,0 +1,62 @@
+[
+  {
+    "message_id": "3abf7041",
+    "message_type": "HEARTBEAT",
+    "sender": "COMMANDER",
+    "recipient": "COMMANDER",
+    "priority": 1,
+    "payload": {
+      "cycle": 1
+    },
+    "correlation_id": "d86084f8",
+    "timestamp_utc": "2026-10-04T16:24:07.026238+00:00"
+  },
+  {
+    "message_id": "b5ac0b00",
+    "message_type": "HEARTBEAT",
+    "sender": "COMMANDER",
+    "recipient": "COMMANDER",
+    "priority": 1,
+    "payload": {
+      "cycle": 2
+    },
+    "correlation_id": "34bf484a",
+    "timestamp_utc": "2026-10-04T16:26:37.429839+00:00"
+  },
+  {
+    "message_id": "e403527c",
+    "message_type": "HEARTBEAT",
+    "sender": "COMMANDER",
+    "recipient": "COMMANDER",
+    "priority": 1,
+    "payload": {
+      "cycle": 3
+    },
+    "correlation_id": "fd276f79",
+    "timestamp_utc": "2026-10-04T16:29:08.618945+00:00"
+  },
+  {
+    "message_id": "5e482bc8",
+    "message_type": "HEARTBEAT",
+    "sender": "COMMANDER",
+    "recipient": "COMMANDER",
+    "priority": 1,
+    "payload": {
+      "cycle": 4
+    },
+    "correlation_id": "d679d60d",
+    "timestamp_utc": "2026-10-04T16:30:35.887057+00:00"
+  },
+  {
+    "message_id": "51a39ec8",
+    "message_type": "HEARTBEAT",
+    "sender": "COMMANDER",
+    "recipient": "COMMANDER",
+    "priority": 1,
+    "payload": {
+      "cycle": 5
+    },
+    "correlation_id": "a8986de4",
+    "timestamp_utc": "2026-10-04T16:32:21.491712+00:00"
+  }
+]
