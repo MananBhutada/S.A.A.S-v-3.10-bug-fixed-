@@ -2,315 +2,288 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>S.A.A.S. — Delhi AQI Monitor</title>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>S.A.A.S. — Environmental Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#0a0c10;--s1:#111318;--s2:#181c24;--s3:#1e2330;
-  --b:rgba(255,255,255,0.07);--b2:rgba(255,255,255,0.13);
-  --t:#e8eaf0;--m:#6b7280;--m2:#4b5563;
-  --cyan:#00d4ff;--green:#22c55e;--lime:#84cc16;
-  --amber:#f59e0b;--orange:#f97316;--red:#ef4444;
-  --font:'Space Grotesk',sans-serif;--mono:'JetBrains Mono',monospace;
+  --bg:#080b0c;--surface:#0e1315;--surface2:#12191b;--surface3:#172022;
+  --line:rgba(235,241,238,.09);--line2:rgba(235,241,238,.15);
+  --text:#edf2ef;--muted:#8c9894;--dim:#596560;
+  --mint:#9fe3bd;--mint2:#6bc69b;--amber:#e6b86a;--orange:#e18a5b;--red:#db706b;
+  --mono:"IBM Plex Mono",monospace;--sans:"DM Sans",sans-serif;
 }
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:var(--font);background:var(--bg);color:var(--t);min-height:100vh}
-::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--s2)}
-::-webkit-scrollbar-thumb{background:var(--b2);border-radius:2px}
-header{display:flex;align-items:center;justify-content:space-between;padding:13px 24px;
-  border-bottom:1px solid var(--b);background:var(--s1);position:sticky;top:0;z-index:50}
-.logo{display:flex;align-items:center;gap:10px}
-.lmark{width:32px;height:32px;background:linear-gradient(135deg,var(--cyan),#0055ff);
-  border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#000}
-.lname{font-size:14px;font-weight:600}
-.lsub{font-size:10px;color:var(--m);font-family:var(--mono)}
-.hright{display:flex;align-items:center;gap:10px}
-.live{display:flex;align-items:center;gap:5px;background:rgba(34,197,94,.1);
-  border:1px solid rgba(34,197,94,.3);border-radius:20px;padding:3px 9px;
-  font-size:10px;font-weight:600;color:var(--green);font-family:var(--mono)}
-.dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:blink 1.5s infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
-.hclock{font-size:11px;color:var(--m);font-family:var(--mono)}
-.rbtn{padding:5px 11px;font-size:11px;font-family:var(--mono);
-  background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.3);
-  border-radius:6px;color:var(--cyan);cursor:pointer}
-#age-banner{padding:7px 24px;font-size:11px;font-family:var(--mono);
-  display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--b)}
-#age-banner.fresh{background:rgba(34,197,94,.06);color:var(--green)}
-#age-banner.stale{background:rgba(245,158,11,.06);color:var(--amber)}
-#age-banner.err{background:rgba(239,68,68,.06);color:var(--red)}
-main{padding:18px 24px;max-width:1400px;margin:0 auto}
-.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
-.kpi{background:var(--s1);border:1px solid var(--b);border-radius:10px;padding:13px 15px;position:relative;overflow:hidden}
-.kpi::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--kc,var(--cyan))}
-.klbl{font-size:10px;color:var(--m);font-family:var(--mono);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
-.kval{font-size:24px;font-weight:700;letter-spacing:-1px;line-height:1}
-.ksub{font-size:10px;color:var(--m);margin-top:5px;font-family:var(--mono)}
-.row2{display:grid;grid-template-columns:1.2fr 1fr;gap:14px;margin-bottom:14px}
-.row2b{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
-.panel{background:var(--s1);border:1px solid var(--b);border-radius:10px;overflow:hidden}
-.ph{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;border-bottom:1px solid var(--b)}
-.ph-t{font-size:12px;font-weight:600}
-.ph-m{font-size:10px;color:var(--m);font-family:var(--mono)}
-.pb{padding:14px}
-.ward-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.wcard{background:var(--s2);border-radius:8px;padding:11px 12px;border:1px solid var(--b);cursor:pointer;transition:.2s}
-.wcard:hover{border-color:var(--b2)}
-.wcard.selected{border-color:var(--cyan)}
-.wcard-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px}
-.wname{font-size:12px;font-weight:600}
-.wloc{font-size:9px;color:var(--m);margin-top:1px;font-family:var(--mono)}
-.waqi{font-size:20px;font-weight:700;font-family:var(--mono);text-align:right}
-.wcat{font-size:9px;text-align:right;margin-top:1px;font-family:var(--mono)}
-.wbadge{font-size:9px;padding:1px 6px;border-radius:4px;font-family:var(--mono);font-weight:700;display:inline-block;margin-bottom:5px}
-.wpoll{display:grid;grid-template-columns:1fr 1fr;gap:4px}
-.wp{background:var(--s3);border-radius:4px;padding:4px 6px}
-.wp-lbl{font-size:8px;color:var(--m);font-family:var(--mono);text-transform:uppercase;letter-spacing:.3px}
-.wp-val{font-size:11px;font-weight:600;font-family:var(--mono);margin-top:1px}
-.wp-src{font-size:8px;font-family:var(--mono)}
-.src-r{color:var(--green)}.src-s{color:var(--amber)}.src-z{color:var(--red)}.src-c{color:var(--cyan)}.src-e{color:var(--m)}
-.scrub-bar{display:flex;align-items:center;gap:5px;margin-top:7px;padding:4px 7px;
-  background:rgba(0,212,255,.06);border-radius:4px;border:1px solid rgba(0,212,255,.15);font-size:10px;color:var(--cyan)}
-.sdot{width:4px;height:4px;border-radius:50%;background:var(--cyan);box-shadow:0 0 4px var(--cyan);animation:blink 2s infinite}
-.pre-alert-bar{display:flex;align-items:center;gap:5px;margin-top:5px;padding:4px 7px;
-  background:rgba(249,115,22,.07);border-radius:4px;border:1px solid rgba(249,115,22,.2);font-size:9px;color:var(--orange)}
-/* flow panel */
-.flow-body{padding:14px;min-height:320px}
-.flow-empty{color:var(--m);font-size:12px;text-align:center;padding:40px 0;font-family:var(--mono)}
-.flow-event{position:relative;padding-left:44px;margin-bottom:12px}
-.flow-event:not(:last-child)::before{content:'';position:absolute;left:15px;top:32px;width:1px;bottom:-12px;background:var(--b2)}
-.flow-icon{position:absolute;left:0;top:0;width:32px;height:32px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;font-size:13px;
-  border:1px solid var(--b2);background:var(--s2)}
-.flow-title{font-size:12px;font-weight:600;margin-bottom:2px;padding-top:5px}
-.flow-desc{font-size:10px;color:var(--m);line-height:1.5;font-family:var(--mono)}
-.flow-arr{font-size:9px;color:var(--m2);font-family:var(--mono);margin-top:3px}
-.flow-arr span{color:var(--cyan)}
-.step-detect .flow-icon{border-color:var(--red);background:rgba(239,68,68,.1);color:var(--red)}
-.step-classify .flow-icon{border-color:var(--amber);background:rgba(245,158,11,.1);color:var(--amber)}
-.step-pgrap .flow-icon{border-color:var(--orange);background:rgba(249,115,22,.1);color:var(--orange)}
-.step-spread .flow-icon{border-color:var(--cyan);background:rgba(0,212,255,.1);color:var(--cyan)}
-.step-bus .flow-icon{border-color:var(--lime);background:rgba(132,204,22,.1);color:var(--lime)}
-.step-receive .flow-icon{border-color:var(--green);background:rgba(34,197,94,.1);color:var(--green)}
-.step-done .flow-icon{border-color:var(--m);background:var(--s2);color:var(--m)}
-.ftag{display:inline-block;padding:1px 6px;border-radius:3px;font-size:9px;font-family:var(--mono);font-weight:600;margin-left:4px}
-.ftag-r{background:rgba(239,68,68,.15);color:var(--red)}
-.ftag-a{background:rgba(249,115,22,.15);color:var(--orange)}
-.ftag-c{background:rgba(0,212,255,.15);color:var(--cyan)}
-.ftag-g{background:rgba(34,197,94,.15);color:var(--green)}
-.ftag-m{background:rgba(107,114,128,.15);color:var(--m)}
-/* alerts */
-.alert-list{display:flex;flex-direction:column;gap:6px;max-height:280px;overflow-y:auto}
-.aitem{display:flex;gap:9px;align-items:flex-start;padding:8px 10px;background:var(--s2);border-radius:7px;border-left:3px solid var(--b)}
-.aitem.s4{border-left-color:var(--red)}.aitem.s3{border-left-color:var(--orange)}
-.aitem.s2{border-left-color:var(--amber)}.aitem.s1{border-left-color:var(--lime)}
-.aw{font-size:11px;font-weight:600;margin-bottom:2px}
-.am{font-size:10px;color:var(--m);line-height:1.5}
-.at{font-size:9px;color:var(--m2);font-family:var(--mono);flex-shrink:0;margin-top:2px}
-/* comms */
-.clog{font-family:var(--mono);font-size:10px;max-height:220px;overflow-y:auto}
-.cline{display:flex;gap:7px;padding:4px 0;border-bottom:1px solid var(--b);flex-wrap:wrap}
-.ct{color:var(--m2);flex-shrink:0}.cs{color:var(--cyan);flex-shrink:0}
-.ck{color:var(--amber);flex-shrink:0}.cm{color:var(--t);opacity:.55;word-break:break-word}
-.note{padding:7px 14px;background:rgba(0,212,255,.04);border-top:1px solid var(--b);font-size:10px;color:var(--m);font-family:var(--mono)}
-.legend{display:flex;gap:12px;flex-wrap:wrap;padding:7px 14px;border-top:1px solid var(--b);font-size:10px}
-.leg{display:flex;align-items:center;gap:4px}
-.ldot{width:6px;height:6px;border-radius:50%}
-@media(max-width:900px){.row2,.row2b{grid-template-columns:1fr}.ward-grid{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,1fr)}}
-.nav{display:flex;align-items:center;gap:6px;margin-left:24px}.nav a{color:var(--m);text-decoration:none;font:10px var(--mono);padding:6px 9px;border:1px solid transparent;border-radius:6px}.nav a:hover,.nav a.active{color:var(--cyan);background:rgba(0,212,255,.07);border-color:rgba(0,212,255,.2)}
-@media(max-width:700px){.nav{margin-left:8px}.nav a{padding:5px 6px;font-size:9px}.lsub{display:none}}
-<style>
-/* Clean product UI: neutral surfaces, semantic data colour, minimal decoration. */
-:root{
-  --bg:#101214;--s1:#17191c;--s2:#1d2024;--s3:#24282d;
-  --b:rgba(255,255,255,.09);--b2:rgba(255,255,255,.16);
-  --t:#e7e9ec;--m:#9aa0a8;--m2:#69717c;
-  --cyan:#79b7c8;--green:#78b58a;--lime:#a1b86a;
-  --amber:#d1a35f;--orange:#c98258;--red:#c86b68;
-  --font:'IBM Plex Sans',sans-serif;--mono:'IBM Plex Mono',monospace;
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  min-height:100vh;background:
+  radial-gradient(900px 520px at 82% 7%,rgba(84,143,119,.11),transparent 62%),
+  radial-gradient(700px 450px at 8% 22%,rgba(44,92,77,.09),transparent 60%),
+  var(--bg);color:var(--text);font-family:var(--sans);overflow-x:hidden;
 }
-body{letter-spacing:0}
-header{background:#15171a;box-shadow:none}
-.lmark{background:#d0b06b;color:#151515;border-radius:4px}
-.live{background:rgba(120,181,138,.08);border-color:rgba(120,181,138,.28);color:var(--green);border-radius:4px}
-.rbtn{background:var(--s2);border-color:var(--b2);color:var(--t);border-radius:4px}
-.kpi,.panel{border-radius:6px}
-.kpi::after{height:1px}
-.wcard{border-radius:5px}
-.wp{border-radius:3px}
-.scrub-bar{background:rgba(121,183,200,.06);border-color:rgba(121,183,200,.15)}
-.note{background:rgba(255,255,255,.025)}
-.nav a{border-radius:4px}
-.nav a:hover,.nav a.active{color:var(--t);background:var(--s2);border-color:var(--b2)}
-/* Prediction + governance */
-.pred-governance{display:grid;grid-template-columns:1.15fr .85fr;gap:14px;margin-bottom:14px}
-.pred-panel,.gov-panel{min-height:250px}
-.pred-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
-.pred-ward{font-size:11px;color:var(--m);font-family:var(--mono)}
-.pred-values{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:12px}
-.pred-value{background:var(--s2);border:1px solid var(--b);padding:9px 10px;border-radius:4px}
-.pred-value span{display:block;font:9px var(--mono);color:var(--m);margin-bottom:4px}
-.pred-value strong{font:600 19px var(--mono)}
-.pred-track{height:7px;background:var(--s3);border-radius:3px;position:relative;overflow:hidden;margin:9px 0 6px}
-.pred-band{position:absolute;top:0;height:100%;background:rgba(121,183,200,.24)}
-.pred-marker{position:absolute;top:-3px;width:2px;height:13px;background:#e7e9ec}
-.pred-caption{display:flex;justify-content:space-between;font:9px var(--mono);color:var(--m2)}
-.gov-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.gov-item{padding:9px 10px;background:var(--s2);border:1px solid var(--b);border-radius:4px}
-.gov-item label{display:block;font:9px var(--mono);color:var(--m);text-transform:uppercase;margin-bottom:4px}
-.gov-item strong{font-size:12px;font-weight:600}
-.gov-wide{grid-column:1/-1}
-.gov-status{display:flex;align-items:center;gap:7px;font:11px var(--mono)}
-.gov-dot{width:7px;height:7px;border-radius:50%;background:var(--m)}
-.gov-dot.active{background:var(--green)}
-@media(max-width:900px){.pred-governance{grid-template-columns:1fr}}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.035;background-image:linear-gradient(rgba(255,255,255,.6) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.6) 1px,transparent 1px);background-size:72px 72px;mask-image:linear-gradient(to bottom,#000,transparent 78%);z-index:-1}
+a{color:inherit}
+button{font:inherit}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:#283230;border-radius:8px}
+
+/* top navigation */
+header{
+  height:66px;display:flex;align-items:center;gap:26px;padding:0 32px;
+  border-bottom:1px solid var(--line);background:rgba(8,11,12,.78);
+  backdrop-filter:blur(18px);position:sticky;top:0;z-index:100;
+}
+.logo{display:flex;align-items:center;gap:13px;min-width:235px}
+.lmark{
+  position:relative;width:50px;height:40px;display:flex;align-items:center;justify-content:center;
+  font-family:serif;font-size:29px;font-weight:700;letter-spacing:-4px;color:#e9efe9;
+  text-shadow:0 0 22px rgba(159,227,189,.25);transform:skew(-5deg);
+}
+.lmark:after{content:"";position:absolute;width:38px;height:10px;border-top:1px solid var(--mint);border-radius:50%;right:-4px;bottom:1px;transform:rotate(-11deg);opacity:.7}
+.lname{font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase}
+.lsub{font:9px var(--mono);color:var(--dim);margin-top:4px;letter-spacing:.04em}
+.nav{display:flex;align-items:center;gap:4px}
+.nav a{text-decoration:none;color:var(--muted);font:10px var(--mono);padding:8px 11px;border-radius:6px;border:1px solid transparent;transition:.25s}
+.nav a:hover,.nav a.active{color:var(--text);background:rgba(255,255,255,.045);border-color:var(--line2)}
+.hright{margin-left:auto;display:flex;align-items:center;gap:10px}
+.live{display:flex;align-items:center;gap:7px;padding:6px 10px;border:1px solid rgba(159,227,189,.2);background:rgba(159,227,189,.06);border-radius:999px;color:var(--mint);font:9px var(--mono);letter-spacing:.08em}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--mint);box-shadow:0 0 12px rgba(159,227,189,.8);animation:pulse 1.8s infinite}
+.hclock{font:10px var(--mono);color:var(--dim)}
+.rbtn{border:1px solid var(--line2);background:rgba(255,255,255,.035);color:var(--text);border-radius:6px;padding:7px 11px;font:10px var(--mono);cursor:pointer;transition:.2s}
+.rbtn:hover{background:rgba(255,255,255,.08);transform:translateY(-1px)}
+@keyframes pulse{50%{opacity:.35;transform:scale(.75)}}
+
+/* hero */
+.hero{max-width:1400px;margin:0 auto;padding:76px 42px 64px;position:relative;min-height:470px;display:grid;grid-template-columns:1.08fr .92fr;align-items:center;gap:50px}
+.hero:after{
+  content:"";position:absolute;right:0;top:40px;width:52%;height:360px;border-radius:50%;
+  background:radial-gradient(circle,rgba(109,177,145,.12),transparent 64%);filter:blur(20px);pointer-events:none;
+}
+.hero-copy{position:relative;z-index:2}
+.eyebrow{display:flex;align-items:center;gap:9px;color:var(--mint);font:9px var(--mono);letter-spacing:.18em;text-transform:uppercase;margin-bottom:20px}
+.eyebrow i{width:24px;height:1px;background:var(--mint);display:block}
+.hero h1{font-size:clamp(42px,5vw,72px);line-height:.98;letter-spacing:-.055em;max-width:700px;font-weight:600}
+.hero h1 span{color:#9ca9a4}
+.hero-desc{font-size:16px;line-height:1.7;color:var(--muted);max-width:590px;margin:25px 0 29px}
+.hero-actions{display:flex;align-items:center;gap:14px}
+.primary{
+  text-decoration:none;display:inline-flex;align-items:center;gap:10px;padding:11px 16px;border-radius:7px;
+  background:var(--text);color:#0a0d0d;font-size:11px;font-weight:700;transition:.25s
+}
+.primary:hover{transform:translateY(-2px);box-shadow:0 12px 35px rgba(0,0,0,.35)}
+.secondary{text-decoration:none;color:var(--muted);font:10px var(--mono);padding:11px 2px}
+.hero-mark{
+  position:relative;z-index:2;display:flex;justify-content:center;align-items:center;height:320px;
+}
+.orbit{width:270px;height:270px;border:1px solid rgba(159,227,189,.13);border-radius:50%;position:relative;animation:slowspin 28s linear infinite}
+.orbit:before,.orbit:after{content:"";position:absolute;inset:28px;border:1px dashed rgba(159,227,189,.1);border-radius:50%}
+.orbit:after{inset:70px}
+.orbit-core{position:absolute;inset:92px;border-radius:50%;background:radial-gradient(circle at 35% 30%,rgba(159,227,189,.3),rgba(65,111,92,.05) 58%,transparent 70%);border:1px solid rgba(159,227,189,.22);box-shadow:0 0 90px rgba(95,170,135,.1)}
+.orbit-dot{position:absolute;width:7px;height:7px;background:var(--mint);border-radius:50%;box-shadow:0 0 15px var(--mint)}
+.od1{left:18px;top:108px}.od2{right:29px;top:48px;background:var(--amber)}.od3{right:72px;bottom:19px;background:var(--orange)}.od4{left:74px;bottom:30px;background:#8db5d0}
+.orbit-label{position:absolute;font:8px var(--mono);color:var(--dim);letter-spacing:.08em}.ol1{left:-20px;top:86px}.ol2{right:-40px;top:35px}.ol3{right:-37px;bottom:5px}
+@keyframes slowspin{to{transform:rotate(360deg)}}
+
+/* live status */
+main{max-width:1400px;margin:0 auto;padding:0 32px 70px}
+.section{margin-top:24px}
+.section-head{display:flex;justify-content:space-between;align-items:end;margin-bottom:13px}
+.section-kicker{font:9px var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--mint);margin-bottom:6px}
+.section-title{font-size:21px;letter-spacing:-.03em;font-weight:600}
+.section-note{font:9px var(--mono);color:var(--dim)}
+#age-banner{padding:8px 13px;font:9px var(--mono);display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:6px;background:rgba(255,255,255,.025);color:var(--muted);margin-bottom:12px}
+#age-banner.fresh{color:var(--mint);background:rgba(159,227,189,.04);border-color:rgba(159,227,189,.14)}
+#age-banner.stale{color:var(--amber);background:rgba(230,184,106,.04);border-color:rgba(230,184,106,.13)}
+#age-banner.err{color:var(--red);background:rgba(219,112,107,.04);border-color:rgba(219,112,107,.13)}
+
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.kpi,.panel{
+  background:linear-gradient(145deg,rgba(18,25,27,.92),rgba(12,16,18,.92));
+  border:1px solid var(--line);border-radius:10px;box-shadow:0 12px 35px rgba(0,0,0,.13);
+}
+.kpi{padding:17px 18px;position:relative;overflow:hidden;transition:.28s}
+.kpi:before{content:"";position:absolute;inset:0;background:linear-gradient(120deg,rgba(255,255,255,.035),transparent 45%);pointer-events:none}
+.kpi:hover{transform:translateY(-2px);border-color:var(--line2)}
+.klbl{font:9px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin-bottom:11px}
+.kval{font-size:30px;font-weight:600;letter-spacing:-.05em;line-height:1}
+.ksub{font:9px var(--mono);color:var(--muted);margin-top:8px}
+
+.pred-governance{display:grid;grid-template-columns:1.2fr .8fr;gap:10px}
+.panel{overflow:hidden;transition:border-color .25s}
+.panel:hover{border-color:rgba(235,241,238,.13)}
+.ph{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;border-bottom:1px solid var(--line)}
+.ph-t{font-size:12px;font-weight:600}.ph-m{font:9px var(--mono);color:var(--dim)}
+.pb{padding:16px}
+.pred-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:13px}
+.pred-ward{font-size:11px;color:var(--muted);font-family:var(--mono)}
+.pred-values{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.pred-value{padding:12px;background:rgba(255,255,255,.025);border:1px solid var(--line);border-radius:7px;transition:.2s}
+.pred-value:hover{background:rgba(255,255,255,.045);transform:translateY(-1px)}
+.pred-value span{display:block;font:8px var(--mono);color:var(--dim);letter-spacing:.12em;margin-bottom:6px}
+.pred-value strong{font:600 21px var(--mono)}
+.pred-track{height:7px;background:#20292a;border-radius:8px;position:relative;overflow:hidden;margin:13px 0 6px}
+.pred-band{position:absolute;top:0;height:100%;background:linear-gradient(90deg,rgba(159,227,189,.2),rgba(230,184,106,.45));border-radius:8px}
+.pred-marker{position:absolute;top:-3px;width:2px;height:13px;background:#f3f5f3}
+.pred-caption{display:flex;justify-content:space-between;font:8px var(--mono);color:var(--dim)}
+.gov-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.gov-item{padding:11px;background:rgba(255,255,255,.025);border:1px solid var(--line);border-radius:7px}
+.gov-item label{display:block;font:8px var(--mono);color:var(--dim);text-transform:uppercase;letter-spacing:.1em;margin-bottom:5px}
+.gov-item strong{font-size:12px}.gov-wide{grid-column:1/-1}
+.gov-status{display:flex;align-items:center;gap:8px;font:10px var(--mono)}.gov-dot{width:7px;height:7px;border-radius:50%;background:var(--dim)}.gov-dot.active{background:var(--mint);box-shadow:0 0 10px rgba(159,227,189,.4)}
+
+.row2{display:grid;grid-template-columns:1.12fr .88fr;gap:10px}
+.row2b{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ward-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.wcard{background:rgba(255,255,255,.025);border:1px solid var(--line);border-radius:7px;padding:11px;cursor:pointer;transition:.2s}
+.wcard:hover{transform:translateY(-1px);border-color:var(--line2);background:rgba(255,255,255,.04)}
+.wcard.selected{border-color:rgba(159,227,189,.5);box-shadow:inset 0 0 0 1px rgba(159,227,189,.12)}
+.wcard-top{display:flex;justify-content:space-between;margin-bottom:7px}.wname{font-size:11px;font-weight:600}.wloc{font:8px var(--mono);color:var(--dim);margin-top:2px}.waqi{font:600 19px var(--mono);text-align:right}.wcat{font:8px var(--mono);text-align:right;color:var(--muted);margin-top:2px}.wbadge{font:8px var(--mono);padding:2px 5px;border-radius:4px;display:inline-block;margin-bottom:5px}.wpoll{display:grid;grid-template-columns:1fr 1fr;gap:4px}.wp{background:rgba(0,0,0,.15);border-radius:4px;padding:4px 6px}.wp-lbl{font:7px var(--mono);color:var(--dim);text-transform:uppercase}.wp-val{font:10px var(--mono);margin-top:2px}.scrub-bar,.pre-alert-bar{font:8px var(--mono);padding:5px 7px;border-radius:4px;margin-top:6px}.scrub-bar{background:rgba(159,227,189,.05);border:1px solid rgba(159,227,189,.12);color:var(--mint)}.pre-alert-bar{background:rgba(230,184,106,.05);border:1px solid rgba(230,184,106,.12);color:var(--amber)}
+.src-r{color:var(--mint)}.src-s{color:var(--amber)}.src-z{color:var(--red)}.src-c{color:#8db5d0}.src-e{color:var(--dim)}
+.flow-body{padding:16px;min-height:330px}.flow-empty{color:var(--dim);font:10px var(--mono);text-align:center;padding:55px 0}
+.flow-event{position:relative;padding-left:43px;margin-bottom:12px}.flow-event:not(:last-child):before{content:"";position:absolute;left:15px;top:32px;bottom:-12px;width:1px;background:var(--line2)}
+.flow-icon{position:absolute;left:0;top:0;width:31px;height:31px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;background:var(--surface2);border:1px solid var(--line2)}
+.flow-title{font-size:11px;font-weight:600;padding-top:4px;margin-bottom:2px}.flow-desc{font:9px/1.55 var(--mono);color:var(--muted)}.flow-arr{font:8px var(--mono);color:var(--dim);margin-top:3px}.flow-arr span{color:var(--mint)}
+.step-detect .flow-icon{border-color:var(--red);color:var(--red)}.step-classify .flow-icon{border-color:var(--amber);color:var(--amber)}.step-pgrap .flow-icon{border-color:var(--orange);color:var(--orange)}.step-spread .flow-icon{border-color:#8db5d0;color:#8db5d0}.step-bus .flow-icon{border-color:#a8c878;color:#a8c878}.step-receive .flow-icon{border-color:var(--mint);color:var(--mint)}
+.ftag{display:inline-block;padding:1px 5px;border-radius:3px;font:8px var(--mono);margin-left:3px}.ftag-r{color:var(--red);background:rgba(219,112,107,.1)}.ftag-a{color:var(--amber);background:rgba(230,184,106,.1)}.ftag-c{color:#8db5d0;background:rgba(141,181,208,.1)}.ftag-g{color:var(--mint);background:rgba(159,227,189,.1)}.ftag-m{color:var(--dim);background:rgba(255,255,255,.05)}
+.alert-list{display:flex;flex-direction:column;gap:6px;max-height:285px;overflow:auto}.aitem{display:flex;gap:9px;padding:9px 10px;background:rgba(255,255,255,.025);border-radius:6px;border-left:2px solid var(--line)}.aitem.s4{border-left-color:var(--red)}.aitem.s3{border-left-color:var(--orange)}.aitem.s2{border-left-color:var(--amber)}.aitem.s1{border-left-color:var(--mint)}.aw{font-size:10px;font-weight:600;margin-bottom:2px}.am{font:9px/1.45 var(--mono);color:var(--muted)}.at{font:8px var(--mono);color:var(--dim);white-space:nowrap}
+.clog{font:9px var(--mono);max-height:225px;overflow:auto}.cline{display:flex;gap:7px;padding:5px 0;border-bottom:1px solid var(--line);flex-wrap:wrap}.ct{color:var(--dim)}.cs{color:#8db5d0}.ck{color:var(--amber)}.cm{color:var(--muted);word-break:break-word}
+.note{padding:8px 14px;background:rgba(255,255,255,.018);border-top:1px solid var(--line);font:8px var(--mono);color:var(--dim)}.legend{display:flex;gap:12px;flex-wrap:wrap;padding:8px 14px;border-top:1px solid var(--line);font:8px var(--mono);color:var(--muted)}.leg{display:flex;align-items:center;gap:5px}.ldot{width:6px;height:6px;border-radius:50%}
+#flow-note{display:none}
+
+/* reveal / motion */
+.reveal{opacity:0;transform:translateY(14px);animation:reveal .7s cubic-bezier(.2,.8,.2,1) forwards}
+.delay1{animation-delay:.08s}.delay2{animation-delay:.16s}.delay3{animation-delay:.24s}.delay4{animation-delay:.32s}
+@keyframes reveal{to{opacity:1;transform:none}}
+.value-pop{animation:valuePop .55s ease-out}.kpi-flash{animation:kpiFlash .7s ease-out}
+@keyframes valuePop{0%{opacity:.35;transform:translateY(5px)}100%{opacity:1;transform:none}}
+@keyframes kpiFlash{0%{box-shadow:0 0 0 rgba(159,227,189,0)}40%{box-shadow:0 0 35px rgba(159,227,189,.08)}100%{box-shadow:0 12px 35px rgba(0,0,0,.13)}}
+.footer-strip{margin-top:10px;border:1px solid var(--line);border-radius:9px;padding:14px 17px;display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,.018)}
+.footer-strip span{font:8px var(--mono);color:var(--dim);letter-spacing:.04em}.footer-strip b{color:var(--muted);font-weight:500}
+@media(max-width:1050px){header{padding:0 18px}.hero{grid-template-columns:1fr;padding:60px 25px 45px}.hero-mark{display:none}.nav{display:none}.kpis{grid-template-columns:repeat(2,1fr)}.pred-governance,.row2,.row2b{grid-template-columns:1fr}}
+@media(max-width:650px){main{padding:0 14px 45px}.hero{padding:45px 14px}.hero h1{font-size:43px}.hero-desc{font-size:14px}.kpis{grid-template-columns:1fr 1fr}.ward-grid{grid-template-columns:1fr}.logo{min-width:0}.lname{display:none}.lsub{display:none}.hright .hclock{display:none}.footer-strip{flex-direction:column;align-items:flex-start;gap:8px}}
 </style>
 </head>
 <body>
 <header>
   <div class="logo">
-    <div class="lmark">SA</div>
-    <div>
-      <div class="lname">S.A.A.S. — Delhi AQI Monitor</div>
-      <div class="lsub">10 Ward Multi-Agent · WAQI/CPCB Real Data + OWM Weather</div>
-    </div>
+    <div class="lmark" aria-label="S.A.A.S.">सास</div>
+    <div><div class="lname">Smart Atmospheric Analysis & Suppression</div><div class="lsub">Environmental intelligence · Delhi</div></div>
   </div>
   <nav class="nav" aria-label="S.A.A.S navigation">
-    <a href="/" class="active">HOME / DASHBOARD</a>
+    <a href="/" class="active">COMMAND CENTER</a>
     <a href="/digital-twin">3D DIGITAL TWIN</a>
   </nav>
   <div class="hright">
-    <div class="live"><div class="dot"></div>LIVE</div>
+    <div class="live"><div class="dot"></div>LIVE DATA</div>
     <div class="hclock" id="clk">--:--:--</div>
     <button class="rbtn" onclick="load()">↻ Refresh</button>
   </div>
 </header>
 
-<div id="age-banner" class="stale">⏳ Loading...</div>
-
-<main>
-  <div class="kpis">
-    <div class="kpi" style="--kc:var(--red)">
-      <div class="klbl">City Peak AQI</div>
-      <div class="kval" id="k-aqi">—</div>
-      <div class="ksub" id="k-aqi-s">—</div>
-    </div>
-    <div class="kpi" style="--kc:var(--orange)">
-      <div class="klbl">P-GRAP Triggered</div>
-      <div class="kval" id="k-pg">—</div>
-      <div class="ksub" id="k-pg-s">wards at stage ≥ 2</div>
-    </div>
-    <div class="kpi" style="--kc:var(--cyan)">
-      <div class="klbl">Scrubbers Active</div>
-      <div class="kval" id="k-sc">—</div>
-      <div class="ksub" id="k-sc-s">only when AQI &gt; 200</div>
-    </div>
-    <div class="kpi" style="--kc:var(--green)">
-      <div class="klbl">Data Age</div>
-      <div class="kval" id="k-age" style="font-size:15px;padding-top:4px">—</div>
-      <div class="ksub" id="k-age-s">last refresh</div>
+<section class="hero">
+  <div class="hero-copy">
+    <div class="eyebrow"><i></i>Delhi environmental intelligence</div>
+    <h1>See the air.<br><span>Before it becomes a problem.</span></h1>
+    <p class="hero-desc">S.A.A.S. combines live air-quality signals, probabilistic forecasting and predictive governance to understand where pollution is heading and which wards need attention.</p>
+    <div class="hero-actions">
+      <a class="primary" href="#command-center">Open command center <span>↗</span></a>
+      <a class="secondary" href="/digital-twin">Explore Delhi in 3D →</a>
     </div>
   </div>
-
-  <div class="pred-governance">
-    <div class="panel pred-panel">
-      <div class="ph">
-        <span class="ph-t">Prediction</span>
-        <span class="ph-m" id="pred-meta">P10 / P50 / P90</span>
-      </div>
-      <div class="pb">
-        <div class="pred-head">
-          <span class="pred-ward" id="pred-ward">Waiting for live forecast data</span>
-          <span class="ph-m" id="pred-time">—</span>
-        </div>
-        <div class="pred-values">
-          <div class="pred-value"><span>P10</span><strong id="pred-p10">—</strong></div>
-          <div class="pred-value"><span>P50</span><strong id="pred-p50">—</strong></div>
-          <div class="pred-value"><span>P90</span><strong id="pred-p90">—</strong></div>
-        </div>
-        <div class="pred-track"><div class="pred-band" id="pred-band"></div><div class="pred-marker" id="pred-marker"></div></div>
-        <div class="pred-caption"><span>Observed</span><span id="pred-observed">AQI —</span><span>Higher risk →</span></div>
-      </div>
+  <div class="hero-mark" aria-hidden="true">
+    <div class="orbit">
+      <div class="orbit-core"></div>
+      <span class="orbit-dot od1"></span><span class="orbit-dot od2"></span><span class="orbit-dot od3"></span><span class="orbit-dot od4"></span>
+      <span class="orbit-label ol1">OBSERVE</span><span class="orbit-label ol2">PREDICT</span><span class="orbit-label ol3">GOVERN</span>
     </div>
+  </div>
+</section>
 
-    <div class="panel gov-panel">
-      <div class="ph">
-        <span class="ph-t">Predictive Governance</span>
-        <span class="ph-m" id="gov-meta">Policy state</span>
+<main id="command-center">
+  <div id="age-banner" class="stale">⏳ Loading live state...</div>
+
+  <section class="section reveal">
+    <div class="section-head">
+      <div><div class="section-kicker">Live command center</div><div class="section-title">Delhi at a glance</div></div>
+      <div class="section-note">Observed state · prediction · governance</div>
+    </div>
+    <div class="kpis">
+      <div class="kpi delay1" style="--kc:var(--red)"><div class="klbl">City peak AQI</div><div class="kval" id="k-aqi">—</div><div class="ksub" id="k-aqi-s">—</div></div>
+      <div class="kpi delay2" style="--kc:var(--orange)"><div class="klbl">P-GRAP triggered</div><div class="kval" id="k-pg">—</div><div class="ksub" id="k-pg-s">wards at stage ≥ 2</div></div>
+      <div class="kpi delay3" style="--kc:#8db5d0"><div class="klbl">Scrubbers active</div><div class="kval" id="k-sc">—</div><div class="ksub" id="k-sc-s">current bridge state</div></div>
+      <div class="kpi delay4" style="--kc:var(--mint)"><div class="klbl">Data age</div><div class="kval" id="k-age" style="font-size:17px;padding-top:5px">—</div><div class="ksub" id="k-age-s">last cycle</div></div>
+    </div>
+  </section>
+
+  <section class="section reveal delay1">
+    <div class="pred-governance">
+      <div class="panel pred-panel">
+        <div class="ph"><span class="ph-t">Prediction</span><span class="ph-m" id="pred-meta">P10 / P50 / P90</span></div>
+        <div class="pb">
+          <div class="pred-head"><span class="pred-ward" id="pred-ward">Waiting for live forecast data</span><span class="ph-m" id="pred-time">—</span></div>
+          <div class="pred-values">
+            <div class="pred-value"><span>P10</span><strong id="pred-p10">—</strong></div>
+            <div class="pred-value"><span>P50</span><strong id="pred-p50">—</strong></div>
+            <div class="pred-value"><span>P90</span><strong id="pred-p90">—</strong></div>
+          </div>
+          <div class="pred-track"><div class="pred-band" id="pred-band"></div><div class="pred-marker" id="pred-marker"></div></div>
+          <div class="pred-caption"><span>Observed</span><span id="pred-observed">AQI —</span><span>Higher risk →</span></div>
+        </div>
       </div>
-      <div class="pb">
-        <div class="gov-grid">
+      <div class="panel gov-panel">
+        <div class="ph"><span class="ph-t">Predictive governance</span><span class="ph-m" id="gov-meta">Policy state</span></div>
+        <div class="pb"><div class="gov-grid">
           <div class="gov-item"><label>Highest stage</label><strong id="gov-stage">—</strong></div>
           <div class="gov-item"><label>Wards under action</label><strong id="gov-wards">—</strong></div>
           <div class="gov-item"><label>Mitigation</label><strong id="gov-action">—</strong></div>
           <div class="gov-item"><label>Pre-alerts</label><strong id="gov-alerts">—</strong></div>
-          <div class="gov-item gov-wide">
-            <label>Current decision state</label>
-            <div class="gov-status"><span class="gov-dot" id="gov-dot"></span><strong id="gov-status">Waiting for policy data</strong></div>
-          </div>
+          <div class="gov-item gov-wide"><label>Current decision state</label><div class="gov-status"><span class="gov-dot" id="gov-dot"></span><strong id="gov-status">Waiting for policy data</strong></div></div>
+        </div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section reveal delay2">
+    <div class="section-head"><div><div class="section-kicker">Spatial intelligence</div><div class="section-title">Ward conditions</div></div><div class="section-note" id="ward-src">aura_master_state.json</div></div>
+    <div class="row2">
+      <div class="panel">
+        <div class="ph"><span class="ph-t">Live ward status</span><span class="ph-m">Select a ward for intelligence flow</span></div>
+        <div class="pb" style="padding:10px"><div class="ward-grid" id="ward-grid"><div style="color:var(--dim);font:10px var(--mono);padding:8px;grid-column:1/-1">Loading...</div></div></div>
+        <div class="legend">
+          <div class="leg"><div class="ldot" style="background:var(--mint)"></div>WAQI/CPCB real</div>
+          <div class="leg"><div class="ldot" style="background:var(--amber)"></div>OWM estimate</div>
+          <div class="leg"><div class="ldot" style="background:var(--red)"></div>Unavailable</div>
+          <div class="leg"><div class="ldot" style="background:#8db5d0"></div>Calculated</div>
         </div>
       </div>
+      <div class="panel">
+        <div class="ph"><span class="ph-t">Agent communication flow</span><span class="ph-m" id="flow-meta">Click a ward card</span></div>
+        <div class="flow-body" id="flow-body"><div class="flow-empty">Select a ward to inspect its prediction and agent flow</div></div>
+        <div class="note" id="flow-note"></div>
+      </div>
     </div>
-  </div>
+  </section>
 
-  <div class="row2">
-    <div class="panel">
-      <div class="ph">
-        <span class="ph-t">Ward Status — 10 Delhi Wards</span>
-        <span class="ph-m" id="ward-src">aura_master_state.json</span>
+  <section class="section reveal delay3">
+    <div class="section-head"><div><div class="section-kicker">Operational intelligence</div><div class="section-title">Governance & agent activity</div></div><div class="section-note">Real bridge events</div></div>
+    <div class="row2b">
+      <div class="panel">
+        <div class="ph"><span class="ph-t">P-GRAP alert log</span><span class="ph-m" id="audit-meta">pgrap_audit_trail.json</span></div>
+        <div class="pb" style="padding:10px"><div class="alert-list" id="alert-list"><div style="color:var(--dim);font:10px var(--mono);padding:8px">Loading...</div></div></div>
+        <div class="note">Source: pgrap_audit_trail.json · governance events</div>
       </div>
-      <div class="pb" style="padding:10px">
-        <div class="ward-grid" id="ward-grid">
-          <div style="color:var(--m);font-size:12px;padding:8px;grid-column:1/-1">Loading...</div>
-        </div>
-      </div>
-      <div class="legend">
-        <div class="leg"><div class="ldot" style="background:var(--green)"></div><span style="color:var(--m)">WAQI/CPCB real</span></div>
-        <div class="leg"><div class="ldot" style="background:var(--amber)"></div><span style="color:var(--m)">OWM estimate</span></div>
-        <div class="leg"><div class="ldot" style="background:var(--red)"></div><span style="color:var(--m)">Zero/unavailable</span></div>
-        <div class="leg"><div class="ldot" style="background:var(--cyan)"></div><span style="color:var(--m)">Calculated</span></div>
+      <div class="panel">
+        <div class="ph"><span class="ph-t">Agent message bus</span><span class="ph-m" id="comms-meta">agent_comms_log.json</span></div>
+        <div class="pb" style="padding:10px"><div class="clog" id="comms-log"><div style="color:var(--dim);font:10px var(--mono);padding:8px">Loading...</div></div></div>
+        <div class="note">Source: agent_comms_log.json · multi-agent communication</div>
       </div>
     </div>
+  </section>
 
-    <div class="panel">
-      <div class="ph">
-        <span class="ph-t">Agent Communication Flow</span>
-        <span class="ph-m" id="flow-meta">Click a ward card</span>
-      </div>
-      <div class="flow-body" id="flow-body">
-        <div class="flow-empty">Select a ward to inspect its prediction and agent flow</div>
-      </div>
-      <div class="note" id="flow-note" style="display:none"></div>
-    </div>
-  </div>
-
-  <div class="row2b">
-    <div class="panel">
-      <div class="ph">
-        <span class="ph-t">P-GRAP Alert Log</span>
-        <span class="ph-m" id="audit-meta">pgrap_audit_trail.json</span>
-      </div>
-      <div class="pb" style="padding:10px">
-        <div class="alert-list" id="alert-list">
-          <div style="color:var(--m);font-size:12px;padding:8px">Loading...</div>
-        </div>
-      </div>
-      <div class="note">Source: pgrap_audit_trail.json · Real governance events</div>
-    </div>
-
-    <div class="panel">
-      <div class="ph">
-        <span class="ph-t">Agent Message Bus</span>
-        <span class="ph-m" id="comms-meta">agent_comms_log.json</span>
-      </div>
-      <div class="pb" style="padding:10px">
-        <div class="clog" id="comms-log">
-          <div style="color:var(--m);font-size:12px;padding:8px">Loading...</div>
-        </div>
-      </div>
-      <div class="note">Source: agent_comms_log.json · Agent message bus</div>
-    </div>
+  <div class="footer-strip reveal delay4">
+    <span><b>S.A.A.S.</b> · Smart Atmospheric Analysis & Suppression</span>
+    <span>Live environmental intelligence · Delhi · <a href="/digital-twin" style="color:var(--mint);text-decoration:none">Open Digital Twin →</a></span>
   </div>
 </main>
 
@@ -648,6 +621,21 @@ document.getElementById('clk').textContent=new Date().toTimeString().slice(0,8);
 function renderAll(){renderKPIs();renderPredictionGovernance();renderWards();renderAlerts();renderComms();}
 load();
 setInterval(load,60000);
+</script>
+<script>
+(function(){
+  const watched=["k-aqi","k-pg","k-sc","k-age","pred-p10","pred-p50","pred-p90","gov-stage","gov-wards","gov-action","gov-alerts"];
+  const animate=(el)=>{
+    if(!el||!el.textContent||el.textContent==="—")return;
+    el.classList.remove("value-pop"); void el.offsetWidth; el.classList.add("value-pop");
+    const card=el.closest(".kpi"); if(card){card.classList.remove("kpi-flash");void card.offsetWidth;card.classList.add("kpi-flash")}
+  };
+  watched.forEach(id=>{
+    const el=document.getElementById(id); if(!el)return;
+    new MutationObserver(()=>animate(el)).observe(el,{childList:true,characterData:true,subtree:true});
+  });
+  setTimeout(()=>watched.forEach(id=>animate(document.getElementById(id))),700);
+})();
 </script>
 </body>
 </html>
