@@ -222,7 +222,7 @@ Potential downstream impact
 
 The governance layer translates pollution conditions into policy-oriented actions.
 
-The current implementation uses AQI thresholds to determine the corresponding P-GRAP stage.
+The current implementation uses AQI thresholds to determine the corresponding P-GRAP stage....
 
 
 Stage	AQI Range	Representative Action
