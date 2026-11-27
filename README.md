@@ -1,778 +1,125 @@
-# 🌬️ Project S.A.A.S.
+# S.A.A.S. — Smart Atmospheric Analysis & Suppression
 
-### Smart Atmospheric Analysis & Suppression
+S.A.A.S. is an experimental environmental-intelligence platform that brings together ward-level air-quality data, pollution forecasting, policy evaluation, multi-agent coordination, and an operational dashboard.
 
-> **An AI-powered atmospheric intelligence and pollution mitigation platform for hyper-local environmental monitoring, predictive pollution forecasting, multi-agent governance, and targeted physical intervention.**
+**Live dashboard:** https://saas-v-310-bug-fixed-production.up.railway.app/  
+**3D Digital Twin:** https://saas-v-310-bug-fixed-production.up.railway.app/digital-twin
 
-[![Python](https://img.shields.io/badge/Python-3.11+-3776AB?logo=python&logoColor=white)](https://www.python.org/)
-[![FastAPI](https://img.shields.io/badge/FastAPI-Backend-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
-[![PyTorch](https://img.shields.io/badge/PyTorch-ML-EE4C2C?logo=pytorch&logoColor=white)](https://pytorch.org/)
-[![Docker](https://img.shields.io/badge/Docker-Containerized-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
-[![CI](https://img.shields.io/badge/CI-GitHub_Actions-2088FF?logo=githubactions&logoColor=white)](https://github.com/features/actions)
-[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
+## What it does
 
----
-Live at - https://saas-v-310-bug-fixed-production.up.railway.app/dashboard
-## 🌍 Overview
+The platform is organized around a simple workflow:
 
-**Project S.A.A.S. — Smart Atmospheric Analysis & Suppression** is a modular AI + IoT platform engineered to transform conventional air-quality monitoring into a **predictive, intelligent, coordinated, and actionable environmental management system**.
+1. **Observe** environmental readings and meteorological context.
+2. **Predict** possible near-term pollution trends and expose quantile forecasts (P10/P50/P90) where available.
+3. **Govern** by evaluating ward conditions against configured P-GRAP policy logic.
+4. **Coordinate** work through specialized agents and a message bus.
+5. **Inspect** current state, alerts, audit events, and spatial context through the dashboard and Digital Twin.
 
-Instead of stopping at:
+The project is a research and engineering prototype. The dashboard and 3D scene present backend state alongside geographic context; contextual roads, buildings, parks, and river geometry are not model predictions. Hardware and MQTT components are present in the repository, but a displayed software state should not be interpreted as proof that a physical mitigation device has actuated or that an intervention has been independently verified.
 
-```text
-"Air quality is bad."
+## Main components
 
-S.A.A.S. is designed to answer:
+| Path | Responsibility |
+| --- | --- |
+| `01_Ingestion/` | Environmental and meteorological data ingestion |
+| `_02_Intelligence/` | Forecasting and environmental analysis |
+| `03_Governance/` / `_03_Governance/` | Policy and ward-level governance logic |
+| `04_Bridge/` | Shared JSON state, communication logs, and audit trail |
+| `_05_Agent/` | Agent orchestration and inter-agent messaging |
+| `api/main.py` | FastAPI service and dashboard-facing endpoints |
+| `dashboard/` | Main dashboard and interactive 3D Digital Twin |
+| `db/` | Database models and session utilities |
+| `Hardware/` | ESP32 firmware and sensor calibration assets |
+| `tests/` | Automated test suite |
 
-Where is pollution increasing?
-        ↓
-Why is it increasing?
-        ↓
-Where is it likely to spread?
-        ↓
-What regulatory action is required?
-        ↓
-Which agents should respond?
-        ↓
-Which mitigation infrastructure should activate?
-        ↓
-Did the intervention change the situation?
+Folder names with leading underscores are intentional in this repository.
 
-The platform combines environmental intelligence, machine learning, multi-agent orchestration, governance logic, IoT communication, and physical mitigation into a single modular architecture.
+## Forecasting note
 
-Core capabilities
-Real-world environmental data ingestion
-Ward-level AQI intelligence
-PM2.5 / PM10 and pollutant analysis
-Meteorological data integration
-Temporal pollution forecasting
-Wind-aware pollution-spread reasoning
-P-GRAP governance evaluation
-Multi-agent AI orchestration
-LLM-assisted reasoning workflows
-MQTT-based agent communication
-ESP32-based IoT integration
-Targeted scrubber / mitigation control
-Persistent system state
-API infrastructure
-Web dashboard
-Database layer
-Docker-based deployment
-Automated testing
-GitHub Actions CI
-🧠 System Philosophy
+The current forecasting engine in `_02_Intelligence/tft_engine.py` loads gradient-boosting quantile models and returns P10/P50/P90 estimates. If the trained model files are unavailable, the configured statistical fallback may be used unless `SAAS_REQUIRE_FORECAST_MODEL=true` is set. The module retains the historical TFT naming, but the active quantile-model path should not be described as a running Temporal Fusion Transformer inference path.
 
-S.A.A.S. follows an observe → analyze → predict → reason → govern → coordinate → act architecture.
+## API overview
 
-                    ┌─────────────────────┐
-                    │   ENVIRONMENT       │
-                    │ Air / Weather / IoT │
-                    └──────────┬──────────┘
-                               │
-                               ▼
-                    ┌─────────────────────┐
-                    │      INGESTION      │
-                    │ WAQI / OWM / Data   │
-                    └──────────┬──────────┘
-                               │
-                               ▼
-                    ┌─────────────────────┐
-                    │    INTELLIGENCE     │
-                    │ Forecasting / ML    │
-                    │ Pollution Analysis  │
-                    └──────────┬──────────┘
-                               │
-                               ▼
-                    ┌─────────────────────┐
-                    │     GOVERNANCE      │
-                    │ P-GRAP / Policies   │
-                    └──────────┬──────────┘
-                               │
-                               ▼
-                    ┌─────────────────────┐
-                    │   AGENT ORCHESTR.   │
-                    │ AQI / Weather /     │
-                    │ AURA / MQTT Agents  │
-                    └──────────┬──────────┘
-                               │
-                               ▼
-                    ┌─────────────────────┐
-                    │     MITIGATION      │
-                    │ Scrubber / ESP32 /  │
-                    │ Physical Actuation  │
-                    └──────────┬──────────┘
-                               │
-                               ▼
-                    ┌─────────────────────┐
-                    │    MONITORING       │
-                    │ State / Logs / API  │
-                    │ Dashboard / DB      │
-                    └─────────────────────┘
-🚀 Key Features
-1. Real-World Environmental Data
+The FastAPI application is defined in `api/main.py`. Useful routes include:
 
-The system is designed around actual environmental data rather than static demonstration values.
+| Route | Purpose |
+| --- | --- |
+| `/` | Main dashboard |
+| `/dashboard` | Dashboard alias |
+| `/digital-twin` | Interactive 3D city view |
+| `/health` | Service, data-age, and dependency status |
+| `/api/state` | Current bridge state |
+| `/api/wards` | Ward readings and forecast fields |
+| `/api/wards/{ward_id}` | One ward's state |
+| `/api/alerts` | Recent audit-backed alerts |
+| `/api/pgrap` | P-GRAP summary grouped by stage |
+| `/api/analytics/summary` | Live and historical summary |
+| `/api/comms` | Agent communication log |
+| `/api/audit` | P-GRAP audit trail |
+| `/api/refresh` | Reloads bridge state from disk |
 
-AQI and pollutants
+**Important:** `POST /api/refresh` reads the existing bridge state; it does not itself fetch fresh data or start an agent cycle. Data freshness depends on the ingestion/worker process that updates the bridge.
 
-AQI-related information is obtained through WAQI, providing access to air-quality observations associated with real monitoring stations.
+Interactive API documentation is available at `/docs` when the FastAPI service is running.
 
-The system can work with pollutants including:
+## Run locally
 
-AQI
-PM2.5
-PM10
-NO₂
-Meteorological intelligence
+Use Python 3.11 or newer.
 
-OpenWeatherMap provides environmental context such as:
-
-Wind speed
-Wind direction
-Temperature
-Humidity
-
-Meteorological information is important because pollution is not spatially static.
-
-Wind conditions can influence how pollution moves between neighboring areas.
-
-🗺️ Ward-Level Intelligence
-
-The current system models 10 representative Delhi wards / zones for localized environmental reasoning.
-
-Ward	Zone	Type
-Narela	North	Industrial
-Rohini	Northwest	Residential
-Dwarka	Southwest	Residential
-Connaught Place	Central	Commercial
-Chandni Chowk	Central	Mixed
-Saket	South	Commercial
-Lajpat Nagar	South	Commercial
-Karawal Nagar	Northeast	Industrial
-Mustafabad	East	Industrial
-Wazirpur	Northwest	Industrial
-
-Each ward can be evaluated independently before being incorporated into broader system-level reasoning.
-
-This provides a foundation for moving from city-wide AQI reporting toward hyper-local environmental intelligence.
-
-📈 Predictive Intelligence
-
-The intelligence layer contains temporal forecasting infrastructure designed to analyze environmental trends rather than simply report current measurements.
-
-The repository includes a Temporal Fusion Transformer (TFT) based forecasting pipeline.
-
-Historical Environmental Data
-            │
-            ▼
-     Feature Engineering
-            │
-            ▼
-     Temporal Processing
-            │
-            ▼
-       TFT Engine
-            │
-            ▼
-   Future Pollution Trend
-            │
-            ▼
-   Governance / Agent Layer
-
-The forecasting architecture is intended to support questions such as:
-
-Is pollution increasing?
-Is the current trend likely to persist?
-Which ward may experience worsening conditions?
-Can an emerging pollution event be detected before the AQI threshold is crossed?
-
-This shifts the platform from purely reactive monitoring toward predictive environmental management.
-
-🌬️ Meteorological Reasoning
-
-Pollution movement is strongly influenced by atmospheric conditions.
-
-S.A.A.S. incorporates wind information into its environmental reasoning pipeline.
-
-A simplified representation is:
-
-                    Wind Direction
-                         →
-                         →
-        ┌─────────┐   ┌─────────┐
-        │ Ward A  │ → │ Ward B  │
-        └─────────┘   └─────────┘
-                           │
-                           ▼
-                     Possible Spread
-                           │
-                           ▼
-                    Ward C / Region
-
-The system therefore does not treat every ward as an isolated point.
-
-Instead, neighboring regions can be considered in terms of:
-
-Pollution intensity
-Wind direction
-Wind speed
-Relative location
-Potential downstream impact
-🏛️ P-GRAP Governance
-
-The governance layer translates pollution conditions into policy-oriented actions.
-
-The current implementation uses AQI thresholds to determine the corresponding P-GRAP stage....
-
-
-Stage	AQI Range	Representative Action
-Normal	≤ 100	No major intervention
-Stage 1	101–200	Advisory measures
-Stage 2	201–300	Strong mitigation measures
-Stage 3	301–400	Emergency restrictions
-Stage 4	401+	Severe emergency measures
-
-The governance layer is deliberately separated from the machine-learning layer.
-
-This allows:
-
-ML predicts conditions
-        ↓
-Governance evaluates policy
-        ↓
-Agents coordinate response
-        ↓
-Hardware executes mitigation
-
-This separation makes the architecture easier to modify as policy rules evolve.
-
-🤖 Multi-Agent Architecture
-
-One of the central components of S.A.A.S. is its multi-agent architecture.
-
-Instead of forcing one monolithic model to perform every task, the platform separates responsibilities between specialized agents.
-
-Current agent components include:
-
-AQI Agent
-Weather(intel) Agent
-Co Agent
-MQTT Client
-Multi-Agent System
-Telegram Dispatch
-(NAMES OF AGENTS MIGHT DIFFER IN THE README AS MULTIPLE VERSIONS HAVE DIRRERING NAME....REST ASSURE THE ACTUAL FILES ARE IMMACULATE WITH NAME)
-Conceptually:
-
-                       ┌──────────────┐_________________
-                       │ Orchestrator(commander agent) │
-                       └───────┬──────┘_________________
-                               │
-          ┌────────────────────┼────────────────────┐
-          │                    │                    │
-          ▼                    ▼                    ▼
-    ┌───────────┐        ┌───────────┐        ┌───────────┐
-    │ AQI Agent │        │Governance │        │ Alert Agent│
-    │  Intel    │        │Agent      │        │           │
-    └─────┬─────┘        └─────┬─────┘        └─────┬─────┘
-          │                    │                    │
-          └────────────────────┼────────────────────┘
-                               │
-                               ▼
-                       Decision / Action
-                               │
-                               ▼
-                         MQTT / Hardware
-
-This architecture enables specialized reasoning while keeping the system modular.
-
-🧩 LLM-Assisted Reasoning
-
-The agent layer provides infrastructure for integrating LLM-based reasoning into environmental workflows.
-
-Rather than positioning an LLM as the sole decision-maker, the architecture can use LLMs as a reasoning component alongside deterministic systems.
-
-For example:
-
-Sensor / API Data
-       ↓
-Deterministic Processing
-       ↓
-ML Forecast
-       ↓
-Policy Evaluation
-       ↓
-LLM-Assisted Reasoning
-       ↓
-Agent Decision
-       ↓
-Physical / Digital Action
-
-This approach is intended to combine:
-
-Deterministic systems + machine learning + agentic reasoning.
-
-📡 MQTT & Agent Communication
-
-The system includes MQTT-oriented communication infrastructure for connecting software agents with external or physical components.
-
-Conceptually:
-
-Agent
-  │
-  │ MQTT
-  ▼
-Message Broker
-  │
-  ├──────────────► Another Agent
-  │
-  └──────────────► IoT Device
-                         │
-                         ▼
-                     ESP32
-                         │
-                         ▼
-                  Mitigation System
-
-This creates a bridge between the digital intelligence layer and physical infrastructure.
-
-⚙️ IoT & Hardware Layer
-
-The repository contains ESP32-oriented hardware code and sensor calibration definitions.
-
-Environmental Intelligence
-          │
-          ▼
-      Agent Decision
-          │
-          ▼
-      MQTT Command
-          │
-          ▼
-        ESP32
-          │
-          ▼
-   Physical Controller
-          │
-          ▼
-   Pollution Mitigation
-
-The hardware layer is intentionally separated from the higher-level intelligence and governance components.
-
-This makes it possible to develop and test software intelligence without tightly coupling the entire system to a specific physical device.
-
-🔄 End-to-End Pipeline
-
-The overall system can be summarized as:
-
-┌──────────────────────┐
-│ Environmental Sources│
-│ WAQI / OWM / Sensors │
-└──────────┬───────────┘
-           │
-           ▼
-┌──────────────────────┐
-│      Ingestion       │
-│ Data Collection      │
-└──────────┬───────────┘
-           │
-           ▼
-┌──────────────────────┐
-│     Intelligence     │
-│ ML / Forecasting     │
-│ Weather Analysis     │
-└──────────┬───────────┘
-           │
-           ▼
-┌──────────────────────┐
-│      Governance      │
-│ AQI / P-GRAP Logic   │
-└──────────┬───────────┘
-           │
-           ▼
-┌──────────────────────┐
-│   Multi-Agent Layer  │
-│ Reasoning / Routing  │
-└──────────┬───────────┘
-           │
-           ▼
-┌──────────────────────┐
-│ Communication Layer  │
-│ MQTT / State / APIs  │
-└──────────┬───────────┘
-           │
-           ▼
-┌──────────────────────┐
-│      Mitigation      │
-│ IoT / ESP32 / Device │
-└──────────────────────┘
-🏗️ Repository Architecture
-
-The repository is organized into modular layers:
-
-PROJECT_SAAS_BUGFIXED/
-│
-├── 01_Ingestion/
-│   ├── met_vector_sync.py
-│   ├── sentinel_fetcher.py
-│   └── cache/
-│
-├── _02_Intelligence/
-│   ├── tft_engine.py
-│   ├── vision_extinction.py
-│   └── models/
-│
-├── 03_Governance/
-│   ├── orchestrator.py
-│   ├── p_grap_logic.py
-│   └── ward_agents.py
-│
-├── 04_Bridge/
-│   ├── config.json
-│   ├── init_bridge.py
-│   └── state_manager.py
-│
-├── _05_Agent/
-│   ├── aqi_agent.py
-│   ├── aura_agent.py
-│   ├── mqtt_client.py
-│   ├── multi_agent_system.py
-│   ├── telegram_dispatch.py
-│   └── weather_agent.py
-│
-├── api/
-│   └── main.py
-│
-├── dashboard/
-│   └── index.html
-│
-├── data/
-│   └── data_pipeline.py
-│
-├── db/
-│   ├── memory_store.py
-│   ├── models.py
-│   └── session.py
-│
-├── Hardware/
-│   ├── esp32_scrubber.ino
-│   └── sensor_calibration.h
-│
-├── monitoring/
-│   └── logger.py
-│
-├── services/
-│   └── weather_service.py
-│
-├── tests/
-│   ├── test_agent.py
-│   ├── test_all.py
-│   └── test_smoke.py
-│
-├── Dockerfile
-├── docker-compose.yml
-├── pyproject.toml
-├── requirements.txt
-├── pyrightconfig.json
-└── refresh_data.py
-🧪 Testing & Reliability
-
-The repository includes automated tests covering core system functionality.
-
-Test modules include:
-
-Agent behavior
-Smoke tests
-Fallback behavior
-Rate limiting
-Weather services
-General system functionality
-
-The project also contains a GitHub Actions workflow for automated CI execution.
-
-The objective is to ensure that changes to individual modules can be validated before being integrated into the broader system.
-
-🐳 Containerization
-
-The project includes Docker configuration for reproducible environments.
-
-Available infrastructure includes:
-
-Dockerfile
-docker-compose.yml
-.dockerignore
-
-Containerization provides a consistent environment for:
-
-Application execution
-Dependency management
-Service orchestration
-Deployment preparation
-Team development
-📊 Dashboard
-
-The repository includes a web dashboard for visualizing system information.
-
-The dashboard is designed to provide a human-readable interface over the underlying environmental intelligence and agent state.
-
-The architecture allows the dashboard to evolve independently from the underlying intelligence and governance layers.
-
-🔐 Configuration & Secrets
-
-API credentials should never be committed to the repository.
-
-Create a local .env file containing credentials such as:
-
-WAQI_TOKEN=your_token
-OPENWEATHER_API_KEY=your_key
-GROQ_API_KEY=your_key
-
-The .env file is intentionally excluded through .gitignore.
-
-For collaborators, provide a .env.example template containing variable names but never real credentials.
-
-📡 Data Sources
-Data	Source	Purpose
-AQI	WAQI	Air-quality intelligence
-PM2.5	WAQI	Fine particulate monitoring
-PM10	WAQI	Particulate monitoring
-NO₂	WAQI	Pollutant monitoring
-Wind	OpenWeatherMap	Atmospheric transport
-Temperature	OpenWeatherMap	Environmental context
-Humidity	OpenWeatherMap	Environmental context
-Satellite / environmental inputs	Ingestion modules	Extended intelligence pipeline
-🐛 Engineering & Bug-Fix History
-
-The current repository represents a bug-fixed iteration of the S.A.A.S. platform.
-
-Major fixes include:
-
-Bug	Resolution
-Empty JSON state causing json.load() failure	Safe state loading
-Ward key corruption	Ward-key cleaning logic
-Duplicate alerts	Cooldown / deduplication mechanism
-Wind unit mismatch	Explicit m/s → km/h conversion
-Unsafe state writes	Atomic file replacement
-Incorrect pollutant field usage	Correct WAQI data handling
-Single-pollutant assumptions	Multi-pollutant processing
-Raw PM2.5 incorrectly treated as AQI	Piecewise AQI conversion
-
-These fixes improve the robustness of the state-management, environmental-data, and agent communication layers.
-...
-🧠 Why S.A.A.S.?
-
-Traditional air-quality systems often follow:
-
-Measure → Display
-
-S.A.A.S. aims toward:
-
-Measure
-   ↓
-Understand
-   ↓
-Predict
-   ↓
-Reason
-   ↓
-Govern
-   ↓
-Coordinate
-   ↓
-Mitigate
-   ↓
-Monitor Again
-
-The important architectural shift is from passive monitoring toward an integrated environmental intelligence and intervention loop.
-
-🎯 Current Scope
-
-The current implementation provides infrastructure across:
-
-Environmental Intelligence
-AQI ingestion
-Weather ingestion
-Pollutant processing
-Temporal forecasting infrastructure
-Wind-aware reasoning
-Governance
-P-GRAP evaluation
-Ward-level decision logic
-Policy-oriented actions
-Agentic AI
-Specialized agents
-Agent orchestration
-LLM integration points
-Inter-agent communication
-IoT
-MQTT communication
-ESP32 integration
-Hardware control interfaces
-Software Infrastructure
-API layer
-Database layer
-State management
-Dashboard
-Docker
-Automated tests
-CI
-🚀 Quick Start
-1. Clone the repository
+```bash
 git clone https://github.com/MananBhutada/S.A.A.S-v-3.10-bug-fixed-.git
 cd S.A.A.S-v-3.10-bug-fixed-
-2. Create a virtual environment
-Windows
-python -m venv venv
-venv\Scripts\activate
-Linux / macOS
-python3 -m venv venv
-source venv/bin/activate
-3. Install dependencies
+python -m venv .venv
+```
+
+Activate the environment:
+
+```bash
+# Windows PowerShell
+.venv\Scripts\Activate.ps1
+
+# Linux / macOS
+source .venv/bin/activate
+```
+
+Install dependencies and configure credentials:
+
+```bash
 pip install -r requirements.txt
-4. Configure environment variables
+```
 
-Create:
+Create a local `.env` file for the integrations you intend to run. Common variables include:
 
-.env
-
-and add:
-
+```dotenv
 WAQI_TOKEN=your_token
 OPENWEATHER_API_KEY=your_key
 GROQ_API_KEY=your_key
-5. Refresh environmental data
-python refresh_data.py
+```
 
-For continuous refresh:
+Never commit real credentials. Check `.gitignore` and use environment-specific secrets in deployed environments.
 
-python refresh_data.py --loop
-6. Start the dashboard
-python -m http.server 8080
+Start the API and dashboard:
 
-Then open:
+```bash
+uvicorn api.main:app --reload --host 127.0.0.1 --port 8000
+```
 
-http://localhost:8080/dashboard/
-7. Run the agent layer
-python _05_Agent/aura_agent.py
-🛠️ Development Workflow
+Open http://127.0.0.1:8000/ . The API docs are at http://127.0.0.1:8000/docs.
 
-The repository is designed for collaborative development.
+The API process serves the dashboard and reads the bridge state. It does not automatically start every ingestion or agent worker; start those separately according to the relevant module's configuration and deployment setup.
 
-Recommended workflow:
+## Docker
 
-main
- │
- ├── feature/ingestion
- ├── feature/intelligence
- ├── feature/governance
- ├── feature/agents
- ├── feature/hardware
- └── feature/dashboard
+The repository includes a `Dockerfile` and `docker-compose.yml`. The Dockerfile builds the FastAPI service and starts Uvicorn with two workers. Treat the autonomous data/agent worker as a separate process unless your chosen runtime explicitly configures it.
 
-Developers should work on isolated branches and merge changes through pull requests.
+## Development
 
-Example:
+- Keep changes scoped to the component being modified.
+- Do not commit API tokens, private keys, or local environment files.
+- Run the relevant tests before opening a pull request.
+- Keep observed backend values distinct from forecast values and geographic visualization context.
+- Avoid describing a simulated, queued, or displayed device action as verified physical actuation.
 
-git checkout -b feature/new-agent
+## License
 
-Make changes:
-
-git add .
-git commit -m "Add new environmental agent"
-
-Push:
-
-git push -u origin feature/new-agent
-
-Then open a pull request.
-
-🧱 Technology Stack
-Layer	Technology
-Language	Python
-API	FastAPI
-ML	PyTorch
-Forecasting	Temporal Fusion Transformer
-Data Processing	NumPy / Pandas
-Database	PostgreSQL-compatible architecture
-Messaging	MQTT
-Hardware	ESP32
-Dashboard	HTML / JavaScript
-Containers	Docker
-CI	GitHub Actions
-Testing	Pytest
-Configuration	.env / JSON
-Version Control	Git / GitHub
-🔮 Future Development
-
-The architecture provides a foundation for expanding toward:
-
-More Delhi wards
-Additional cities
-Higher-resolution pollution forecasting
-More advanced spatial modeling
-Computer-vision-based pollution analysis
-More sophisticated agent planning
-Autonomous mitigation scheduling
-Additional IoT devices
-Distributed sensor networks
-Historical analytics
-Improved feedback loops
-Advanced environmental simulation
-Production cloud deployment
-Scalable multi-city governance
-
-The modular design allows these capabilities to be introduced incrementally without requiring a complete rewrite of the system.
-
-📜 License
-
-This project is licensed under the Apache License 2.0.
-
-See the LICENSE file for the complete license text.
-
-👨‍💻 Project
-
-Project S.A.A.S.
-
-Smart Atmospheric Analysis & Suppression
-
-An experimental AI + IoT architecture for moving environmental monitoring from:
-
-Observation → Intelligence → Governance → Action
-
-Built as a modular research and engineering platform combining machine learning, multi-agent systems, environmental data, governance logic, and physical IoT intervention.
-
-
----
-
-## 🖥️ Live System Demo
-
-The screenshots below(or png images in the file structure)show the multi-agent system running end-to-end in a live local environment.(For reference)
-
-### 1. Agent System Startup
-
-![Agent Startup](assests/demo_agent_startup.png)
-
-All five agents — Commander, Intel, Governance, Alert, and Field — initialize successfully along with ten ward-level agents (Narela, Rohini, Dwarka, Connaught Place, Chandni Chowk, Saket, Lajpat Nagar, Karawal Nagar, Mustafabad, Wazirpur). Once online, the Commander begins the first monitoring cycle by checking city-wide AQI.
-
-### 2. Real-Time Ward Monitoring & Governance
-
-![Ward Monitoring](assests/demo_readme_terminal.png)
-
-For each ward, the system fetches live AQI/PM2.5/PM10/NO₂ data from WAQI, evaluates the corresponding P-GRAP stage, and dispatches Telegram alerts automatically when thresholds are crossed (e.g., Stage 2/3 advisories for Narela, Dwarka, and Wazirpur).
-
-### 3. TFT Forecasting Across Wards
-
-![Forecasting](assests/demo_wards_forecast.png)
-
-The TFT (Temporal Fusion Transformer) engine generates quantile-based forecasts (P10/P50/P90) for each ward, which feed directly into the governance layer for proactive P-GRAP staging.
-
-### 4. Graceful Shutdown
-
-![Shutdown](assests/demo_shutdown.png)
-
-All agents (Commander, Intel, Governance, Alert, Field) shut down cleanly when the system is stopped, confirming stable lifecycle management.
-
-### 5. Manual Data Refresh
-
-![Data Refresh](assests/demo_refresh_data.png)
-
-The `refresh_data.py` script can be run independently to pull fresh AQI data for all ten wards, useful for testing or manual updates outside the agent loop.
+See [LICENSE](LICENSE) for the Apache License 2.0 terms.

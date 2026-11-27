@@ -17,5 +17,6 @@ COPY . .
 # Create log + data directories
 RUN mkdir -p logs data
 
-# Run the stateless FastAPI service; the autonomous cloud worker is started separately by the AWS compose/runtime.
+# This image runs the HTTP/API process only. Run ingestion and agent workers
+# as separately managed processes/services in the deployment environment.
 CMD ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "2"]

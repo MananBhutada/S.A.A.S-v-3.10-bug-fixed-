@@ -1,17 +1,22 @@
 """
-api/main.py — FastAPI REST Backend for S.A.A.S.
+api/main.py — FastAPI REST backend for S.A.A.S.
 ================================================
-Endpoints:
-  GET  /                        — Welcome + API info
-  GET  /health                  — System health check
-  GET  /api/state               — Live bridge state (for dashboard)
-  GET  /api/wards               — All wards with current readings
-  GET  /api/wards/{ward_id}     — Single ward detail...(for further processing)
-  GET  /api/alerts              — Recent alerts (paginated)
-  GET  /api/pgrap               — P-GRAP status all wards
-  GET  /api/history/{ward_id}   — Historical readings from DB
-  GET  /api/analytics/summary   — Aggregated analytics
-  POST /api/refresh             — Trigger manual data refresh
+Browser routes:
+  GET  /                         — Main dashboard
+  GET  /dashboard                — Dashboard alias
+  GET  /digital-twin             — Interactive 3D city view
+
+Data and status routes:
+  GET  /health                   — API, bridge-data age, and dependency status
+  GET  /api/state                — Full bridge state
+  GET  /api/wards                — Ward readings and forecast fields
+  GET  /api/wards/{ward_id}       — One ward's state
+  GET  /api/alerts                — Recent audit-backed alerts
+  GET  /api/pgrap                 — P-GRAP summary by stage
+  GET  /api/analytics/summary     — Live and historical summary
+  GET  /api/comms                 — Agent communication log
+  GET  /api/audit                 — P-GRAP audit trail
+  POST /api/refresh               — Reload bridge state from disk
 
 Run: uvicorn api.main:app --reload --port 8000
 """
